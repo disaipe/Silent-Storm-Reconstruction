@@ -1025,6 +1025,7 @@ void CMapBuilder::TraverseTemplateTree( NDb::CTemplate* pTemplate, SMapInfo *pFr
 		ResolveRoutes( &info );
 		// retail @0x276c60 copies the pair from the ROOT variant: bNoAttack right next to bShowTerrain
 		info.bNoAttack = pVar->bNoAttack;
+		info.weatherType = pVar->weatherType;
 		info.bShowTerrain = pVar->bShowTerrain;
 	}
 	Transfer( pFree, &nested );

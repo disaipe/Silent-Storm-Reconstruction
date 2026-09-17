@@ -21,6 +21,7 @@ public:
 	CRenderSound( CSyncSrc<NWorld::IVisObj> *pSrc, NSound::ISoundScene *pScene, NWorld::IWorld *pWorld );
 
 	virtual void Add3DSound( STime tStart, NDb::CSound *pSound, CFuncBase<CVec3> *pPosition );
+	virtual void Add2DSound( STime tStart, NDb::CSound *pSound );
 	virtual void AddEffect( STime tStart, NDb::CSoundEffect *pEffect, CFuncBase<CVec3> *pPosition, const vector<int> &flags );
 	virtual void Update( bool bAdvanceTime, CTransformStack *pTS, STime currentTime );
 	virtual void ResetTiming() { timer.ResetTiming(); }
@@ -71,6 +72,16 @@ void CRenderSound::AddEffect( STime tStart, NDb::CSoundEffect *pEffect, CFuncBas
 		CPtr< CFuncBase<CVec3> > pHold( pPosition );
 	else
 		Register( pScene->AddEffect( pEffect, timer.GetTime()->GetValue(), timer.GetTime(), pPosition, flags ) );
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Retail v1.2 0x6d5eb0: use the same saved-event age as positional sounds.
+void CRenderSound::Add2DSound( STime tStart, NDb::CSound *pSound )
+{
+	if ( pSound )
+	{
+		const int nDelay = Max( 0, (int)( timer.GetTime()->GetValue() - tStart ) - 50 );
+		Register( pScene->Add2DSound( pSound, (STime)nDelay ) );
+	}
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 void CRenderSound::Update( bool bAdvanceTime, CTransformStack *pTS, STime currentTime )

@@ -724,6 +724,76 @@ void CWorld::AddBuilding( const SMapBuilding &info )
 	miscObjects.push_back( pBuilding );
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Retail 0x762ca0 / v1.2 0x762ef0. One roll per realtime segment, sixty per new turn.
+void CWeatherTracker::RollNewWeather( int nTicks )
+{
+	switch ( weatherType )
+	{
+	case NDb::TWT_SUNNY:
+		if ( IsValid(pEffect) )
+			pEffect->EndSound();
+		weather = IWorld::WEATHER_SUNNY;
+		return;
+	case NDb::TWT_ALWAYS_RAIN:
+		if ( weather != IWorld::WEATHER_RAIN )
+		{
+			pEffect = Create2DSound( NDb::GetSound(15178) );
+			AttachMiscObject( pEffect );
+			weather = IWorld::WEATHER_RAIN;
+		}
+		return;
+	case NDb::TWT_ALWAYS_SNOW:
+		weather = IWorld::WEATHER_SNOW;
+		return;
+	}
+	for ( ; nTicks > 0; --nTicks )
+	{
+		if ( nWeatherCoolDown > 0 )
+		{
+			--nWeatherCoolDown;
+			continue;
+		}
+		if ( weather == IWorld::WEATHER_SUNNY )
+		{
+			if ( random.GetFloat(0, 1) < 0.000625f )
+			{
+				if ( weatherType == NDb::TWT_MAY_RAIN )
+				{
+					pEffect = Create2DSound( NDb::GetSound(15178) );
+					AttachMiscObject( pEffect );
+					weather = IWorld::WEATHER_RAIN;
+				}
+				else if ( weatherType == NDb::TWT_MAY_SNOW )
+					weather = IWorld::WEATHER_SNOW;
+				nWeatherCoolDown = 60;
+			}
+		}
+		else
+		{
+			if ( random.GetFloat(0, 1) < 0.0016666667f )
+			{
+				if ( IsValid(pEffect) )
+					pEffect->EndSound();
+				weather = IWorld::WEATHER_SUNNY;
+				nWeatherCoolDown = 60;
+			}
+			if ( weather == IWorld::WEATHER_RAIN && random.GetFloat(0, 1) < 0.0025f )
+			{
+				static const int nThunderSounds[] = { 15075, 15076, 15077, 15078, 15079, 15080 };
+				AttachMiscObject( Create2DSound( NDb::GetSound(nThunderSounds[random.Get(6)]) ) );
+			}
+		}
+	}
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////
+void CWorld::RollNewWeather( int nTicks )
+{
+	EWeather prevWeather = weather;
+	CWeatherTracker::RollNewWeather( nTicks );
+	if ( weather != prevWeather )
+		UpdateVisible(); // retail 0x7631c0: refresh sight when the weather changes
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////
 void CWorld::AttachMiscObject( CTimedObject *p )
 {
 	p->Attach( pShow, this );
@@ -1717,6 +1787,7 @@ void CWorld::CreateRandom( int nVariantID, const vector<string> &params,
 		GetAIMap()->GetStabilityTrackers()->FinishConstruction();
 	}
 
+	weatherType = mapInfo.weatherType; // retail 0x76da90, after stability construction
 	StartGame();
 	// NOTE: the first-segments warm-up does NOT run here. Retail CreateRandom @0x36d0b0 ends with
 	// StartGame() only; StartFirstSegments lives at the END of RunPostInit @0x36db80, AFTER the
@@ -2643,6 +2714,8 @@ void CWorld::Segment()
 		NScript::luaCallFunction( "OnEnterZone", "" );
 		bFirstSegment = false;
 	}
+	if ( IsRealTime() )
+		RollNewWeather( 1 );
 	// retail CWorld::Segment tail @0x36bce0 (the very last leg): the delayed game-over watchdog. Once
 	// tMaxGameOverCall expires the stashed call fires EVERY segment -- retail never clears pGameOverCall;
 	// the lua side (OnPlayerLose -> ShowLoseDialog) is expected to end the game. The hero-corpse-settled
@@ -2776,9 +2849,9 @@ void CWorld::KillObject( CObjectServerBase *pOS )
 	ActivateDebris( SSphere( pOS->GetPosition(), 5 ), GetAIMap(), pTime );*/
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-void CWorld::PerformRangedAttack( const NRPG::SAttackRayInfo &rayInfo, STime sCast, NDb::CModel *pTrailModel, float fTrailSpeed, NDb::CRPGGrenade *pGrenade, int nFloor )
+void CWorld::PerformRangedAttack( const NRPG::SAttackRayInfo &rayInfo, STime sCast, NDb::CModel *pTrailModel, float fTrailSpeed, NDb::CRPGGrenade *pGrenade, int nEffectType )
 {
-	NRPG::PerformRangedAttack( this, rayInfo, sCast, pTrailModel, fTrailSpeed, pGrenade, nFloor );
+	NRPG::PerformRangedAttack( this, rayInfo, sCast, pTrailModel, fTrailSpeed, pGrenade, nEffectType );
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 void CWorld::PerformRangedAttack( const NRPG::CAttackPortion &ap, const CRay &ray, const vector<NRPG::IAttackable*> &ignores, STime sCast, NDb::CModel *pTrailModel, float fTrailSpeed, float fMaxRange )
@@ -2856,10 +2929,18 @@ void CWorld::FindCloseGroundItems( CUnit *pU, vector<SItem> *pRes )
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 bool CWorld::IsWinnerPlayer( IPlayer *pPlayer )
 {
-	CDynamicCast<CPlayer> p( pPlayer );
-	//if ( nAIUnitsCreated == 0 && nPartiesAdded <= 1 )
-	//	return false;
-	return !HasEnemies( p );
+	// Retail 1.1 @0x7623a0 / 1.2 @0x7625f0: only a surviving HOSTILE
+	// side prevents victory. The dev HasEnemies helper counted allies too.
+	vector<CPtr<CPlayer> > playerList;
+	GetPlayersList( &playerList );
+	for ( vector<CPtr<CPlayer> >::const_iterator i = playerList.begin(); i != playerList.end(); ++i )
+	{
+		CPlayer *pOther = *i;
+		if ( pOther != pPlayer && pOther->HasAlivePeople() &&
+			GetDiplomacyState( pOther, pPlayer ) == NDb::DS_ENEMY )
+			return false;
+	}
+	return true;
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 void CWorld::MakeExplosion( const CRay &ray, int nMaxFloor )
@@ -3141,6 +3222,7 @@ void CWorld::OnNewPlayerTurn( CPlayer *pPlayer )
 	// (StartPlayerTurn calls OnNewPlayerTurn then OnPassControl -- still exactly ONE pass-control throw).
 	//
 	GetGlobalAck()->OnNewTurnStarted( pPlayer );
+	RollNewWeather( 60 );
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // retail CTBSWorld::OnPassControl @0x372bf0 (via ProcessTBSEvents @0x3675d0, STBSEvent tag9): every

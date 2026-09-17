@@ -239,9 +239,30 @@ void CRPGArmor::Import()
 	// are metal/high-threshold so their structural-HP damage is ~0 and they can ONLY advance a destroy stage via
 	// this flag; ordinary objects (walls/crates) break via the HP path and don't need it. Never importing this
 	// column left bBreakableByGrenade permanently false, so explodables never broke and never reached the destroy
-	// stage that arms their attached-grenade explosion. (Ricochet/ShotEffect1-3 parity deferred -- orthogonal to
-	// this bug and would perturb bullet behaviour.)
+	// stage that arms their attached-grenade explosion.
 	NDatabase::ImportField( "ItemCanBreakIt", &bBreakableByGrenade );
+	// Retail v1.2 0x8098d7: DB degrees and percentages become cosine and probability.
+	float fRicochetAngle;
+	if ( NDatabase::ImportField( "RicochetAngle", &fRicochetAngle ) )
+		fRicochetMaxCos = cos( fRicochetAngle * 0.017453292519943295 );
+	if ( NDatabase::ImportField( "RicochetProbability", &fRicochetProbability ) )
+		fRicochetProbability *= 0.01f;
+	NDatabase::ImportField( "ShotEffect1ID", &pShotEffect1 );
+	NDatabase::ImportField( "ShotEffect2ID", &pShotEffect2 );
+	NDatabase::ImportField( "ShotEffect3ID", &pShotEffect3 );
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////
+CTEffect* CRPGArmor::GetShotEffect( int nType ) const
+{
+	// Retail v1.2 0x808b20: no fallback for unsupported effect types.
+	switch ( nType )
+	{
+	case 0: return pShotEffect;
+	case 1: return pShotEffect1;
+	case 2: return pShotEffect2;
+	case 3: return pShotEffect3;
+	default: return 0;
+	}
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // CRPGWeaponType
@@ -366,6 +387,9 @@ void CAnimWeaponType::Import()
 	NDatabase::ImportField( "AnimationWeaponType", &szAWT );
 	type = GetAnimationType( szAWT );
 	NDatabase::ImportField( "AimedStrafe", &bAimedStrafe );
+	NDatabase::ImportField( "LeftHandShift", &fLeftHandShift );
+	// Retail v1.2 0x808f69: delay between the firing label/flash and bullet launch.
+	NDatabase::ImportField( "BulletDelay", &nBulletDelay );
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // CRPGWeapon

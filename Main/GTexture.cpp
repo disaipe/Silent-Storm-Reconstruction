@@ -289,7 +289,7 @@ void CColorTexture::Recalc()
 // retail GTextureInit registers THREE vars: usedxt + gfx_texture_mip (int @0x9c60a4, the global
 // CTerrainTextureBlend::NeedUpdate consults -- lives in GTerrainTexture.cpp) + gfx_low_ram (unsaved)
 extern int nTextureUseMip;   // GTerrainTexture.cpp, retail @0x9c60a4
-static bool bLowRAM = false; // gfx_low_ram, retail @0x9c60a8
+bool bLowRAM = false; // gfx_low_ram, retail @0x9c60a8; shared with geometry caching
 START_REGISTER(GTexture)
 	REGISTER_VAR_EX( "gfx_texture_usedxt", NGlobal::VarBoolHandler, &bDXTModeOn, 1, true )
 	REGISTER_VAR_EX( "gfx_texture_mip", NGlobal::VarIntHandler, &nTextureUseMip, 0, true )

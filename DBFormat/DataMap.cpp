@@ -160,7 +160,14 @@ void CTemplVariant::Import()
 	// retail v1.1 0x8240b6 / v1.2 0x805222. game.db stores columnar tables;
 	// record fields must be imported even when they also have serializer tags.
 	NDatabase::ImportField( "ExitBorder", &nExitBorder );
-	// Weather string -> weatherType conversion remains to be restored separately.
+	// Retail 0x823fd0..0x8240b6: columnar game.db uses these strings, not enum integers.
+	string szWeather;
+	NDatabase::ImportField( "Weather", &szWeather );
+	weatherType = TWT_SUNNY;
+	if ( szWeather == "Rain" ) weatherType = TWT_MAY_RAIN;
+	else if ( szWeather == "Snow" ) weatherType = TWT_MAY_SNOW;
+	else if ( szWeather == "AlwaysRain" ) weatherType = TWT_ALWAYS_RAIN;
+	else if ( szWeather == "AlwaysSnow" ) weatherType = TWT_ALWAYS_SNOW;
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // CRectangle

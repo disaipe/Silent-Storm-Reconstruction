@@ -28,6 +28,7 @@ namespace NDb
 	class CModel;
 	class CTemplVariant;
 	class CEffect;
+	class CParticleInstance;
 	class CAmbientLightReal;
 	class CComplexHead;
 	class CAIGeometry;
@@ -49,6 +50,7 @@ class CObjectInfo;
 class CPolyline;
 class CParticles;
 class CParticleEffect;
+class IParticleFilter;
 struct SRenderStats;
 class CGrassTracker;
 class CExplosionInfo;
@@ -118,8 +120,9 @@ public:
 	// returns the CSelectionNode as CObjectBase -- the class is GView.cpp-local and callers hold
 	// it opaquely (v1.2 CSelection+0x20 is a CObj<CObjectBase> slot, CreateSelection @0x6cbf60)
 	virtual CObjectBase* CreateSelection( const vector<CObjectBase*> &target, const CVec4 &vColor ) = 0;
-	virtual CObjectBase* CreateParticles( NDb::CEffect *pEffect, STime stBeginTime, CFuncBase<STime> *pTime, CFuncBase<SFBTransform> *pPlacement, const SRoomInfo &_g = SRoomInfo(), NAnimation::CSkeletonAnimator *pScAnim = 0 ) = 0;
-	virtual CObjectBase* CreateParticles( NDb::CEffect *pEffect, STime stBeginTime, CFuncBase<STime> *pTime, const SFBTransform &place, const SRoomInfo &_g = SRoomInfo() ) = 0;
+	virtual CObjectBase* CreateParticles( NDb::CEffect *pEffect, STime stBeginTime, CFuncBase<STime> *pTime, CFuncBase<SFBTransform> *pPlacement, const SRoomInfo &_g = SRoomInfo(), NAnimation::CSkeletonAnimator *pScAnim = 0, IParticleFilter *pFilter = 0 ) = 0;
+	virtual CObjectBase* CreateParticles( NDb::CEffect *pEffect, STime stBeginTime, CFuncBase<STime> *pTime, const SFBTransform &place, const SRoomInfo &_g = SRoomInfo(), IParticleFilter *pFilter = 0 ) = 0;
+	virtual CObjectBase* CreateRain( NDb::CParticleInstance *pInstance, CFuncBase<STime> *pTime, IParticleFilter *pFilter, const SRoomInfo &_g = SRoomInfo() ) = 0;
 	virtual CBuilding* CreateBuildingPart( int nPartID, const SMapBuilding &info, NBuilding::CBuildingInfoHold *pBI ) = 0;
 	virtual CPolyline* CreatePolyline( const vector<CVec3> &points, const CVec3 &color ) = 0;
 	virtual CObjectBase* CreateExplosion( CFuncBase<STime> *pTime, NDb::CEffect *pEffect, CFuncBase<CExplosionInfo> *pExplosion, const CVec3 &pos, const SRoomInfo &_g = SRoomInfo() ) = 0;

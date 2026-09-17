@@ -346,7 +346,9 @@ static void SetParticlesEffect( bool bTnLMode, NGfx::CRenderContext *pRC, NGfx::
 	}
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-const int N_UNUSED_SRC_PTR = 0xffffffff;
+const unsigned int N_OVERDRAW_SRC_PTR = 0x80000000;
+const unsigned int N_OVERDRAW_SRC = N_OVERDRAW_SRC_PTR >> N_PARTICLES_PER_EFFECT_LG2;
+const unsigned int N_UNUSED_SRC_PTR = 0xffffffff & ~N_OVERDRAW_SRC;
 class CPreciseTranspRender
 {
 	vector<STransparentInfo> &infos;
@@ -357,6 +359,19 @@ class CPreciseTranspRender
 	NGfx::CRenderContext *pRC;
 	const STransparentMaterialInfo *pCurrentEffect;
 
+	// Retail 0x584fa0 / v1.2 0x584f60: the final, sentinel-depth particles
+	// (light glows) overlay geometry without moving their vertices toward the camera.
+	void MarkOverdrawParticles( vector<int> *pSorted )
+	{
+		for ( int k = (int)pSorted->size() - 1; k >= 0; --k )
+		{
+			int nParticle = (*pSorted)[k];
+			if ( depths[nParticle] != 1e10f )
+				break;
+			sourcePtrs[nParticle] |= N_OVERDRAW_SRC_PTR;
+		}
+	}
+
 	void Flush()
 	{
 		if ( nCurrentSrc == N_UNUSED_SRC_PTR )
@@ -364,8 +379,9 @@ class CPreciseTranspRender
 		NGfx::STriangleList triList;
 		triList.pTri = &tris[0];
 		triList.nTris = tris.size();
-		triList.nBaseIndex = infos[nCurrentSrc].nOffset;
-		CDGPtr<IVBCombiner> pVertices( infos[nCurrentSrc].pGeom );
+		unsigned int nSrc = nCurrentSrc & ~N_OVERDRAW_SRC;
+		triList.nBaseIndex = infos[nSrc].nOffset;
+		CDGPtr<IVBCombiner> pVertices( infos[nSrc].pGeom );
 		pVertices.Refresh();
 		pRC->AddPrimitive( pVertices->GetValue(), triList );
 		tris.resize( 0 );
@@ -383,6 +399,7 @@ public:
 		vector<int> sorted;
 		DoRadixSort( depths, &sorted );
 		nCurrentSrc = N_UNUSED_SRC_PTR;
+		MarkOverdrawParticles( &sorted );
 		for ( int k = 0; k < sorted.size(); ++k )
 		{
 			unsigned int nSrcPtr = (unsigned int)sourcePtrs[ sorted[k] ];
@@ -396,6 +413,7 @@ public:
 				if ( !pCurrentEffect || *pCurrentEffect != transpMatInfo )
 				{
 					pRC->Flush();
+					pRC->SetDepth( NGfx::DEPTH_TESTONLY );
 					SetObjectEffect( bTnLMode, pRC, transpMatInfo, pFog, pSky );
 					pCurrentEffect = &transpMatInfo;
 				}
@@ -411,9 +429,10 @@ public:
 				if ( nSrc != nCurrentSrc )
 				{
 					Flush();
-					if ( pCurrentEffect )
+					if ( pCurrentEffect || ( ( nSrc ^ nCurrentSrc ) & N_OVERDRAW_SRC ) )
 					{
 						pRC->Flush();
+						pRC->SetDepth( ( nSrc & N_OVERDRAW_SRC ) ? NGfx::DEPTH_NONE : NGfx::DEPTH_TESTONLY );
 						SetParticlesEffect( bTnLMode, pRC, pLight, pFog );
 						pCurrentEffect = 0;
 					}
@@ -465,6 +484,7 @@ void CTransparentRenderer::RealRender( NGfx::CRenderContext *pRC, NGfx::CTexture
 			const STransparentInfo &info = infos[ nFragment ];
 			if ( info.pGeom == 0 )
 			{
+				rc.SetDepth( NGfx::DEPTH_TESTONLY );
 				SetObjectEffect( bTnLMode, pRC, info.objectInfo.pMaterial->GetTransparentInfo(), pFog, pSky );
 				SRenderGeometryInfo *pGeometry = info.objectInfo.pGeometry;
 				pGeometry->pVertices.Refresh();
@@ -486,6 +506,8 @@ void CTransparentRenderer::RealRender( NGfx::CRenderContext *pRC, NGfx::CTexture
 				if ( nParticles == 0 )
 					continue;
 
+				// Retail's non-streaming path uses the first particle's sentinel.
+				rc.SetDepth( depths[nStart] == 1e10f ? NGfx::DEPTH_NONE : NGfx::DEPTH_TESTONLY );
 				vector<int> particles( nParticles );
 				for ( int i = 0; i < particles.size(); ++i )
 					particles[i] = i;

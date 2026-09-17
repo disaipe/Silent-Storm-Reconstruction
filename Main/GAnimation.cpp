@@ -632,7 +632,9 @@ NDb::CAnimation* CASmartAimer::GetIdleAnimation( const SSkeletonState &state )
 	}
 	else
 	{
-		return pSkeleton->GetAnimation( NDb::CAnimation::HEAL, state.nAnimFlagsPoseWeapon, 0, state.nAnimFlagsClassSex, state.pSide );
+		// Retail 0x4dacd2 / v1.2 0x4dad42: preserve the healing height/repair variant.
+		return pSkeleton->GetAnimation( NDb::CAnimation::HEAL, state.nAnimFlagsPoseWeapon,
+			state.szParams.c_str(), state.nAnimFlagsClassSex, state.pSide );
 	}
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -180,7 +180,7 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
 
 	vector<string> szParams;
 	bool bDoLoad = false;
-	string szLoadSlot( NMainLoop::S_SLOT_QUICKSAVE );
+	string szLoadSlot;
 	NStr::SplitStringWithMultipleBrackets( lpCmdLine, szParams, ' ' );
 	string szCfg( "start.cfg" );
 	for ( int i = 0; i < szParams.size(); ++i )
@@ -298,7 +298,7 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
 	// ShowLoadingScreen, so ShowWindow(SHOW) here does not overlay the menu queued just below.
 	NGame::InitLoadingScreen();
 	if ( bDoLoad )
-		NMainLoop::Command( new NMainLoop::CICLoad( szLoadSlot ) );
+		NMainLoop::Command( new NMainLoop::CICLoad( szLoadSlot.empty() ? NMainLoop::GetQuickSaveSlot( true ) : szLoadSlot ) );
 	else
 		NMainLoop::Command( new CICInterMission( szCfg ) );
 	if ( g_bHarnessLog )

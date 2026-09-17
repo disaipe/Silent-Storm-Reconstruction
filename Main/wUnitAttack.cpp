@@ -28,6 +28,13 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NWorld
 {
+// Retail 1.1 @0x792ed0 / 1.2 @0x793120: own units are targetable;
+// other units require actual sight, ignoring facing (not the player's shared visible list).
+static bool IsVisibleTarget( CUnitServer *pUS, CUnitServer *pTarget )
+{
+	return pUS->GetPlayer() == pTarget->GetPlayer() ||
+		pUS->GetWorld()->GetGame()->CheckVisibility( pUS, pTarget, false );
+}
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 enum EAllowPoseMask
 {
@@ -563,14 +570,27 @@ CCommandExecute* CreateActionExecutor( CUnitServer *pUS, CCmd *pCmd, EUnitComman
 					return 0;
 				}
 				CDynamicCast<NWorld::CUnitServer> pUnitTarget(pAttackObject->pTarget);
+				EActionType eType = GetActionType(pUS);
+				if ( IsValid( pUnitTarget ) &&
+					( eType == AT_SHOOT || eType == AT_CANNON || eType == AT_SNIPE ) &&
+					pAttackObject->eHL != NAI::HL_ANY && !IsVisibleTarget( pUS, pUnitTarget ) )
+				{
+					*pError = UCR_CANT_SEE_TARGET;
+					return 0;
+				}
 				CDynamicCast<NRPG::IWeaponItem> pWeapon(pUS->GetUnitRPG()->GetInventory()->GetActive());
 				if (pWeapon)
 				{
 					if (IsValid(pWeapon) && pWeapon->GetShootMode() == NDb::SM_Snipe && !pUS->IsSniping())
+					{
+						if ( IsValid( pUnitTarget ) && !IsVisibleTarget( pUS, pUnitTarget ) )
+						{
+							*pError = UCR_CANT_SEE_TARGET;
+							return 0;
+						}
 						return CreateActionQueueOrReload(pUS, pAttackObject.GetPtr(), new CExecSnipeAim(pUS, pUnitTarget), pError);
+					}
 				}
-
-				EActionType eType = GetActionType(pUS);
 
 				CDynamicCast<NWorld::CWindowDoor> pWDTarget(pAttackObject->pTarget);
 				if ((eType == AT_GRENADE) && (IsValid(pWDTarget) || !IsValid(pAttackObject->pTarget))) //// CRAP!: for CanDo
@@ -596,6 +616,11 @@ CCommandExecute* CreateActionExecutor( CUnitServer *pUS, CCmd *pCmd, EUnitComman
 					}
 					case AT_SHOOT:
 					case AT_SNIPE:
+						if ( eType == AT_SNIPE && IsValid( pUnitTarget ) && !IsVisibleTarget( pUS, pUnitTarget ) )
+						{
+							*pError = UCR_CANT_SEE_TARGET;
+							return 0;
+						}
 						return CreateActionQueueOrReload(pUS, pAttackObject.GetPtr(), new CExecShootUnit(pUS, pUnitTarget, pAttackObject->eHL, pAttackObject->nExtraAttackAP), pError);
 					case AT_CANNON:
 						return CreateSimpleActionOrReload(pUS, pAttackObject.GetPtr(), new CExecShootUnit(pUS, pUnitTarget, pAttackObject->eHL, pAttackObject->nExtraAttackAP), pError);

@@ -124,7 +124,7 @@ void TraceLooseRay( NAI::IAIMap *pAIMap, const SAttackRayInfo &rayInfo, vector<S
 // @0x292010 -- trace segment of loose ray through obstacles
 void TraceLooseRaySegment( NAI::IAIMap *pAIMap, const SAttackRayInfo &rayInfo, vector<STrailPoint> *pTrail, const CVec3 &vOrigin, const CVec3 &vDir, float fRange );
 // @0x2929e0 -- retail ranged attack entry point
-CObjectBase * PerformRangedAttack( NWorld::IWorld *pWorld, const SAttackRayInfo &rayInfo, STime sCast, NDb::CModel *pTrailModel, float fTrailSpeed, NDb::CRPGGrenade *pGrenade = 0, int nFloor = 100 );
+CObjectBase * PerformRangedAttack( NWorld::IWorld *pWorld, const SAttackRayInfo &rayInfo, STime sCast, NDb::CModel *pTrailModel, float fTrailSpeed, NDb::CRPGGrenade *pGrenade = 0, int nEffectType = 0 );
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 } // namespace NRPG
 ////////////////////////////////////////////////////////////////////////////////////////////////////

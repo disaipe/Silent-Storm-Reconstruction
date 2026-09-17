@@ -70,6 +70,7 @@ const char* GetBoneName( EUnitItemType type, NRPG::IInventoryItem *pItem, bool b
 				pszBoneName = "MachineGun";
 				break;
 			case NDb::WT_RLAUNCHER:
+			case NDb::WT_PLAZMAGUN: // retail v1.2 0x61dfb8: type 10 shares type 8's attachment
 				pszBoneName = "RocketLauncher";
 				break;
 			default:

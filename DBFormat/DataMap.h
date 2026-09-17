@@ -14,6 +14,10 @@ struct SRand;
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NDb
 {
+	enum ETemplateWeatherType
+	{
+		TWT_SUNNY, TWT_MAY_RAIN, TWT_MAY_SNOW, TWT_ALWAYS_RAIN, TWT_ALWAYS_SNOW
+	};
 	class CTRndModel;
 	class CTAmbientLight;
 	class CTemplVariant;

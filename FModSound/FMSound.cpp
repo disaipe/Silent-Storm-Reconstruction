@@ -556,19 +556,45 @@ CSample3D* GetDefault3DSound()
 	return new CSample3D();
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-CSound2D *PlaySound( CSample2D *pSample )
+CSound2D *PlaySound( CSample2D *pSample, int nStartMs, int nStartSamples, int nEndingSamples, bool bLoop )
 {
 	if ( !bIsFMODInitialized )
 		return 0;
 //	ASSERT( IsValid( pSample ) );
 	if ( !IsValid( pSample ) )
 		return 0;
-	int nChannel = FSOUND_PlaySound( FSOUND_FREE, *pSample );
+	FSOUND_SAMPLE *pFM = *pSample;
+	if ( !pFM )
+		return 0;
+	// Retail v1.2 0x82ad90: configure the loop region, start paused, then seek.
+	if ( nEndingSamples > 0 )
+	{
+		FSOUND_Sample_SetMode( pFM, FSOUND_2D | FSOUND_LOOP_NORMAL );
+		FSOUND_Sample_SetLoopPoints( pFM, nStartSamples, nEndingSamples );
+		bLoop = true;
+	}
+	int nChannel = FSOUND_PlaySoundEx( FSOUND_FREE, pFM, 0, true );
 	if ( nChannel == -1 )
+	{
 		OutputDebugString( "Can't find free channel.\n" );
+		return 0;
+	}
+	// SetStartTime, retail v1.2 0x829810: looping offsets wrap at sample length.
+	const int nLength = FSOUND_Sample_GetLength( pFM );
+	int nOffset = (int)( (double)FSOUND_GetFrequency( nChannel ) * 0.001f * nStartMs );
+	if ( bLoop && nLength > 0 )
+		nOffset %= nLength;
+	if ( nOffset > nLength )
+	{
+		FSOUND_StopSound( nChannel );
+		return 0;
+	}
+	FSOUND_SetCurrentPosition( nChannel, nOffset );
+	FSOUND_SetLoopMode( nChannel, bLoop ? FSOUND_LOOP_NORMAL : FSOUND_LOOP_OFF );
 	CSound2D *pSound = new CSound2D( pSample );
 	pSound->nChannel = nChannel;
 	hashChannel[nChannel] = pSound;
+	FSOUND_SetPaused( nChannel, false );
 	return pSound;
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////

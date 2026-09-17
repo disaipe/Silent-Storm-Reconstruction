@@ -193,6 +193,18 @@ public:
 		}
 	}
 
+	// Retail 1.2 @0x4ccb90: user focus obeys the scroll lock; scripted SetPlacement does not.
+	void FocusOnPlace( const CVec3 &pt, int nFloor )
+	{
+		if ( nLockCount > 0 )
+			return;
+		SCameraPos sPos;
+		GetPlacement( &sPos );
+		sPos.ptAnchor = pt;
+		SetPlacement( sPos );
+		SetCutFloor( nFloor );
+	}
+
 	void GetTransform( CTransformStack *pTS, const CVec2 &vScreenSize ) const;
 
 	const CTRect<float>& GetScreenRect() const;

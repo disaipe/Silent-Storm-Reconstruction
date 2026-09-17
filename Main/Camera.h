@@ -106,6 +106,7 @@ public:
 
   virtual void GetPlacement( SCameraPos *pPlacement ) const = 0;
 	virtual void SetPlacement( const SCameraPos &sPlacement ) = 0;
+	virtual void FocusOnPlace( const CVec3 &pt, int nFloor ) = 0;
 
 	// release ICamera vtbl[0x54] (CBaseCamera @0xcbbc0, CCamera @0xcd720): pan the ground anchor by a
 	// world-space delta. The smoothed (non-immediate) path moves only the DESIRED placement so the

@@ -106,6 +106,7 @@ signed char    __stdcall FSOUND_SetCurrentPosition( int channel, unsigned int of
 int            __stdcall FSOUND_GetFrequency( int channel );
 unsigned int   __stdcall FSOUND_GetCurrentPosition( int channel );
 unsigned int   __stdcall FSOUND_GetLoopMode( int channel );
+signed char    __stdcall FSOUND_SetLoopMode( int channel, unsigned int loopmode );
 int            __stdcall FSOUND_GetPriority( int channel );
 
 // ---- 3D ----

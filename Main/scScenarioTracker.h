@@ -11,6 +11,7 @@ namespace NRPG
 {
 	class CUnit;
 	class CGlobalPlayer;
+	class CGlobalGame;
 }
 namespace NWorld
 {
@@ -30,6 +31,10 @@ class CScenarioClue;
 class CScenarioZone;
 class CScenarioObjective;
 class CScenarioFlowChart;
+class CScenarioTask;
+class CScenarioGoal;
+struct SGoalDescription;
+enum EScenarioTaskState;
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // CScenarioTracker
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -92,6 +97,12 @@ public:
 	CScenarioClue* GetClueByName( string szName ) const;
 	CScenarioClue* GetClueByPersID( int nPersID ) const;
 	bool IsClueFound( CScenarioClue *pClue ) const;
+	bool IsClueDestroyed( CScenarioClue *pClue ) const;
+	bool IsClueInHand( const vector< CPtr<NWorld::CUnit> > &units, CScenarioClue *pClue ) const;
+	void GetCluesFromZone( NRPG::CGlobalGame *pGame, CScenarioZone *pZone, vector< CPtr<CScenarioClue> > *pClues );
+	EScenarioTaskState GetTaskState( const vector< CPtr<NWorld::CUnit> > &units, CScenarioTask *pTask ) const;
+	EScenarioTaskState GetGoalDescription( SGoalDescription *pDescription, const vector< CPtr<NWorld::CUnit> > &units, CScenarioGoal *pGoal ) const;
+	void GetGoalsFromZone( vector<SGoalDescription> *pGoals, const vector< CPtr<NWorld::CUnit> > &units, NRPG::CGlobalGame *pGame );
 	//
 	void GetPlacedClues( NScenario::CScenarioZone *pZone, 
 		int nTemplateID, list< CPtr<CScenarioClue> > *clues ) const;

@@ -202,6 +202,7 @@ struct SMapInfo
 	// @0x276c60 copies both at the nDepth==1 root); CWorld::CreateRandom @0x36d0b0 turns it into
 	// CWorld::bAttackAllowed = !bNoAttack (combat prohibited inside base zones, e.g. Gbase4 NoAttack=1).
 	bool bNoAttack = false;
+	int weatherType = 0;
 
 	SMapInfo() {}
 };

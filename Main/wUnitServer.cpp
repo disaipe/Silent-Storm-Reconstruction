@@ -1433,7 +1433,7 @@ CVec3 CUnitServer::GetAttackOrigin() const
 	return GetAttackOrigin( GetPosition() );
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-CVec3 CUnitServer::GetAttackOrigin( const NAI::SUnitPosition &from ) const
+CVec3 CUnitServer::GetAttackOrigin( const NAI::SUnitPosition &from, bool bLeftHand ) const
 {
 	if ( CCannon *pCannon = animator.GetCannon() )
 		return pCannon->GetPosition() + pCannon->GetCannonAttackOrigin();   // retail @0x3bf8d0: cannon pos + DB muzzle offset (CCannon+0xb4)
@@ -1454,6 +1454,9 @@ CVec3 CUnitServer::GetAttackOrigin( const NAI::SUnitPosition &from ) const
 			rel = pType->stand;
 			break;
 	}
+	// Retail v1.2 0x7bfe4a: shift the local muzzle before rotating into world space.
+	if ( bLeftHand )
+		rel.y += pType->fLeftHandShift;
 	CQuat q( from.GetDirection(), CVec3(0,0,1) );
 	return from.GetCP() + q.Rotate(rel);
 }

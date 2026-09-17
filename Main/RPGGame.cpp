@@ -186,15 +186,18 @@ static void AddGridToCovers( CCoverInfo *pRes, const NAI::CFastRenderer &res, co
 				continue;
 			}
 // Hit target rays
-			bool bHitTarget = false;
+			bool bHitTarget = false, bHitTargetPart = false;
 			if ( pTarget ) // shoot unit
 			{
 				for ( NAI::CFastRenderer::SResult *p = res.resGrid[y][x]; p; p = p->pNext )
-					if ( p->GetInfo().pUserData == pTarget &&
-						( nTargetUserID == -1 || p->pSrc->nUserID == nTargetUserID ) )
+					if ( p->GetInfo().pUserData == pTarget )
 					{
 						bHitTarget = true;
-						break;
+						if ( nTargetUserID == -1 || p->pSrc->nUserID == nTargetUserID )
+						{
+							bHitTargetPart = true;
+							break;
+						}
 					}
 			}
 			else
@@ -224,6 +227,13 @@ static void AddGridToCovers( CCoverInfo *pRes, const NAI::CFastRenderer &res, co
 			// penetrate branch could run — every bare-ground ray ended not-penetrating -> GetHitCover's
 			// -1 blocked sentinel -> 0% for all ground aiming; and (b) required an in-loop condition to
 			// MARK tile penetration instead of retail's default-open shape.
+			// Retail 1.2 @0x693795..0x693898: a different body part is a blocked
+			// hit ray, NOT a loose ray. A rolled miss must not select that flesh hit.
+			if ( pTarget && !bHitTargetPart )
+			{
+				pRes->hitRays.push_back( ray );
+				continue;
+			}
 			float fTempPiercing = _fArmorPiercingAbility;
 			float fTestDistance = fDistance / fRayProjection;
 			bool bBlocked = false, bTargetReached = false;

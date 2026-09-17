@@ -15,6 +15,7 @@
 #include "RPGUnitMission.h"
 #include "wAckBase.h"
 #include "wDecal.h"
+#include "wExplosionPerks.h"
 #include "..\Misc\EventsBase.h"   // NGlobal::ThrowEvent
 #include "eventUnit.h"            // NWorld::CEventOnBullet (AI bullet-perception event)
 
@@ -39,7 +40,7 @@ private:
 	vector<NRPG::STrailPoint> trailpointsSet;
 	CDGPtr<NAnimation::CSkeletonAnimator> pAnimator;
 	CPtr<CUnitServer> pShooter;
-		CPtr<NDb::CRPGGrenade> pGrenade;
+	CPtr<NDb::CRPGGrenade> pGrenade;
 	int nEffectType = 0;
 	CPtr<CUnitServer> pNearestTarget;
 	ZEND int operator&( CStructureSaver &f ) { f.Add(2,&nTrailCount); f.Add(3,&fTrailSpeed); f.Add(4,&sCast); f.Add(5,&sLastTrailTime); f.Add(6,&pWorld); f.Add(7,&sPassTime); f.Add(8,&pModel); f.Add(9,&pAction); f.Add(10,&bindGlobal); f.Add(11,&trailpointsSet); f.Add(12,&pAnimator); f.Add(13,&pShooter); f.Add(14,&pGrenade); f.Add(15,&nEffectType); f.Add(16,&pNearestTarget); return 0; }
@@ -49,24 +50,28 @@ protected:
 
 public:
 	CBulletServer() {}
-	CBulletServer( CWorld *pWorld, const vector<NRPG::STrailPoint> &trail, STime sCast, NDb::CModel *pTrailModel, float fTrailSpeed );
+	CBulletServer( CWorld *pWorld, const vector<NRPG::STrailPoint> &trail, STime sCast, NDb::CModel *pTrailModel, float fTrailSpeed, NDb::CRPGGrenade *pGrenade, int nEffectType );
 	//
 	bool Segment();
 	void Visit( IRenderVisitor *p );
 };
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-CBulletServer::CBulletServer( CWorld *_pWorld, const vector<NRPG::STrailPoint> &_trail, STime _sCast, NDb::CModel *_pTrailModel, float _fTrailSpeed )
-	:pWorld(_pWorld), trailpointsSet( _trail ), sCast( _sCast ), pModel( _pTrailModel ), fTrailSpeed( _fTrailSpeed ), nTrailCount( 0 )
+CBulletServer::CBulletServer( CWorld *_pWorld, const vector<NRPG::STrailPoint> &_trail, STime _sCast, NDb::CModel *_pTrailModel, float _fTrailSpeed, NDb::CRPGGrenade *_pGrenade, int _nEffectType )
+	:pWorld(_pWorld), trailpointsSet( _trail ), sCast( _sCast ), pModel( _pTrailModel ), fTrailSpeed( _fTrailSpeed ), nTrailCount( 0 ), pGrenade( _pGrenade ), nEffectType( _nEffectType )
 {
 	sPassTime.resize( trailpointsSet.size() );
 	vector<NAnimation::CATrailPath::STrailPoint> animTrailPoints( trailpointsSet.size() );
 
+	STime sPass = sCast;
 	for ( int nTemp = 0; nTemp < trailpointsSet.size(); nTemp++ )
 	{
 		if ( pModel && ( nTemp > 0 ) )
-			sPassTime[nTemp] = sCast + fabs( trailpointsSet[nTemp].vPosition - trailpointsSet[nTemp - 1].vPosition ) * 1000.0f / fTrailSpeed;
-		else
-			sPassTime[nTemp] = sCast;
+		{
+			// Retail v1.2 0x7472f0: round/cap each leg, then accumulate its travel time.
+			float fTravelTime = fabs( trailpointsSet[nTemp].vPosition - trailpointsSet[nTemp - 1].vPosition ) / fTrailSpeed * 1000.0f;
+			sPass += Float2Int( Min( 3000.0f, fTravelTime ) );
+		}
+		sPassTime[nTemp] = sPass;
 
 		CVec3 vDir( trailpointsSet[nTemp].vDir );
 		Normalize( &vDir );
@@ -109,6 +114,13 @@ bool CBulletServer::Segment()
 		nTrailCount = nTemp;
 		NRPG::STrailPoint &sCurrent = trailpointsSet[nTemp];
 		NDb::CRPGArmor *pArmor = sCurrent.pArmor;
+		// Retail v1.2 0x746891: explosive ammo queues a neutral, ownerless blast
+		// before processing the direct impact. Do not apply the shooter's grenade perks.
+		if ( IsValid( pGrenade ) )
+		{
+			SPerkMineModifiers mods;
+			pWorld->AddGrenadeExplosion( sCurrent.vPosition, pGrenade, 0, 0, &mods );
+		}
 		if ( sCurrent.pObject == 0 )
 		{
 			// terrain
@@ -125,7 +137,8 @@ bool CBulletServer::Segment()
 		}
 		if ( pArmor && sCurrent.nFloor < 100 )
 		{
-			if ( pArmor->pShotEffect )
+			NDb::CTEffect *pShotEffect = pArmor->GetShotEffect( nEffectType );
+			if ( pShotEffect )
 			{
 				CVec3 dir = -trailpointsSet[nTemp].vNormal;
 				CQuat rndX( random.GetFloat(0,10000), CVec3(1,0,0) );
@@ -133,7 +146,7 @@ bool CBulletServer::Segment()
 					rndX = CQuat( acos( dir.x ), CVec3( 0, -dir.z, dir.y ), true ) * rndX;
 				else if ( dir.x < 0 )
 					rndX = CQuat( FP_PI, CVec3(0,1,0) ) * rndX;
-				pWorld->CreateParticle( sCurrent.vPosition, rndX, pArmor->pShotEffect->GetEffect( &rnd ), sCurrent.nFloor );
+				pWorld->CreateParticle( sCurrent.vPosition, rndX, pShotEffect->GetEffect( &rnd ), sCurrent.nFloor );
 			}
 			if ( pArmor->pSoundShot )
 			{
@@ -185,7 +198,8 @@ bool CBulletServer::Segment()
 		}
 	}
 
-	if ( nTrailCount >= trailpointsSet.size() - 1 )
+	// Retail v1.2 0x746f5e: an explosive bullet retires after its first reached point.
+	if ( nTrailCount >= trailpointsSet.size() - 1 || ( nTrailCount > 0 && IsValid( pGrenade ) ) )
 	{
 		if ( IsValid( pShooter ) )
 		{
@@ -208,9 +222,9 @@ bool CBulletServer::Segment()
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 IDynamicObject *CreateBulletServer( CWorld *pWorld, const vector<NRPG::STrailPoint> &trail,
-		STime sCast, NDb::CModel *pTrailModel, float fTrailSpeed )
+		STime sCast, NDb::CModel *pTrailModel, float fTrailSpeed, NDb::CRPGGrenade *pGrenade, int nEffectType )
 {
-	return new CBulletServer( pWorld, trail, sCast, pTrailModel, fTrailSpeed );
+	return new CBulletServer( pWorld, trail, sCast, pTrailModel, fTrailSpeed, pGrenade, nEffectType );
 }
 }
 using namespace NWorld;

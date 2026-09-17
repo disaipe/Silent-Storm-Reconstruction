@@ -752,7 +752,9 @@ void CUnitView::Draw( const STime &sTime, NGScene::I2DGameView *pView )
 
 	NGScene::IGameView::SDrawInfo drawInfo;
 	drawInfo.pTS = &ts;
-	drawInfo.vOrigin = CVec2( sPosition.x / 1024.0f, sPosition.y / 768.0f );
+	// Retail v1.2 0x5bfddb: the clip origin and size both use the visible rectangle.
+	// The unclipped position above still places the portrait while it slides off-screen.
+	drawInfo.vOrigin = CVec2( sWindow.x1 / 1024.0f, sWindow.y1 / 768.0f );
 	drawInfo.vSize = CVec2( sWindow.Width() / 1024.0f, sWindow.Height() / 768.0f );
 	drawInfo.bOverlay = true;
 	p3DView->Draw( drawInfo );

@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "Gfx.h"
 #include "wInterface.h"
+#include "aiJob.h"
 #include "wMisc.h"			// NWorld::GetDMeshUnit/GetDMeshPos -- heard-noise-marker attack target
 #include "GView.h"
 #include "Sound.h"
@@ -155,65 +156,40 @@ static void SayAckForAll( IMission *pMission, NWorld::EInterfaceAcks eAck )
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 void ShowError( IMission *pMission, NWorld::EUnitCommandResult eResult )
 {
-	switch( eResult )
+	// Retail v1.1 0x5d5fc0 / v1.2 0x5d69e0. The two internal errors
+	// go to the system log; player-facing text (including markup) comes from DB.
+	int nStringID = 0;
+	switch ( eResult )
 	{
 	case NWorld::UCR_GENERAL_FAILURE:
-		csGame << L"<color=red>(debug)General failure!" << endl;
+		csSystem << L"<color=red>(debug)General failure!" << endl;
 		break;
 	case NWorld::UCR_INVALID_COMMAND:
-		csGame << L"<color=red>(debug)This action imposible in this state!" << endl;
+		csSystem << L"<color=red>(debug)This action imposible in this state!" << endl;
 		break;
-
-	case NWorld::UCR_NO_TARGET:
-		csGame << L"<color=beige>Not a valid target" << endl;
-		break;
-	case NWorld::UCR_NOT_ENOUGH_AP:
-		csGame << L"<color=beige>Not enough AP" << endl;
-		break;
+	case NWorld::UCR_NO_TARGET: nStringID = 18852; break;
+	case NWorld::UCR_NOT_ENOUGH_AP: nStringID = 18853; break;
 	case NWorld::UCR_PATH_NOT_FOUND:
-		csGame << L"<color=beige>Path not found" << endl;
+		nStringID = pMission->GetWorld()->GetAIJobManager()->HasPassCalcerJobs() ? 21061 : 18844;
 		break;
-
-	case NWorld::UCR_NEED_RELOAD:
-		csGame << L"<color=beige>Need reload!" << endl;
-		break;
-	case NWorld::UCR_NO_EQUIPMENT:
-		csGame << L"<color=beige>No equipment!" << endl;
-		break;
-	case NWorld::UCR_WEAPON_JAMMED:
-		csGame << L"<color=beige>Weapon jamed!" << endl;
-		break;
-	case NWorld::UCR_CRITICALS_BAN:
-		csGame << L"<color=beige>Action blocked by critical" << endl;
-		break;
-	case NWorld::UCR_TARGET_OUT_OF_RANGE:
-		csGame << L"<color=beige>Can't reach target" << endl;
-		break;
-	case NWorld::UCR_CANT_HEAL:
-		// @0x1d5fc0 (retail ShowError case 0x10): heal target's CanHeal() failed -> feedback message + error sound.
-		csGame << L"<color=beige>Can't heal this unit" << endl;
-		break;
-
-	case NWorld::UCR_INVENTORY_NO_PLACE:
-		csGame << L"<color=beige>No place in inventory" << endl;
-		break;
-	case NWorld::UCR_NEED_HIGHER_SKILL:
-		csGame << L"<color=beige>Skill too low" << endl;
-		break;
-	case NWorld::UCR_NOT_ALL_UNITS_NEAR_PASSAGE:
-		csGame << L"<color=beige>Not all units are near the passage" << endl;
-		break;
-	case NWorld::UCR_PK_BAN:
-		// @0x1d5fc0 (retail ShowError case 0x13 -> caseD_5): crouch+look ban is a FULLY silent
-		// no-op -- no message AND no error sound. Return before the unconditional Add2DSound below.
-		return;
-	// UCR_NOT_HERO: deliberately no message -- retail treats it as a silent no-op
+	case NWorld::UCR_NEED_RELOAD: nStringID = 18846; break;
+	case NWorld::UCR_NO_EQUIPMENT: nStringID = 18847; break;
+	case NWorld::UCR_WEAPON_JAMMED: nStringID = 18848; break;
+	case NWorld::UCR_CRITICALS_BAN: nStringID = 18849; break;
+	case NWorld::UCR_TARGET_OUT_OF_RANGE: nStringID = 18850; break;
+	case NWorld::UCR_CANT_SEE_TARGET: nStringID = 20255; break;
+	case NWorld::UCR_NEED_HIGHER_SKILL: nStringID = 18845; break;
+	case NWorld::UCR_CANT_HEAL: nStringID = 19805; break;
+	case NWorld::UCR_DOOR_LOCKED: nStringID = 19804; break;
+	case NWorld::UCR_INVENTORY_NO_PLACE: nStringID = 18851; break;
+	case NWorld::UCR_NOT_ALL_UNITS_NEAR_PASSAGE: nStringID = 20263; break;
+	case NWorld::UCR_PK_BAN: nStringID = 20279; break;
+	default:
+		return; // success, unavailable and not-hero are silent in retail
 	}
-
-	//// Error sound
+	if ( nStringID )
+		csGame << NUI::GetDBString( nStringID ) << endl;
 	pMission->GetSoundScene()->Add2DSound( NDb::GetSound( N_SOUND_ERROR ) );
-
-	return;
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // retail NGame::MakeCursorString @0x1d7990: the shared cursor AP caption. Appends

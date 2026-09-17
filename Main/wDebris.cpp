@@ -81,7 +81,8 @@ void CDFrozenItem::Visit( IRenderVisitor *p )
 	pos.backward.HomogeneousInverse( m );
 	if ( model.pModel )
 		p->AddMesh( model.pModel, pos, 0, nFloor, -1 );
-	else
+	// Retail 0x749d92 / v1.2 0x74a1b2: empty render records draw nothing.
+	else if ( model.pUnit )
 		p->AddHead( model.pUnit, new NGScene::CCFBTransform( pos ), NGScene::SRoomInfo( nFloor ) );
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -129,7 +130,8 @@ void CDItem::Visit( IRenderVisitor *p )
 {
 	if ( model.pModel )
 		p->AddItemMesh( model.pModel, pAnimation, nFloor );
-	else
+	// Retail 0x749b72 / v1.2 0x749f92 has the same unit check in flight.
+	else if ( model.pUnit )
 		p->AddItemHead( model.pUnit, pAnimation, nFloor );
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////

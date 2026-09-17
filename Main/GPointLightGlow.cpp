@@ -26,23 +26,23 @@ void CPointGlowEffect::AddParticles( IParticleOutput *pRender )
 
 	const SParticleOrientationInfo &or = pRender->GetOrientationInfo();
 	CVec3 vRes[4];
-	CVec3 vNearPos( vPos - or.vBasic[3] );
-	float fLeng = vNearPos * or.vBasic[2];
+	float fLeng = ( vPos - or.vBasic[3] ) * or.vBasic[2];
 	if ( fLeng <= F_NEAR_CLIP )
 		return;
-	vNearPos = or.vBasic[3] + vNearPos * ( F_NEAR_CLIP / fLeng );
-	float fS = fSize * F_NEAR_CLIP / fLeng;
-	vRes[0] = vNearPos - or.vBasic[0] * fS - or.vBasic[1] * fS;
-	vRes[1] = vNearPos + or.vBasic[0] * fS - or.vBasic[1] * fS;
-	vRes[2] = vNearPos + or.vBasic[0] * fS + or.vBasic[1] * fS;
-	vRes[3] = vNearPos - or.vBasic[0] * fS + or.vBasic[1] * fS;
+	// Retail 0x5471f8 / v1.2 0x5472d8: build the billboard at the light,
+	// not on the camera's near plane. Perspective supplies the distance scaling.
+	vRes[0] = vPos - or.vBasic[0] * fSize - or.vBasic[1] * fSize;
+	vRes[1] = vPos + or.vBasic[0] * fSize - or.vBasic[1] * fSize;
+	vRes[2] = vPos + or.vBasic[0] * fSize + or.vBasic[1] * fSize;
+	vRes[3] = vPos - or.vBasic[0] * fSize + or.vBasic[1] * fSize;
 	CDGPtr<CPtrFuncBase<NGfx::CTexture> > pTex( textures[0] );
 	if ( !IsValid( pTex ) )
 		return;
 	pTex.Refresh();
 	STransparentTexturePlace tPlace;
 	GetTransparentTexturePlace( &tPlace, pTex->GetValue() );
-	pRender->AddParticle( vRes, 0xffffff | (nAlpha<<24), tPlace, or.vDepth * or.vBasic[3] );
+	// Retail 0x5474ac / v1.2 0x54758c: fixed sorting depth, independent of camera motion.
+	pRender->AddParticle( vRes, 0xffffff | (nAlpha<<24), tPlace, 1e10f );
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // CPointGlowAnimator

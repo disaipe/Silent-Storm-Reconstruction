@@ -103,7 +103,7 @@ public:
 static void CommandSetDifficulty( const string &szID, const vector<wstring> &paramsSet, void *pContext );
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 CGlobalMap::CGlobalMap():
-	bindClose( "cancel" ), bindMenu( "menu" ), bindJournal( "clues" ), bindBaseZone( "basezone" ),
+	bindClose( "cancel" ), bindMenu( "gamemenu" ), bindJournal( "clues" ), bindBaseZone( "basezone" ),
 	cmdSetDifficulty( "difficulty", CommandSetDifficulty, this )
 {
 }
@@ -180,6 +180,13 @@ bool CGlobalMap::ProcessEvent( const NInput::SEvent &sEvent )
 {
 	NInput::SetSection( "game" );
 
+	// Retail routes CMissionBase's gamemenu bind before cursor/UI events.
+	if ( bindMenu.ProcessEvent( sEvent ) )
+	{
+		NMainLoop::Command( new CICInGameMenu( pGame->players.front(), false, true ) );
+		return true;
+	}
+
 	pCursor->ProcessEvent( sEvent );
 
 	if ( pInterface->ProcessEvent( sEvent ) )
@@ -191,12 +198,7 @@ bool CGlobalMap::ProcessEvent( const NInput::SEvent &sEvent )
 		return true;
 	}
 
-	if ( bindMenu.ProcessEvent( sEvent ) )
-	{
-		NMainLoop::Command( new CICInGameMenu( pGame->players.front() ) ); 
-		return true;
-	}
-	else if ( bindJournal.ProcessEvent( sEvent ) )
+	if ( bindJournal.ProcessEvent( sEvent ) )
 	{
 		NMainLoop::Command( new CICClues( pGame ) ); 
 		return true;

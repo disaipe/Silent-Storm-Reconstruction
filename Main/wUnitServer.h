@@ -249,7 +249,7 @@ public:
 	virtual void AddVisitableChildren( vector<IVisObj*> *pRes ) { AddMiscObjects( pRes ); }
 	virtual bool GetCurrentCommandName( string *pName ) const;
 	virtual CVec3 GetAttackOrigin() const;
-	virtual CVec3 GetAttackOrigin( const NAI::SUnitPosition &from ) const;
+	virtual CVec3 GetAttackOrigin( const NAI::SUnitPosition &from, bool bLeftHand = false ) const;
 	virtual float GetMinClearDistance() const;
 	virtual const CObjectBase* GetAttackIgnore() const;
 	virtual EUnitCommandResult CanDo( CCmd *p, int *pnStartAP = 0, int *pnFullAP = 0 );

@@ -1076,7 +1076,9 @@ void CExecShoot::OnLabel()
 	{
 		// ---- CONTINUE: keep the aim/attack animation running while bullets are still scheduled ----
 		STime delay = GetBulletDelay();
-		if ( delay == 0 || tNextBulletPrepare > pUS->GetWorld()->GetTime()->GetValue() )
+		// Retail 0x7a911a compares against animator.tEnd, not the current world time.
+		// A delayed shot must not enqueue a second windup while this clip still covers it.
+		if ( delay == 0 || tNextBulletPrepare > pUS->animator.GetTimeEnd() )
 			pUS->animator.Attack( position, rayInfo.GetRay(), true, false );   // retail: rayInfo.GetRay()
 	}
 }
@@ -1100,7 +1102,13 @@ void CExecShoot::PerformAttack()
 		pTrailEffect = pWeapon->GetDBWeapon()->pTrailEffect->CreateModel( &sRand );
 	}
 
-	pUS->GetWorld()->PerformRangedAttack( rayInfo, pUS->GetWorld()->GetTime()->GetValue(), pTrailEffect, fTrailSpeed );
+	// Retail v1.2 0x7a49be forwards the weapon's impact-effect selector, not a floor.
+	int nEffectType = pWeapon ? pWeapon->GetDBWeapon()->nShotEffectType : 0;
+	// Retail v1.2 0x7a4919: the explosive payload comes from the currently loaded ammo.
+	NDb::CRPGGrenade *pGrenade = 0;
+	if ( pWeapon && pWeapon->GetInnerClip() && pWeapon->GetInnerClip()->GetDBAmmo() )
+		pGrenade = pWeapon->GetInnerClip()->GetDBAmmo()->pExplosiveBullet;
+	pUS->GetWorld()->PerformRangedAttack( rayInfo, pUS->GetWorld()->GetTime()->GetValue(), pTrailEffect, fTrailSpeed, pGrenade, nEffectType );
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // @0x3a1fa0 -- retail CheckBurst(nFired, bDoAction): may the burst keep firing? (return TRUE == continue) and,
@@ -1442,7 +1450,8 @@ void CExecShootTile::SelectRay() // false, when it is the last shot
 		int nTmpToHit;
 		bool bTmpMissed;
 		CPtr<CWorld> pWorld = pUS->GetWorld();
-		CObj<NRPG::CCoverInfo> pCover = pWorld->GetGame()->CalcCoversForTile( pUS->GetAttackOrigin( pUS->GetPosition() ),
+		// Retail RealCalcTileCovers uses the left-hand origin on odd-numbered bullets.
+		CObj<NRPG::CCoverInfo> pCover = pWorld->GetGame()->CalcCoversForTile( pUS->GetAttackOrigin( pUS->GetPosition(), ( nBulletGone & 1 ) != 0 ),
 			attack, pUS, ptAnimTarget, pUS->GetMinClearDistance() );
 		float fHit = NRPG::CheckTileToHit( pUS, ptAnimTarget,
 			GetExtraAP(), NAI::THL_LOWER, pCover, pWorld->IsFirstTurn(), &nTmpToHit, nBulletGone );   // retail: no eHL member, tile always THL_LOWER; the exec's burst cursor is the bullet index
@@ -1517,7 +1526,8 @@ void CExecShootUnit::SelectRay() // false, when it is the last shot
 		bool bTmpMissed;
 		CPtr<CWorld> pWorld = pUS->GetWorld();
 		vector<int> accessibleHLs;
-		CObj<NRPG::CCoverInfo> pCover = pWorld->GetGame()->CalcCovers( pUS->GetAttackOrigin(), attack, pUS, pTarget, eHL, pUS->GetMinClearDistance() );
+		// Retail RealCalcCovers applies the same alternating origin to unit shots.
+		CObj<NRPG::CCoverInfo> pCover = pWorld->GetGame()->CalcCovers( pUS->GetAttackOrigin( pUS->GetPosition(), ( nBulletGone & 1 ) != 0 ), attack, pUS, pTarget, eHL, pUS->GetMinClearDistance() );
 		float fHit = NRPG::CheckToHit( pUS, pTarget, GetExtraAP(), eHL, accessibleHLs, pCover, pWorld->IsFirstTurn(), &nTmpToHit, nBulletGone );
 		CRay r;
 		NRPG::PeekRay( pCover, &r, fHit, &bTmpMissed );
@@ -2133,6 +2143,9 @@ bool CExecPanzerklein::TimeLabelReached()
 		NAI::SUnitPosition pos = pPK->GetPosition();
 		pos.bRun = false;
 		pos.pos.p.SetPose( NAI::CM_STAND );
+		// Retail 0x7a5d85 / v1.2 0x7a61c5: entering a PK ends hiding.
+		if ( pUS->IsHiding() )
+			pUS->Hide( false, false );
 		pUS->SetPosition( pos );
 		pUS->FlipPanzerklein( pPK );
 	}

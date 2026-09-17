@@ -24,7 +24,6 @@ const int N_SAVE_SCREENSHOT_X = 320;
 const int N_SAVE_SCREENSHOT_Y = 200;
 const char S_SLOT_ACTIVE[] = "temp";
 const char S_SAVE_FILENAME[] = "game.sav";
-const char S_SLOT_QUICKSAVE[] = "quicksave";
 const char S_INVALID_SAVE_CHARS[] = ".<>\\/|\"*^:?";
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // SSaveFileHeader
@@ -85,6 +84,8 @@ string GetActiveProfile();                           // @0x236e90 -- validates a
 void SetActiveProfile( const string &szProfile );    // @0x235c70
 void MakeDefaultProfile();                           // @0x236d70 -- ensure the default profile exists
 bool IsValidCustomName( const string &szName );      // @0x235d00 -- typed save name not among the reserved slot names (DB 20241..20244)
+void GetSlotTime( const string &szName, wstring *pTime, int *pDateKey, int *pTimeKey );
+string GetQuickSaveSlot( bool bLoad );
 ////
 void CreateDir( const string &szDir );
 void RemoveDir( const string &szDir );

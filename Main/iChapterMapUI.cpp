@@ -566,7 +566,7 @@ void CRandomSector::UpdateSector( const STime &sTime, const CVec2 &vTeamPos )
 
 	vector<string> templParams;
 	if ( HitTest( vTeamPos.x, vTeamPos.y ) )
-		NMainLoop::Command( new NGame::CICBeginMission( GetSector().nTemplate, -1, templParams, pChapter->GetRPGGame(), pChapter->GetChapterMap()->pPWLImage ) );
+		NMainLoop::CommandWithAutoSave( NStr::ToAscii( GetDBString( 20243 ) ), new NGame::CICBeginMission( GetSector().nTemplate, -1, templParams, pChapter->GetRPGGame(), pChapter->GetChapterMap()->pPWLImage ) );
 
 	if ( sUpdateTime > sTime )
 		return;
@@ -792,7 +792,7 @@ bool CChapterMapUI::ProcessMessage( const SEvent &sEvent )
 						if ( IsValid( pZone ) )
 						{
 							bHandled = true;
-							NMainLoop::Command( new NGame::CICBeginMission( pZone, -1, templParams, pChapter->GetRPGGame(), false, pChapter->GetChapterMap()->pPWLImage ) );
+							NMainLoop::CommandWithAutoSave( NStr::ToAscii( GetDBString( 20243 ) ), new NGame::CICBeginMission( pZone, -1, templParams, pChapter->GetRPGGame(), false, pChapter->GetChapterMap()->pPWLImage ) );
 						}
 					}
 					else if ( sSector.eType == EXITZONE )
@@ -811,7 +811,7 @@ bool CChapterMapUI::ProcessMessage( const SEvent &sEvent )
 						int nID = sRand.Get( pChapterMap->campZonesSet.size() );
 
 						vector<string> templParams;
-						NMainLoop::Command( new NGame::CICBeginMission( pChapterMap->campZonesSet[nID], -1, templParams, pChapter->GetRPGGame(), pChapterMap->pPWLImage ) );
+						NMainLoop::CommandWithAutoSave( NStr::ToAscii( GetDBString( 20243 ) ), new NGame::CICBeginMission( pChapterMap->campZonesSet[nID], -1, templParams, pChapter->GetRPGGame(), pChapterMap->pPWLImage ) );
 					}
 				}
 

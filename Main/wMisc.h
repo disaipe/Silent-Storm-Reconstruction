@@ -63,12 +63,29 @@ public:
 	virtual void Visit( ISoundVisitor *p );
 };
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Retail world-owned, non-positional sound (distinct from NSound's playback channel).
+class C2DSound: public CTimedObject
+{
+	OBJECT_NOCOPY_METHODS(C2DSound);
+	ZDATA_(CTimedObject)
+	CDBPtr<NDb::CSound> pSound;
+	CDBPtr<NDb::CSound> pCycle;
+	bool bFinished = false;
+	ZEND int operator&( CStructureSaver &f ) { f.Add(1,(CTimedObject*)this); f.Add(2,&pSound); f.Add(3,&pCycle); f.Add(4,&bFinished); return 0; }
+public:
+	C2DSound() {}
+	C2DSound( NDb::CSound *pSound );
+	void EndSound();
+	virtual void Visit( ISoundVisitor *p );
+};
+////////////////////////////////////////////////////////////////////////////////////////////////////
 CTimedObject *CreateDParticles( CFuncBase<SFBTransform> *pPlace, NDb::CEffect *pEffect, int nFloor = -100 );
 CTimedObject *CreateDParticles( const CVec3 &_pos, const CQuat &_q, NDb::CEffect *pEffect, int nFloor = -100 );
 // retail @0x380130: the skeleton-glued variant -- the effect rides pAnimator's bones (CDParticles save tag 5).
 CTimedObject *CreateDParticles( CFuncBase<SFBTransform> *pPlace, NAnimation::CSkeletonAnimator *pAnimator, NDb::CEffect *pEffect, int nFloor = -100 );
 C3DSound *Create3DSound( CFuncBase<CVec3> *pPos, NDb::CSound *pSound );
 C3DSound *Create3DSound( const CVec3 &_pos, NDb::CSound *pSound );
+C2DSound *Create2DSound( NDb::CSound *pSound );
 CTimedObject *CreateDGrassEvent( const CVec3 &_ptPlace );
 CTimedObject *CreateDMesh( CObjectBase *pUnit, const CVec3 &pos, const CQuat &rot, NDb::CModel *pModel, int nFloor );   // @0x3800f0: (pUnit, pos, rot, pModel, nFloor)
 // Classify a traced object as a heard-not-seen noise marker (CDMesh) and resolve its heard unit

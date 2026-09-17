@@ -3,6 +3,8 @@
 #include "iMain.h"
 #include "G2DView.h"
 #include "RPGGlobal.h"
+#include "wInterface.h"
+#include "..\DBFormat\DataDifficulty.h"
 #include "..\MiscDll\Commands.h"
 #include "..\Input\Bind.h"
 #include "..\DBFormat\DataFormat.h"
@@ -18,9 +20,7 @@
 #include "scFlowChartItems.h"
 #include "iShowObjectives.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Release-shape iObjectivesmenu (ADDITIVE PARITY SURFACE -- see iShowObjectives.h banner). Reconstructed
-// over the REAL dev engine types, mirroring the proven idioms in the divergent iObjectivesMenu.cpp.
-// Nothing constructs these classes, so the build is behaviour-neutral.
+// Retail objectives presentation and scenario-description value model.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NScenario
 {
@@ -33,50 +33,133 @@ SGoalDescription::SGoalDescription( const SGoalDescription &src )
 {
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// NScenario::GetGoalsFromZone -- aggregate a zone's runtime script goals/tasks into the release value
-// model (adapter over GetScriptGoals/CScenarioGoal/CScenarioTask, exactly the data the divergent
-// CObjectivesUI::GenerateList already walks).
-////////////////////////////////////////////////////////////////////////////////////////////////////
-void GetGoalsFromZone( CScenarioZone *pZone, list< SGoalDescription > *pGoals )
+// Retail scenario objective descriptions (v1.2 0x703120, 0x703eb0,
+// 0x704160, 0x704330). Script goals are only one source; placed clues have
+// their own persisted goals and tasks, with difficulty-dependent visibility.
+bool CScenarioTracker::IsClueDestroyed( CScenarioClue *pClue ) const
 {
-	if ( !IsValid( pZone ) || pGoals == 0 )
+	return IsValid( pClue ) && ( pClue->IsDestroyed() ||
+		find( destroyedClues.begin(), destroyedClues.end(), pClue ) != destroyedClues.end() );
+}
+bool CScenarioTracker::IsClueInHand( const vector< CPtr<NWorld::CUnit> > &units, CScenarioClue *pClue ) const
+{
+	list< CPtr<CScenarioClue> > clues;
+	GetCluesInHand( units, &clues );
+	return find( clues.begin(), clues.end(), pClue ) != clues.end();
+}
+void CScenarioTracker::GetCluesFromZone( NRPG::CGlobalGame *pGame, CScenarioZone *pZone,
+	vector< CPtr<CScenarioClue> > *pClues )
+{
+	pClues->clear();
+	if ( !IsValid( pZone ) || !IsValid( pGame ) )
 		return;
-
-	const vector< CObj<CScenarioGoal> > &goals = pZone->GetScriptGoals();
-	for ( int g = 0; g < goals.size(); ++g )
+	bool bShowAll = pZone == GetZoneByName( "base" ) || pGame->pDifficulty->bShowAllScenarioGoals;
+	const vector< CPtr<CScenarioClue> > &clues = pZone->GetClues();
+	for ( int i = 0; i < clues.size(); ++i )
 	{
-		CScenarioGoal *pGoal = goals[ g ];
+		CScenarioClue *pClue = clues[i];
+		if ( IsValid( pClue->GetDBClue()->pGoal ) &&
+			( bShowAll || pClue->IsDetected() ) && pClue->IsPlaced() && !pClue->IsDestroyed() )
+			pClues->push_back( pClue );
+	}
+}
+EScenarioTaskState CScenarioTracker::GetTaskState( const vector< CPtr<NWorld::CUnit> > &units,
+	CScenarioTask *pTask ) const
+{
+	if ( !IsValid( pTask ) || !IsValid( pTask->GetDBTask() ) )
+		return STS_UNKNOWN;
+	switch ( pTask->GetDBTask()->eTag )
+	{
+	case NDb::TT_FIND_ITEM:
+	case NDb::TT_FIND_PERSON:
+		if ( pTask->IsDetected() )
+			return STS_COMPLETED;
+		break;
+	case NDb::TT_TAKE_ITEM:
+	case NDb::TT_TAKE_PERSON:
+		if ( IsClueDestroyed( pTask->GetParentClue() ) )
+			return STS_FAILED;
+		break;
+	case NDb::TT_CARRY_OUT_ITEM:
+	case NDb::TT_CARRY_OUT_PERSON:
+		return IsClueDestroyed( pTask->GetParentClue() ) ? STS_FAILED : STS_UNKNOWN;
+	case NDb::TT_COMPLETE_BY_SCRIPT:
+		return TaskStateToScenario( pTask->GetState() );
+	}
+	return pTask->GetState() == TS_COMPLETED || IsClueInHand( units, pTask->GetParentClue() ) ?
+		STS_COMPLETED : STS_UNKNOWN;
+}
+EScenarioTaskState CScenarioTracker::GetGoalDescription( SGoalDescription *pDescription,
+	const vector< CPtr<NWorld::CUnit> > &units, CScenarioGoal *pGoal ) const
+{
+	if ( !IsValid( pGoal ) )
+		return STS_COMPLETED;
+	const vector< CObj<CScenarioTask> > &tasks = pGoal->GetTasks();
+	EScenarioTaskState state = STS_COMPLETED;
+	for ( int i = 0; i < tasks.size() && state == STS_COMPLETED; ++i )
+	{
+		CScenarioTask *pTask = tasks[i];
+		if ( !pTask->IsVisible() )
+			continue;
+		STaskDescription task;
+		state = GetTaskState( units, pTask );
+		task.state = state;
+		task.pString = pTask->GetDescription();
+		pDescription->tasks.push_back( task );
+	}
+	for ( int i = 0; i < pDescription->tasks.size(); ++i )
+		if ( pDescription->tasks[i].state != STS_COMPLETED )
+			return STS_UNKNOWN;
+	return STS_COMPLETED;
+}
+void CScenarioTracker::GetGoalsFromZone( vector<SGoalDescription> *pGoals,
+	const vector< CPtr<NWorld::CUnit> > &units, NRPG::CGlobalGame *pGame )
+{
+	CScenarioZone *pZone = pGame->pCurrentZone;
+	if ( !IsValid( pZone ) )
+		return;
+	NDb::CString *pUnknown = NDb::GetString( 17776 );
+	vector< CPtr<CScenarioClue> > clues;
+	GetCluesFromZone( pGame, pZone, &clues );
+	bool bBase = pZone == GetZoneByName( "base" );
+	for ( int i = 0; i < clues.size(); ++i )
+	{
+		CScenarioClue *pClue = clues[i];
+		SGoalDescription goal;
+		bool bCompleted = false;
+		if ( bBase || pClue->IsDetected() || !pGame->pDifficulty->bUseDefaultStringForUnknownGoals )
+		{
+			goal.pString = pClue->GetDescription();
+			bCompleted = GetGoalDescription( &goal, units, pClue->GetGoal() ) == STS_COMPLETED &&
+				( IsClueFound( pClue ) || IsClueInHand( units, pClue ) );
+		}
+		else
+			goal.pString = pUnknown;
+		if ( bCompleted )
+			goal.state = STS_COMPLETED;
+		else if ( !IsValid( pClue ) || ( pClue->IsPlaced() && !IsClueFound( pClue ) && IsClueDestroyed( pClue ) ) )
+		{
+			goal.state = STS_FAILED;
+			for ( int t = 0; t < goal.tasks.size(); ++t )
+				if ( goal.tasks[t].state == STS_UNKNOWN )
+					goal.tasks[t].state = STS_FAILED;
+		}
+		pGoals->push_back( goal );
+	}
+	const vector< CObj<CScenarioGoal> > &scriptGoals = pZone->GetScriptGoals();
+	for ( int i = 0; i < scriptGoals.size(); ++i )
+	{
+		CScenarioGoal *pGoal = scriptGoals[i];
 		if ( !IsValid( pGoal ) )
 			continue;
-
-		SGoalDescription sGoal;
+		SGoalDescription goal;
 		if ( IsValid( pGoal->GetDBGoal() ) )
-			sGoal.pString = pGoal->GetDBGoal()->pName;
-		sGoal.state = TaskStateToScenario( pGoal->GetState() );
-
-		// retail CScenarioTracker::GetGoalDescription @0x303940 shows only the NEXT open task: it appends tasks
-		// while the running state is STS_COMPLETED and breaks at the first non-completed one -> the goal's task
-		// list becomes {all completed tasks} + {the single next-open task}. (Dev CScenarioTask carries no
-		// bVisible, so retail's visible-only filter is a no-op here -- every script task counts as visible.)
-		const vector< CObj<CScenarioTask> > &tasks = pGoal->GetTasks();
-		EScenarioTaskState taskScan = STS_COMPLETED;
-		for ( int t = 0; t < tasks.size(); ++t )
 		{
-			if ( taskScan != STS_COMPLETED )	// @0x303940 top-of-loop break: stop after the first non-completed task
-				break;
-			CScenarioTask *pTask = tasks[ t ];
-			if ( !IsValid( pTask ) )
-				continue;
-
-			STaskDescription sTask;
-			if ( IsValid( pTask->GetDBTask() ) )
-				sTask.pString = pTask->GetDBTask()->pDescription;
-			taskScan = TaskStateToScenario( pTask->GetState() );
-			sTask.state = taskScan;
-			sGoal.tasks.push_back( sTask );
+			goal.state = TaskStateToScenario( pGoal->GetState() );
+			goal.pString = pGoal->GetDBGoal()->pName;
+			GetGoalDescription( &goal, units, pGoal );
 		}
-
-		pGoals->push_back( sGoal );
+		pGoals->push_back( goal );
 	}
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -124,9 +207,7 @@ CClueLine::CClueLine( const SWindowInfo &sInfo, NGame::IMission *pMission,
 // NUI::CClueLine::ProcessMessage   @0x21eb90
 //   TEMPLATELOAD       : build the description CText from the loader "text" control.
 //   TEMPLATELOADCOMPLETE: bind the named child images, push the goal text, branch on goal.state.
-// ORIGINAL DATA LOST: the per-state CClueLine UI-texture record ids were zeroed in the decode (only the
-// sibling CTaskLine ids survived), so the COMPLETED/FAILED type+state SetImage selections cannot be
-// reconstructed. The recovered behaviour kept here is the active/unknown branch hiding the state icon.
+// State image and background IDs below were recovered from raw disassembly.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 bool CClueLine::ProcessMessage( const SEvent &sEvent )
 {
@@ -311,31 +392,46 @@ bool CShowObjectivesUI::ProcessMessage( const SEvent &sEvent )
 			pObjectivesView = new CScrollWindow<CListView>( sEvent.pLoader->GetControl( "view" ) );
 			pObjectives = pObjectivesView->GetClientWindow();
 
-			list< NScenario::SGoalDescription > goals;
-			NScenario::GetGoalsFromZone( pZone, &goals );
+			vector< CPtr<NGame::IUnitTracker> > trackers;
+			pMission->GetUnits( &trackers );
+			vector< CPtr<NWorld::CUnit> > units;
+			for ( int i = 0; i < trackers.size(); ++i )
+				units.push_back( trackers[i]->GetUnit() );
+			vector< NScenario::SGoalDescription > goals;
+			NRPG::CGlobalGame *pGame = pMission->GetRPGGame();
+			pGame->pScenarioTracker->GetGoalsFromZone( &goals, units, pGame );
 
 			int nCount = 0;
-			for ( list< NScenario::SGoalDescription >::const_iterator iGoal = goals.begin(); iGoal != goals.end(); ++iGoal )
+			CObj<CTextDraw> pTextCalc = new CTextDraw;
+			for ( vector< NScenario::SGoalDescription >::const_iterator iGoal = goals.begin(); iGoal != goals.end(); ++iGoal )
 			{
-				// retail @0x21f3c0: build the row, load its framed sub-template (GetUIContainer + LoadTemplate,
-				// which fires EVENT_TEMPLATELOAD so the row binds its type/state/background/text children), THEN
-				// AddItem. Without the LoadTemplate the row has no children and renders blank. Container ids
-				// recovered from disasm: clue-row 0x185 (@0x61f906), task-row 0x187 (@0x61fb46); double-line
-				// variants +0x41/+0x40 (deferred with bDoubleLine=false, see the text-measure follow-on).
+				// Retail v1.2 0x61fe41..0x61fea2 measures at 489 virtual pixels wide;
+				// text taller than 20 pixels uses the double-line frame and background.
+				pTextCalc->SetSize( SPoint( 489, -1 ) );
+				pTextCalc->SetText( IsValid( iGoal->pString ) ? GetDBString( iGoal->pString ) : wstring() );
+				bool bDoubleLine = pTextCalc->GetSize( GetInterface()->GetView() ).y > 20;
 				CClueLine *pClueRow = new CClueLine(
-					SWindowInfo( pObjectives, SPoint( 0, 0 ), SPoint( pObjectives->GetSize().x, 0 ), "", STYLE_ENABLED | STYLE_VISIBLE ),
-					pMission, *iGoal, false );
-				LoadTemplate( pClueRow, NDb::GetUIContainer( 0x185 ) );
+					SWindowInfo( pObjectives, SPoint( 0, 0 ), SPoint( 0, 0 ), "item", STYLE_ENABLED | STYLE_VISIBLE ),
+					pMission, *iGoal, bDoubleLine );
+				LoadTemplate( pClueRow, NDb::GetUIContainer( bDoubleLine ? 0x1c6 : 0x185 ) );
 				pObjectives->AddItem( nCount++, pClueRow );
 
 				int nTask = 1;
 				const vector< NScenario::STaskDescription > &tasks = iGoal->tasks;
 				for ( int t = 0; t < tasks.size(); ++t )
 				{
+					WCHAR wsNumber[32];
+					swprintf( wsNumber, L"%d. ", nTask );
+					wstring wsText = wsNumber;
+					if ( IsValid( tasks[t].pString ) )
+						wsText += GetDBString( tasks[t].pString );
+					pTextCalc->SetSize( SPoint( 489, -1 ) );
+					pTextCalc->SetText( wsText );
+					bDoubleLine = pTextCalc->GetSize( GetInterface()->GetView() ).y > 20;
 					CTaskLine *pTaskRow = new CTaskLine(
-						SWindowInfo( pObjectives, SPoint( 0, 0 ), SPoint( pObjectives->GetSize().x, 0 ), "", STYLE_ENABLED | STYLE_VISIBLE ),
-						pMission, tasks[ t ], nTask++, false );
-					LoadTemplate( pTaskRow, NDb::GetUIContainer( 0x187 ) );
+						SWindowInfo( pObjectives, SPoint( 0, 0 ), SPoint( 0, 0 ), "task", STYLE_ENABLED | STYLE_VISIBLE ),
+						pMission, tasks[ t ], nTask++, bDoubleLine );
+					LoadTemplate( pTaskRow, NDb::GetUIContainer( bDoubleLine ? 0x1c7 : 0x187 ) );
 					pObjectives->AddItem( nCount++, pTaskRow );
 				}
 			}

@@ -7,6 +7,8 @@
 #include "wInterface.h"
 #include "wTurnBased.h"
 #include "wDebris.h"
+#include "..\DBFormat\DataSound.h"
+#include "wMisc.h"
 #include "TerrainInfo.h"
 #include "aiPosition.h"
 #include "..\Misc\EventsBase.h"
@@ -206,7 +208,26 @@ enum ETimeOfDay : int   // fixed underlying type so wOSBase.h / MapBuild.h can f
 	TOD_DAY     = 6,
 };
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-class CWorld: public IWorld, public CTBSWorld<CUnitServer, CPlayer, CCommander>, public CDebrisController
+// Retail CWorld tag 49, CWeatherTracker::operator& 0x77a130 / v1.2 0x77a4b0.
+class CWeatherTracker
+{
+protected:
+	IWorld::EWeather weather;
+	int weatherType;
+	int nWeatherCoolDown;
+	CObj<C2DSound> pEffect;
+	virtual void AttachMiscObject( CTimedObject *p ) = 0;
+public:
+	CWeatherTracker(): weather(IWorld::WEATHER_SUNNY), weatherType(0), nWeatherCoolDown(0) {}
+	virtual void RollNewWeather( int nTicks );
+	int operator&( CStructureSaver &f )
+	{
+		f.Add(2,&weather); f.Add(3,&weatherType); f.Add(4,&nWeatherCoolDown); f.Add(5,&pEffect);
+		return 0;
+	}
+};
+////////////////////////////////////////////////////////////////////////////////////////////////////
+class CWorld: public IWorld, public CTBSWorld<CUnitServer, CPlayer, CCommander>, public CDebrisController, public CWeatherTracker
 {
 public:
 	struct SWorldDeploySpot
@@ -355,8 +376,6 @@ public:
 	// Retail tags this fork still does not model are graceful-SKIPPED (the chunk format is tag-addressed
 	// + length-prefixed, so an un-requested tag is simply left unread):
 	//   47 = bool bUINeedUpdate (retail +0x1a6) -- retail's UI-refresh latch; no dev counterpart.
-	//   49 = the CWeatherTracker base (retail CWorld+0xa0, 24 bytes on the wire) -- this fork predates
-	//        the weather subsystem (IWorld::GetWeather is hardcoded WEATHER_SUNNY).
 	// Old dev saves no longer load -- retail-save load is the acceptance test.
 	struct SWaypointsChunk		// retail CWaypointsHolder @0x374e60 (tag 2): the named-waypoint hash
 	{
@@ -400,7 +419,8 @@ public:
 		f.Add(45,&bFirstSegment);						// retail +0x1a4
 		f.Add(46,&bAttackAllowed);						// retail +0x1a5 (IsAttackAllowed @0x376da0)
 		f.Add(48,&allSoundStuff);						// tag 47 skipped (unmodeled -- see above)
-		f.Add(50,&pExplosionMaster);						// tag 49 CWeatherTracker base skipped
+		f.Add(49,(CWeatherTracker*)this);
+		f.Add(50,&pExplosionMaster);
 		f.Add(51,&bFreezeStart);						// retail 0x33 (+0x1b8)
 		f.Add(52,&bIsBase);							// retail 0x34 (+0x1b9)
 		f.Add(53,&bDelayUpdateVisibleCalc);					// retail 0x35 (+0x1ba)
@@ -517,7 +537,9 @@ public:
 	}
 	virtual void CheckInterrupt( SInterruptInfo *info );
 	void WillWantTBS( CPlayer *pPlayer );   // BUG 2: arm the deferred realtime->TBS switch (retail @0x3683e0)
-	virtual CGlobalAck *GetGlobalAck() const { return pGlobalAck; }	
+	virtual CGlobalAck *GetGlobalAck() const { return pGlobalAck; }
+	virtual EWeather GetWeather() const { return weather; }
+	virtual void RollNewWeather( int nTicks );
 	//
 	virtual const CTRect<float>& CWorld::GetMapSafeZone() const;
 	//
@@ -571,7 +593,7 @@ public:
 	CMineTracker* GetMineTracker() const { return pMineTracker; }
 	
 	CCTime* GetTime() const { return pTime; }
-	void PerformRangedAttack( const NRPG::SAttackRayInfo &rayInfo, STime sCast, NDb::CModel *pTrailModel, float fTrailSpeed, NDb::CRPGGrenade *pGrenade = 0, int nFloor = 100 );
+	void PerformRangedAttack( const NRPG::SAttackRayInfo &rayInfo, STime sCast, NDb::CModel *pTrailModel, float fTrailSpeed, NDb::CRPGGrenade *pGrenade = 0, int nEffectType = 0 );
 	void PerformRangedAttack( const NRPG::CAttackPortion &ap, const CRay &ray, const vector<NRPG::IAttackable*> &ignores, STime sCast, NDb::CModel *pTrailModel, float fTrailSpeed, float fMaxRange = 30.0f );
 	virtual void Explode( const CVec3 &ptEpicentre, int nPower );
 	virtual void CreateParticle( const CVec3 &ptPos, const CQuat &rot, NDb::CEffect *pEffect, int nFloor = -100 );

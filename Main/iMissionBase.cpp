@@ -267,12 +267,10 @@ ICamera* CMissionBase::GetCamera() const
 void CMissionBase::FocusCameraOnUnit( NWorld::CUnit *pUnit )
 {
 	ICamera *pCam = GetCamera();
-	ICamera::SCameraPos sPos;
-	pCam->GetPlacement( &sPos );
-	sPos.ptAnchor = pUnit->GetPosition().pos.GetCP();
-	sPos.ptAnchor.z += 0.5f;								// @0x5a1704: the unit path's z lift
-	pCam->SetPlacement( sPos );
-	GetScene()->SetCutFloor( pUnit->GetPosition().pos.GetFloor() );
+	CVec3 pt = pUnit->GetPosition().pos.GetCP();
+	pt.z += 0.5f;
+	pCam->FocusOnPlace( pt, pUnit->GetPosition().pos.GetFloor() );
+	GetScene()->SetCutFloor( pCam->GetCutFloor() );
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // retail CMissionBase::FocusCameraOnItem @0x1a1740 (mission vtbl+0xc4): anchor the camera on the
@@ -282,11 +280,8 @@ void CMissionBase::FocusCameraOnUnit( NWorld::CUnit *pUnit )
 void CMissionBase::FocusCameraOnItem( NWorld::IItem *pItem )
 {
 	ICamera *pCam = GetCamera();							// @0x5a1740: the LIVE camera, as above
-	ICamera::SCameraPos sPos;
-	pCam->GetPlacement( &sPos );
-	sPos.ptAnchor = pItem->GetPos();
-	pCam->SetPlacement( sPos );
-	GetScene()->SetCutFloor( pItem->GetFloor() );
+	pCam->FocusOnPlace( pItem->GetPos(), pItem->GetFloor() );
+	GetScene()->SetCutFloor( pCam->GetCutFloor() );
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 NUI::ICursor* CMissionBase::GetCursor() const

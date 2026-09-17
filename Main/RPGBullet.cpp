@@ -222,14 +222,24 @@ void TraceLooseRaySegment( NAI::IAIMap *pAIMap, const SAttackRayInfo &rayInfo, v
 
 	vector<NAI::SInterval> intersect;
 	pAIMap->Trace( ray, &intersect, NWorld::TS_FRAGMENTED );
+	vector<CObjectBase*> seen;
+	seen.push_back( rayInfo.pIgnore );
 
 	for ( vector<NAI::SInterval>::iterator i = intersect.begin(); i != intersect.end(); ++i )
 	{
 		if ( i->enter.fT > 0 && i->enter.fT < fRange )
 		{
 			CObjectBase *pUD = i->pSrc->pUserData;
-			if ( pUD && pUD == rayInfo.pIgnore.GetPtr() )
+			if ( find( seen.begin(), seen.end(), pUD ) != seen.end() )
 				continue;
+			CDynamicCast<NWorld::CUnit> pUnit( pUD );
+			if ( pUnit )
+				seen.push_back( pUD );
+			// Retail 1.2 @0x691f60..0x692070: a loose ray cannot hit its intended
+			// unit. Suppress both entry and exit effects, but retain armor traversal.
+			// Coarse cover rays and the final fragmented mesh trace can disagree;
+			// this gate prevents a rolled miss from producing a blood impact.
+			bool bMissedTarget = pUnit && pUD == rayInfo.pTarget.GetPtr();
 
 			NDb::CRPGArmor *pArmor = i->pSrc->pArmor;
 			if ( !pArmor )
@@ -238,9 +248,10 @@ void TraceLooseRaySegment( NAI::IAIMap *pAIMap, const SAttackRayInfo &rayInfo, v
 			bool bDrawExit = false;
 			if ( !tmpAttackPortion.IsArmorIgnored( pArmor ) )
 			{
-				bDrawExit = true;
+				bDrawExit = !bMissedTarget;
 				// pAttackTarget is NULL so no intended target damage is resolved for loose ray
-				pTrail->push_back( STrailPoint( i->nUserID, ray.ptDir, ray.Get( i->enter.fT ), tmpAttackPortion, 0, pUD, pArmor, -i->enter.ptNormal, i->pSrc->nFloor ) );
+				if ( !bMissedTarget )
+					pTrail->push_back( STrailPoint( i->nUserID, ray.ptDir, ray.Get( i->enter.fT ), tmpAttackPortion, 0, pUD, pArmor, -i->enter.ptNormal, i->pSrc->nFloor ) );
 				if ( !tmpAttackPortion.CanDealDmg( pArmor ) )
 					return;
 			}
@@ -278,7 +289,7 @@ void TraceLooseRay( NAI::IAIMap *pAIMap, const SAttackRayInfo &rayInfo, vector<S
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // NRPG::PerformRangedAttack @0x2929e0
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-CObjectBase * PerformRangedAttack( NWorld::IWorld *pWorld, const SAttackRayInfo &rayInfo, STime sCast, NDb::CModel *pTrailModel, float fTrailSpeed, NDb::CRPGGrenade *pGrenade, int nFloor )
+CObjectBase * PerformRangedAttack( NWorld::IWorld *pWorld, const SAttackRayInfo &rayInfo, STime sCast, NDb::CModel *pTrailModel, float fTrailSpeed, NDb::CRPGGrenade *pGrenade, int nEffectType )
 {
 	NWorld::CWorld *pCWorld = dynamic_cast<NWorld::CWorld*>( pWorld );
 	if ( !pCWorld )
@@ -312,7 +323,10 @@ CObjectBase * PerformRangedAttack( NWorld::IWorld *pWorld, const SAttackRayInfo 
 		}
 	}
 
-	NWorld::IDynamicObject *pBulletServer = NWorld::CreateBulletServer( pCWorld, trail, sCast, pTrailModel, fTrailSpeed );
+	// Retail v1.2 0x69271d..0x69272e suppresses impact particles for shooterless rays.
+	if ( !rayInfo.pUS )
+		nEffectType = -1;
+	NWorld::IDynamicObject *pBulletServer = NWorld::CreateBulletServer( pCWorld, trail, sCast, pTrailModel, fTrailSpeed, pGrenade, nEffectType );
 	if ( pBulletServer )
 	{
 		pCWorld->GetMiscObjects()->push_back( pBulletServer );

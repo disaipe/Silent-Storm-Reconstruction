@@ -1,4 +1,5 @@
 #include "StdAfx.h"
+#include "ScreenShot.h"
 #include "wInterface.h"
 #include "wMain.h"			// NWorld::CWorld::GetOwnScript -- wire the script-UI bridge to the mission HUD
 #include "wUnitServer.h"	// temporary GFirst music diagnostics: script unit names
@@ -671,6 +672,7 @@ void CMission::CanDoCommand( NWorld::CCmd *pCmd, bool bNoTarget, SActionInfo *pI
 	case NWorld::UCR_WEAPON_JAMMED:
 	case NWorld::UCR_CRITICALS_BAN:
 	case NWorld::UCR_TARGET_OUT_OF_RANGE:
+	case NWorld::UCR_CANT_SEE_TARGET:
 	case NWorld::UCR_CANT_HEAL:                    // heal target's CanHeal() failed -- blocked but available (retail @0x1fb680 groups it here)
 	case NWorld::UCR_NEED_HIGHER_SKILL:           // skill too low to use the tool -- blocked but available
 	case NWorld::UCR_NOT_ALL_UNITS_NEAR_PASSAGE:  // not every selected unit is at the passage -- blocked but available
@@ -690,7 +692,7 @@ void CMission::CanDoCommand( NWorld::CCmd *pCmd, bool bNoTarget, SActionInfo *pI
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // PDB EUnitCommandResult values for the retail result-combining rule below.
-// UCR_NULL=0 and UCR_CANT_SEE_TARGET=14 are absent from the dev enum.
+// UCR_NULL=0 is absent from the dev enum.
 static int UCRRetailOrdinal( NWorld::EUnitCommandResult eRes )
 {
 	switch ( eRes )
@@ -709,6 +711,7 @@ static int UCRRetailOrdinal( NWorld::EUnitCommandResult eRes )
 	case NWorld::UCR_CRITICALS_BAN:					return 12;
 	case NWorld::UCR_TARGET_OUT_OF_RANGE:			return 13;
 	case NWorld::UCR_NEED_HIGHER_SKILL:				return 15;
+	case NWorld::UCR_CANT_SEE_TARGET:              return 14;
 	case NWorld::UCR_CANT_HEAL:						return 16;
 	case NWorld::UCR_DOOR_LOCKED:					return 17;
 	case NWorld::UCR_INVENTORY_NO_PLACE:			return 18;
@@ -2405,17 +2408,16 @@ void CMission::ExecWorldCommands()
 			CDynamicCast<NWorld::CUICmdLoseDialog> pLoseCmd( pCmd );
 			NMainLoop::Command( new NGame::CICLoseMenu( pLoseCmd->nRecordID ) );
 		}
-		// LUA convergence PART B: ShowLeaveZoneDialog posts the "leave zone" modal (retail CMission::
-		// ExecWorldCommand @0x1fd8c0: new CICLeaveZoneMenu(this, title, autosave, screenshot)). The retail's
-		// autosave flag + title DB-string + screenshot ids are not recovered, so the dev posts the bare
-		// modal (confirm still closes it + ends the mission via CICEndMission).
+		// ShowLeaveZoneDialog: retain a gameplay screenshot for the exit autosave.
 		else if ( CDynamicCast<NWorld::CUICmdLeaveZoneDlg>( pCmd ) )
 		{
 			// retail CMission::ExecWorldCommand @0x1fd8c0 passes the prompt title (the DB string the script named
 			// via ShowLeaveZoneDialog -> CUICmdLeaveZoneDlg::nRecordID = NDb::GetString(id)) so the modal renders
 			// its message + labelled buttons. (Previously dropped -> the dialog showed blank/invisible.)
 			NWorld::CUICmdLeaveZoneDlg *pDlg = CDynamicCast<NWorld::CUICmdLeaveZoneDlg>( pCmd );
-			NMainLoop::Command( new NGame::CICLeaveZoneMenu( this, NDb::GetString( pDlg->nRecordID ), false, 0 ) );
+			CObj<NGScene::CScreenshotTexture> pScreenshot = new NGScene::CScreenshotTexture;
+			pScreenshot->Generate();
+			NMainLoop::Command( new NGame::CICLeaveZoneMenu( this, NDb::GetString( pDlg->nRecordID ), false, pScreenshot ) );
 		}
 		// LUA convergence (hint machinery): SetTutorialMode(b) stores the flag on the mission (retail
 		// CMissionBase::ExecWorldCommand @0x1a30c0). Its sole consumer is the ShowHint gate just below.

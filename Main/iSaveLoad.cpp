@@ -118,16 +118,14 @@ void CSaveLoadItem::OnAction()
 // Save-manager command helpers -- retail NUI free fns (iSaveLoad.obj), convergence W4.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // retail NUI::SM_Save @0x22ff20: unwind every modal interface above the game (depth-1 CICExitModal)
-// then post the save command. NOTE retail's CICSave carries (name, CScreenshotTexture*, false) --
-// the dev CICSave has no texture parameter yet (the save-machinery convergence leg owns iMain); the
-// texture is accepted here so the call sites match retail and is forwarded once CICSave grows it.
+// then post the save command with the gameplay screenshot captured before opening the menu.
 static void SM_Save( const string &szName, NGScene::CScreenshotTexture *pScreenShotTexture )
 {
 	int nCount = NMainLoop::GetInterfaceStackDepth();
 	for ( int nTemp = 1; nTemp < nCount; nTemp++ )
 		NMainLoop::Command( new NMainLoop::CICExitModal() );
 
-	NMainLoop::Command( new NMainLoop::CICSave( szName ) );   // retail: CICSave( szName, pScreenShotTexture, false )
+	NMainLoop::Command( new NMainLoop::CICSave( szName, pScreenShotTexture, false ) );
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // retail NUI::SM_Load @0x22fd30: post a CICLoad for the slot.
@@ -533,6 +531,21 @@ bool CBaseView::ProcessMessage( const SEvent &sEvent )
 	return true;
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Retail SSaveLoadItemInfoSort: descending date/hour, then minute/second key.
+struct SSaveLoadItemInfo
+{
+	int nDate, nTime;
+	string szName;
+	wstring wsTime;
+	SSaveLoadItemInfo(): nDate( 0 ), nTime( 0 ) {}
+};
+struct SSaveLoadItemInfoSort
+{
+	bool operator()( const SSaveLoadItemInfo &a, const SSaveLoadItemInfo &b ) const
+	{
+		return a.nDate != b.nDate ? a.nDate > b.nDate : a.nTime > b.nTime;
+	}
+};
 void CBaseView::GenerateList()
 {
 	NMainLoop::CSaveManager *pSaveManager = NMainLoop::GetSaveManager();
@@ -540,13 +553,21 @@ void CBaseView::GenerateList()
 	list<string> slotsList;
 	pSaveManager->GetSlotsList( &slotsList );
 
+	vector<SSaveLoadItemInfo> slots;
+	for ( list<string>::const_iterator i = slotsList.begin(); i != slotsList.end(); ++i )
+	{
+		SSaveLoadItemInfo slot;
+		slot.szName = *i;
+		NMainLoop::GetSlotTime( slot.szName, &slot.wsTime, &slot.nDate, &slot.nTime );
+		slots.push_back( slot );
+	}
+	sort( slots.begin(), slots.end(), SSaveLoadItemInfoSort() );
+
 	pList->RemoveAllItems();
 
-	int nCount = 0;
-	for ( list<string>::const_iterator iTemp = slotsList.begin(); iTemp != slotsList.end(); iTemp++ )
+	for ( int nCount = 0; nCount < slots.size(); ++nCount )
 	{
-		pList->AddItem( nCount, new CSaveLoadItem( SWindowInfo( pList, SPoint( 0, 0 ), SPoint( pList->GetSize().x, 0 ), "", STYLE_ENABLED | STYLE_VISIBLE ), (*iTemp) ) );
-		nCount++;
+		pList->AddItem( nCount, new CSaveLoadItem( SWindowInfo( pList, SPoint( 0, 0 ), SPoint( pList->GetSize().x, 0 ), "", STYLE_ENABLED | STYLE_VISIBLE ), slots[nCount].szName ) );
 	}
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////

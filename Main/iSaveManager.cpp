@@ -153,19 +153,44 @@ void CSaveManager::GetSlotsList( list<string> *pList ) const
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 void CSaveManager::GetSlotTime( const string &szName, wstring *pTime )
 {
+	int nDate = 0, nTime = 0;
+	NMainLoop::GetSlotTime( szName, pTime, &nDate, &nTime );
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Retail v1.2 0x637640: modification time, locale date order, and two sort keys.
+void GetSlotTime( const string &szName, wstring *pTime, int *pDateKey, int *pTimeKey )
+{
 	struct _stat sStat;
-	int nRet = _stat( GetSlotFilePath( szName, S_SAVE_FILENAME ).c_str(), &sStat );
+	int nRet = _stat( GetSaveManager()->GetSlotFilePath( szName, S_SAVE_FILENAME ).c_str(), &sStat );
 	if ( nRet == -1 )
-	{
-		ASSERT( 0 );
 		return;
-	}
 
 	struct tm *pLocalTime = localtime( &sStat.st_mtime );
-
-	WCHAR wcBuffer[MAX_PATH];
-	wcsftime( wcBuffer, MAX_PATH, L"%d/%m/%y", pLocalTime );
-	*pTime = wstring( wcBuffer );
+	*pDateKey = ( ( pLocalTime->tm_year * 12 + pLocalTime->tm_mon ) * 31 + pLocalTime->tm_mday ) * 24 + pLocalTime->tm_hour;
+	// Preserve retail's unusual multiplier (raw 0x6376fb..0x637712).
+	*pTimeKey = pLocalTime->tm_min * 3660 + pLocalTime->tm_sec;
+	char szDateOrder[4] = { 0 };
+	GetLocaleInfoA( LOCALE_USER_DEFAULT, LOCALE_IDATE, szDateOrder, sizeof(szDateOrder) );
+	const wchar_t *pFormat = L"%d/%m/%y";
+	if ( szDateOrder[0] == '0' ) pFormat = L"%m/%d/%y";
+	else if ( szDateOrder[0] == '2' ) pFormat = L"%y/%m/%d";
+	wchar_t date[MAX_PATH], time[MAX_PATH];
+	wcsftime( date, MAX_PATH, pFormat, pLocalTime );
+	wcsftime( time, MAX_PATH, L"%H:%M:%S", pLocalTime );
+	*pTime = wstring( date ) + L"<tab>" + time;
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////
+string GetQuickSaveSlot( bool bLoad )
+{
+	// Retail v1.2 0x637a70: save to the older slot, load the newer one.
+	string first = NStr::ToAscii( NUI::GetDBString( 20241 ) );
+	string second = NStr::ToAscii( NUI::GetDBString( 20242 ) );
+	int firstDate = 0, firstTime = 0, secondDate = 0, secondTime = 0;
+	wstring time;
+	GetSlotTime( first, &time, &firstDate, &firstTime );
+	GetSlotTime( second, &time, &secondDate, &secondTime );
+	bool bFirstNewer = firstDate != secondDate ? firstDate > secondDate : firstTime > secondTime;
+	return ( bLoad ? bFirstNewer : !bFirstNewer ) ? first : second;
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 void CSaveManager::GetSlotScreenShot( const string &szName, CArray2D<NGfx::SPixel8888> *pScreenShot )

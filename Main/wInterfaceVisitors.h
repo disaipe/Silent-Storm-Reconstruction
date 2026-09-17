@@ -142,6 +142,7 @@ struct ISoundVisitor
 {
 	virtual void Add3DSound( STime tStart, NDb::CSound *pSound, CFuncBase<CVec3> *pPosition ) = 0;
 	virtual void AddEffect( STime tStart, NDb::CSoundEffect *pEffect, CFuncBase<CVec3> *pPosition, const vector<int> &flags ) = 0;
+	virtual void Add2DSound( STime tStart, NDb::CSound *pSound ) = 0;
 };
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 struct IVisObj: virtual public CObjectBase

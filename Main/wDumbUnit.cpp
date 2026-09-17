@@ -759,7 +759,8 @@ int CDumbUnitServer::ProcessAttack( NWorld::IWorld *_pWorld, int nUserID, NRPG::
 		MakeUnconscious( pAttack->rTtrajectory.ptDir );
 		bDied = true;
 	}
-	else
+	// Retail 0x75131e / v1.2 0x75166e: only conscious, living units flinch or acknowledge damage.
+	else if ( CanFight() )
 	{
 		animator.Wound();
 

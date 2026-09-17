@@ -118,6 +118,7 @@ public:
 	SHMatrix transform;
 	vector<SParticleFrame> frames;
 	CDGPtr< CPtrFuncBase<CParticlesInfo>, CPtr<CPtrFuncBase<CParticlesInfo> > > pInfo;
+	CVec2 vWrap;
 
 	void AddParticles( IParticleOutput *pRender );
 	virtual bool IsEmpty() const { return frames.empty(); }

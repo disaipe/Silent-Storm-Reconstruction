@@ -12,6 +12,6 @@ class CWorld;
 class CUnitServer;
 class IDynamicObject;
 IDynamicObject *CreateBulletServer( CWorld *pWorld, const vector<NRPG::STrailPoint> &trail,
-		STime sCast, NDb::CModel *pTrailModel, float fTrailSpeed );
+		STime sCast, NDb::CModel *pTrailModel, float fTrailSpeed, NDb::CRPGGrenade *pGrenade = 0, int nEffectType = 0 );
 }
 #endif

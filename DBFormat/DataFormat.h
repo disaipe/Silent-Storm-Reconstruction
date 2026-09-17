@@ -464,6 +464,7 @@ CModel* GetModel( int nModelID );
 CModel* GetModelVariant( int nModelVariantID, SRand *pRand );
 CTEffect* GetTEffect( int nTEffectID );
 CEffect* GetEffect( int nEffectID );
+CParticleInstance* GetParticleInstance( int nID );
 CSkeleton *GetSkeleton( int nID );
 class CAnimation;
 CAnimation* GetAnimation( int nAnimID );

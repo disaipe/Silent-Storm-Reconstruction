@@ -121,6 +121,14 @@ inline void FastSinCos( float fAngle, float *pfSin, float *pfCos )
 	n += N_SIN_TABLE_PERIOD / 4;
 	*pfCos = fSinTable[n] + ( fSinTable[n+1] - fSinTable[n] ) * fResidual;
 }
+static void WrapParticlePosition( CVec3 *pPos, const CVec3 &center, const CVec2 &wrap )
+{
+	if ( wrap.x != 0 )
+	{
+		pPos->x += Float2Int( (center.x - pPos->x) / wrap.x ) * wrap.x;
+		pPos->y += Float2Int( (center.y - pPos->y) / wrap.y ) * wrap.y;
+	}
+}
 void CStandardParticleEffect::AddParticles( IParticleOutput *pRender )
 {
 	if ( !IsValid(pInfo) )
@@ -132,17 +140,45 @@ void CStandardParticleEffect::AddParticles( IParticleOutput *pRender )
 
 	const SParticleOrientationInfo &or = pRender->GetOrientationInfo();
 	vector<STransparentTexturePlace> texturePlaces( textures.size() );
-	InitTexturePlaces( &texturePlaces, textures );
+	vector<char> texValid( textures.size() );
+	InitTexturePlaces( &texturePlaces, &texValid, textures );
+	// Retail 0x541472: repeat around the camera's intersection with the z=0 plane.
+	CVec3 wrapCenter = or.vBasic[3];
+	if ( vWrap.x != 0 && or.vBasic[2].z != 0 )
+	{
+		wrapCenter.x -= wrapCenter.z / or.vBasic[2].z * or.vBasic[2].x;
+		wrapCenter.y -= wrapCenter.z / or.vBasic[2].z * or.vBasic[2].y;
+	}
 
-	float fCycleEnd = fEndCycle * pParticles->fFrameRate;
+	int nCycleEnd = int( fEndCycle * pParticles->fFrameRate );
 	for ( int nFrame = 0; nFrame < frames.size(); ++nFrame )
 	{
 		const SParticleFrame &frame = frames[nFrame];
+		int nTime = int( frame.fT );
+		vector<unsigned char> filtered;
+		if ( IsValid(pFilter) )
+		{
+			// Retail 0x54157d..0x54177a filters world positions separately for each cycle.
+			vector<CVec3> positions( pParticles->nParticles, CVec3(1, 1, 100000) );
+			for ( int n = 0; n < pParticles->nParticles; ++n )
+			{
+				const SParticle &part = pParticles->particles[n];
+				if ( nTime < part.nTStart || nTime >= part.nTEnd ||
+					(!frame.bLastCycle && part.nTStart > nCycleEnd) )
+					continue;
+				part.pos.GetValue( frame.fT, &positions[n] );
+				WrapParticlePosition( &positions[n], wrapCenter, vWrap );
+				transform.RotateHVector( &positions[n], positions[n] );
+			}
+			pFilter->Filter( &positions, &filtered );
+		}
 		for ( int n = 0; n < pParticles->nParticles; ++n )
 		{
+			if ( !filtered.empty() && filtered[n] != 0 )
+				continue;
 			const SParticle &part = pParticles->particles[n];
-			if ( frame.fT >= part.nTStart && frame.fT < part.nTEnd &&
-				(frame.bLastCycle || part.nTStart <= fCycleEnd) )
+			if ( nTime >= part.nTStart && nTime < part.nTEnd &&
+				(frame.bLastCycle || part.nTStart <= nCycleEnd) )
 			{
 				const SParticleFrame &frame = frames[ nFrame ];
 
@@ -159,9 +195,10 @@ void CStandardParticleEffect::AddParticles( IParticleOutput *pRender )
 				part.color.GetValue( frame.fT, &dwColor );
 				part.sprite.GetValue( frame.fT, &sprite );
 				nSprite = sprite;
-				if ( nSprite >= textures.size() )
+				if ( nSprite >= textures.size() || !texValid[nSprite] )
 					continue;
 
+				WrapParticlePosition( &pos, wrapCenter, vWrap );
 				transform.RotateHVector( &pos, pos );
 
 				// geometry

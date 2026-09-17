@@ -12,6 +12,7 @@
 #include "..\DBFormat\DataAck.h"
 #include "..\DBFormat\DataInterface.h"
 #include "..\DBFormat\DataRPG.h"
+#include "..\DBFormat\DataMap.h"
 #include "Sound.h"
 #include "RWGame.h"			// NRender::IRenderGame::GetHeadController (the shared portrait heads controller)
 #include "LSController.h"	// NLSHead::CHeadsController::PlaySequence -- drives the HUD portrait's mouth/gesture
@@ -589,9 +590,7 @@ void CSoundIcon::Draw( const STime &sTime, NGScene::I2DGameView *pView )
 // Draw @0x2102e0 (disasm): anchor z += 0.6 (fadd [0x8b1fe8] = 0.6f @0x61039b), then GetPositionInfo
 // @0x60f610; ON-screen (ret != 0 @0x6103c3) -> texture 0x2ab (683); OFF-screen -> sequential arrow
 // array 0x2a3..0x2aa (675..682) indexed by Clamp(round(angle/45),0,7) (fmul [0x8be994] = 1/45).
-// Retail also builds these icons over heard-not-seen UNITS (@0x211390, clueUnitIconsList) -- that
-// role is covered in this fork by the CSoundIcon ear markers above, so the unit flavor is carried
-// for shape parity but never constructed here.
+// Retail also builds these icons over visible quest-clue units (@0x211390, clueUnitIconsList).
 class CClueIcon: public CProjectedIcon
 {
 	OBJECT_BASIC_METHODS(CClueIcon)
@@ -600,7 +599,7 @@ private:
 	// retail operator& @0x21a370: 1=CProjectedIcon base (carries pMission), 2=pWorldItem,
 	// 3=pWorldUnit, 4=pInvItem. pTexture/pMissionUI are transient per-pass state.
 	CPtr<NWorld::IItem> pWorldItem;			// retail +0x90 (tag 2)
-	CPtr<NWorld::CUnit> pWorldUnit;			// retail +0x94 (tag 3; heard-unit flavor -- unused in this fork)
+	CPtr<NWorld::CUnit> pWorldUnit;			// retail +0x94 (tag 3; quest-clue unit)
 	CPtr<NRPG::IInventoryItem> pInvItem;	// retail +0x98 (tag 4) -- the UpdateHash reuse key (@0x217220)
 	ZEND int operator&( CStructureSaver &f ) { f.Add(1,(CProjectedIcon*)this); f.Add(2,&pWorldItem); f.Add(3,&pWorldUnit); f.Add(4,&pInvItem); return 0; }
 	// transient:
@@ -609,12 +608,15 @@ private:
 
 public:
 	CClueIcon() {}
+	CClueIcon( const SWindowInfo &sInfo, NGame::IMission *pMission, NWorld::CUnit *pUnit, CMissionUI *pUI ):
+		CProjectedIcon( sInfo, pMission ), pWorldUnit( pUnit ), pMissionUI( pUI ) {}
 	CClueIcon( const SWindowInfo &sInfo, NGame::IMission *pMission, NWorld::IItem *pWItem, NRPG::IInventoryItem *pInv, CMissionUI *pMissionUI );
 
 	bool CanHandleState( NGame::IState *pState ) const;		// retail @0x2162e0: true
 	CObjectBase* GetTarget();								// retail @0x2162f0: pWorldItem as CObjectBase
 
 	NRPG::IInventoryItem* GetInvItem() const { return pInvItem; }
+	NWorld::CUnit* GetWorldUnit() const { return pWorldUnit; }
 	void Set( float fAngle );		// texture pick (retail folds it into Draw; dev icons pick in the update pass)
 	void SetPosition( const SPoint &sPosition );
 
@@ -1627,7 +1629,7 @@ void CMissionUI::UpdateHits( const STime &sTime )
 void CMissionUI::UpdateEnemies()
 {
 	vector<CPtr<NGame::IUnitTracker> > unitsSet;
-	pMission->GetUnits( &unitsSet );
+	pMission->GetSelectedUnits( &unitsSet );
 
 	CVec2 vScreenRect = pMission->GetScene()->GetScreenRect();
 	CTransformStack sTS = pMission->GetCameraTransform();
@@ -1639,32 +1641,54 @@ void CMissionUI::UpdateEnemies()
 	if ( sViewRect.Width() == 0 )
 	{
 		enemyIconsList.clear();
+		clueUnitIconsList.clear();
 		return;
 	}
 
-	unordered_map<CPtr<NWorld::CUnit>,bool,SPtrHash> enemySet;
-	for ( int nTemp = 0; nTemp < unitsSet.size(); nTemp++ )
-	{
-		list<CPtr<NWorld::CUnit> > visibleUnits;
-		unitsSet[nTemp]->GetVisibleEnemiesList( &visibleUnits );
-
-		for ( list<CPtr<NWorld::CUnit> >::const_iterator iEnemy = visibleUnits.begin(); iEnemy != visibleUnits.end(); iEnemy++ )
-		{
-			bool &bValue = enemySet[*iEnemy];
-			if ( unitsSet[nTemp]->IsSelected() )
-				bValue = true;
-		}
-	}
+	// Retail UpdateVisibleUnits 1.2 @0x6145c0 enumerates shared PLAYER visibility,
+	// including allies' sightings. Selected units' personal sight only chooses red versus gray.
+	NWorld::IPlayer *pPlayer = pMission->GetActivePlayer()->GetPlayer();
+	list<CPtr<NWorld::CUnit> > visibleUnits;
+	pPlayer->GetVisible( &visibleUnits );
+	unordered_map<CPtr<NWorld::CUnit>, CPtr<CClueIcon>, SPtrHash> knownClueIcons;
+	for ( list<CObj<CClueIcon> >::iterator i = clueUnitIconsList.begin(); i != clueUnitIconsList.end(); ++i )
+		knownClueIcons[(*i)->GetWorldUnit()] = *i;
+	list<CObj<CClueIcon> > newClueIconsList;
 
 	list<CObj<CEnemyIcon> > newEnemyIconsList;
 	list<CObj<CEnemyIcon> >::iterator iOldIcons = enemyIconsList.begin();
-	for (unordered_map<CPtr<NWorld::CUnit>,bool,SPtrHash>::iterator iTemp = enemySet.begin(); iTemp != enemySet.end(); iTemp++ )
+	for ( list<CPtr<NWorld::CUnit> >::iterator iTemp = visibleUnits.begin(); iTemp != visibleUnits.end(); ++iTemp )
 	{
-		bool bVisible = iTemp->second;
-		CPtr<NWorld::CUnit> pEnemy = iTemp->first;
-
-		if ( pEnemy->IsDead() || pEnemy->IsUnconscious() )
+		CPtr<NWorld::CUnit> pEnemy = *iTemp;
+		if ( pEnemy->IsDead() || pEnemy->GetPlayer() == pPlayer )
 			continue;
+
+		if ( pEnemy->IsClueUnit() )
+		{
+			CClueIcon *pIcon = knownClueIcons[pEnemy];
+			if ( !pIcon )
+				pIcon = new CClueIcon( SWindowInfo( GetClientWindow(), SPoint( 0, 0 ), SPoint( 0, 0 ), "", STYLE_ENABLED | STYLE_VISIBLE ), pMission, pEnemy, this );
+			CVec3 vAnchor;
+			if ( pEnemy->IsDead() || pEnemy->IsUnconscious() )
+				pEnemy->GetRealPosition( &vAnchor ); // retail v1.2 0x610ab6: ragdoll, not snapped tile
+			else
+				vAnchor = pEnemy->GetPosition().GetEyePosition();
+			vAnchor.z += 0.6f;
+			CVec2 vScreenPos;
+			pIcon->Set( ProjectOverlayIconPos( vAnchor, sTS, vScreenRect, sViewRect, &vScreenPos ) );
+			SPoint sIconPos;
+			GetClientWindow()->ScreenToClient( SPoint( vScreenPos.x, vScreenPos.y ), &sIconPos );
+			pIcon->SetPosition( sIconPos );
+			newClueIconsList.push_back( pIcon );
+			continue;
+		}
+
+		if ( pEnemy->IsUnconscious() || pMission->GetWorld()->GetDiplomacyState( pPlayer, pEnemy->GetPlayer() ) != NDb::DS_ENEMY )
+			continue;
+		bool bVisible = false;
+		for ( int n = 0; n < unitsSet.size(); ++n )
+			if ( unitsSet[n]->GetUnit()->IsUnitVisible( pEnemy ) )
+				bVisible = true;
 
 		CEnemyIcon *pIcon;
 		if ( iOldIcons != enemyIconsList.end() )
@@ -1713,11 +1737,12 @@ void CMissionUI::UpdateEnemies()
 	}
 
 	enemyIconsList = newEnemyIconsList;
+	clueUnitIconsList = newClueIconsList;
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 void CMissionUI::UpdateClues()
 {
-	// retail CMissionUI::UpdateVisibleUnits @0x213e70 (second list): rebuild the clue ("ear")
+	// retail CMissionUI::UpdateAudibleSounds @0x214530: rebuild the sound ("ear")
 	// markers over the heard-not-seen set. The set is derived from the SAME GetSounds feed as the
 	// heard-silhouette render and the TraceCursor heard pick, so an eared unit is exactly the one
 	// the cursor can highlight/attack. Placement/projection mirrors UpdateEnemies (eye pos + 0.6).

@@ -32,6 +32,8 @@ void CParticleAnimator::Recalc()
 	// retail @0x143b50 hands the animator's filter down to the produced effect (last write of the
 	// frame-invariant group): `CVar5 = this->pFilter; *(CObj<IParticleFilter>*)(pValue+0x20) = CVar5;`
 	value.pFilter = pFilter;
+	// Retail 0x543cd0: snow repeats its particle cloud around the camera.
+	value.vWrap = pInstance->pParticle ? pInstance->pParticle->vWrapSize : CVec2(0, 0);
 //	value.bAlphaAdd = (pInstance->alpha == NDb::CParticleInstance::A_ADDITIVE);
 	value.transform = pPlacement->GetValue().forward;
 	value.frames.clear();
@@ -243,10 +245,15 @@ void CRainAnimator::Recalc()
 	if ( !IsValid( pValue ) )
 	{
 		pValue = new CRainParticleEffect;
-		textureIDs.clear();
+		// Retail 0x54611c / v1.2 0x5461fc: copy the saved textures INTO
+		// the newly generated effect; never discard the animator's textures.
+		pValue->textures = textureIDs;
 	}
 	CDynamicCast<CRainParticleEffect> pRealValue( pValue );
 	CRainParticleEffect &value = *pRealValue;
+	// Weather persists until SyncWeather releases it, not until an emitter cycle ends.
+	value.bEnd = false;
+	value.nGrassSize = 0;
 
 	unsigned long nTime = pTime->GetValue();
 	if ( tStart == 0 )
@@ -295,8 +302,10 @@ void CRainAnimator::Recalc()
 			int nC = (int)( ( nCyc * (unsigned)-0x7f ) & 0xff ) - 0x80;	// -127 * cyc
 
 			CVec3 &pos = positions[nEmit];
-			pos.x = (float)nA * 0.1f * 0.0078125f + t * 0.1f + (float)nXIdx * 0.1f;
-			pos.y = (float)nB * 0.1f * 0.0078125f + t * 0.2f + (float)nYIdx * 0.1f;
+			// Retail grid spacing (0x978cf8 / v1.2 0x978d08) is 0.5,
+			// not the 0.1 horizontal fall velocity. Keep the cloud near the camera.
+			pos.x = (float)nA * 0.5f * 0.0078125f + t * 0.1f + (float)nXIdx * 0.5f;
+			pos.y = (float)nB * 0.5f * 0.0078125f + t * 0.2f + (float)nYIdx * 0.5f;
 			pos.z = (float)nC * 0.078125f + (float)nDepth * 60.0f + z0;
 
 			faces[nEmit] = (char)( nCyc & 3 );

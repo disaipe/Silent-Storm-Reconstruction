@@ -1653,7 +1653,7 @@ void CUnitMission::ApplyCritical( NDb::CRPGCritical *p, int nDC )
 	if ( p->nMinDuration > 0 )
 		nDuration = p->nMinDuration + random.Get( p->nMaxDuration - p->nMinDuration );
 	csRPG << "<font size=16pt>";
-	csRPG << "<color=red>" << "\tCritical: " << "<color=yeloow>" << "\"" << p->szName << "\", difficulty=" << nDC;
+	csRPG << "<color=red>" << "\tCritical: " << "<color=yellow>" << "\"" << p->szName << "\", difficulty=" << nDC;
 	csRPG << "  Duration=" << nDuration << "(" << p->nMinDuration << " : " << p->nMaxDuration;
 	csRPG << ")  HL=" << GetCLName( p->hl ) << "\n";
 	ApplyCritical( SCritical( p->hl, p->type, nDuration, p->fValue, nDC ) );

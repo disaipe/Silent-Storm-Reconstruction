@@ -32,7 +32,7 @@ class ISoundScene: public CObjectBase
 {
 public:
 	virtual CSound* Add3DSound( NDb::CSound *pSample, CFuncBase<CVec3> *pPos, STime tStart ) = 0;
-	virtual ISound2D* Add2DSound( NDb::CSound *pSample ) = 0;
+	virtual ISound2D* Add2DSound( NDb::CSound *pSample, STime tStart = 0 ) = 0;
 	virtual CSoundEffect* AddEffect( NDb::CSoundEffect *pEff, STime stBeginTime, CFuncBase<STime> *pTime, CFuncBase<CVec3> *pPos, const vector<int> &flags ) = 0;
 
 	// retail ISoundScene::SetMusic(EMusicType) @0x304db0 (vtbl+0x1c): the edge-triggered music-type

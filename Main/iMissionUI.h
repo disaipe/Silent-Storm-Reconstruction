@@ -52,8 +52,7 @@ private:
 	////
 	list<CObj<CItemText> > itemTextsList;
 	list<CObj<CEnemyIcon> > enemyIconsList;
-	// retail CMissionUI::UpdateVisibleUnits @0x213e70 keeps a SECOND marker list next to the
-	// unit icons: the "ear" markers over heard-not-seen units (dev CSoundIcon, textures 666-674).
+	// Retail UpdateAudibleSounds @0x214530: ear markers over heard-not-seen units.
 	list<CObj<CSoundIcon> > clueIconsList;
 	// retail CMissionUI::UpdateVisibleItems @0x2130c0 rebuilds TWO more overlay lists next to the
 	// ground-item labels (retail members +0xf8 hintIconsList / +0xfc clueItemIconsList; serialized
@@ -65,9 +64,7 @@ private:
 	// @0x218dc0): one CTrapIcon per entry of the active player's trapped-objects list
 	// (own armed traps + spotted enemy mines), fixed texture 940, anchored at the trap pos z+0.6.
 	list<CObj<CTrapIcon> > trapIconsList;
-	// retail tag 9 (clueUnitIconsList @+0xfc): CClueIcon markers over heard-not-seen UNITS. This
-	// fork covers that role with the CSoundIcon ear markers (clueIconsList -> retail soundIconsList,
-	// tag 11), so this list is carried empty for save-format parity and never populated here.
+	// Retail tag 9: markers over visible quest-clue units (separate from soundIconsList, tag 11).
 	list<CObj<CClueIcon> > clueUnitIconsList;
 	////
 	STime sCameraScrollUpdate;

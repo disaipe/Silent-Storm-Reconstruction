@@ -59,6 +59,7 @@ namespace NWorld
 }
 namespace NAI
 {
+	class IAIJobManager;
 	class CPath;
 	class IAIMap;
 	class IPathNetwork;
@@ -339,6 +340,7 @@ public:
 	virtual bool CanFight() const { return !IsDead() && !IsUnconscious(); }
 	virtual bool IsHiding() const = 0;
 	virtual bool IsEmptyPK() const = 0;
+	virtual bool IsClueUnit() const { return false; }
 	virtual bool IsStrafing() const = 0;
 	virtual bool IsCarryingCorpse() const = 0;
 	virtual bool IsPerformingAction() const { return false; }
@@ -362,7 +364,7 @@ public:
 	virtual void AddVisitableChildren( vector<IVisObj*> *pRes ) = 0;
 	virtual bool GetCurrentCommandName( string *pName ) const = 0;
 	virtual CVec3 GetAttackOrigin() const = 0;
-	virtual CVec3 GetAttackOrigin( const NAI::SUnitPosition &from ) const = 0;
+	virtual CVec3 GetAttackOrigin( const NAI::SUnitPosition &from, bool bLeftHand = false ) const = 0;
 	virtual float GetMinClearDistance() const = 0;
 	virtual const CObjectBase* GetAttackIgnore() const = 0;
 	virtual EUnitCommandResult CanDo( CCmd *p, int *pnStartAP = 0, int *pnFullAP = 0 ) = 0; // destroys CCmd if it has zero references
@@ -642,6 +644,7 @@ public:
 	virtual NRPG::IGame* GetGame() = 0;
 	virtual NAI::IAIMap* GetAIMap() = 0;
 	virtual NAI::IPathNetwork* GetPathNetwork() = 0;
+	virtual NAI::IAIJobManager* GetAIJobManager() = 0;
 	virtual CFuncBase<STerrainInfo>* GetTerrainInfo() const = 0;
 	// retail IWorld vtbl+0x90 = CWorld::GetHeightLayers @0x376f00 -- the per-floor height cache the
 	// camera samples (CCamera::Update @0x4cdd4a). GetTerrainInfo is the raw GROUND heightmap; this is
@@ -656,15 +659,13 @@ public:
 	// retail NWorld::IWorld::EWeather (PDB) + IWorld vtbl+0x1c0 = CWorld::GetWeather @0x376e00,
 	// returning the CWeatherTracker state (rolled by CWorld::RollNewWeather @0x3631c0). Consumed
 	// by CRenderGame::SyncWeather @0x2cb9b0 (1500ms sun<->rain light cross-fade + precipitation).
-	// The dev world predates the weather tracker, so the interface defaults to sunny until that
-	// subsystem is ported.
 	enum EWeather
 	{
 		WEATHER_SUNNY = 0,
 		WEATHER_SNOW  = 1,
 		WEATHER_RAIN  = 2,
 	};
-	virtual EWeather GetWeather() const { return WEATHER_SUNNY; }
+	virtual EWeather GetWeather() const = 0;
 	virtual void GetInterrupts( vector< CPtr<IPlayer> > *pInterrups ) const = 0;
 	virtual CGlobalAck *GetGlobalAck() const = 0;
 	//

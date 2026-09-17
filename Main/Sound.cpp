@@ -44,8 +44,14 @@ class CSound2D: public ISound2D
 	OBJECT_BASIC_METHODS(CSound2D);
 public:
 	ZDATA
-	CObj<NFMSound::CSound2D> pSound;
-	ZEND int operator&( CStructureSaver &f ) { f.Add(2,&pSound); return 0; }
+	CObj<NFMSound::CSound2D> pSound; // runtime channel, NOT saved by retail
+	CDGPtr< CPtrFuncBase<NFMSound::CSample2D> > pSample;
+	STime tStartTime = 0;
+	int nStartSamples = 0;
+	int nEndingSamples = 0;
+	bool bLoop = false;
+	// Retail v1.2 0x706ef0: save the sample and playback parameters, not an FMOD channel.
+	ZEND int operator&( CStructureSaver &f ) { f.Add(2,&pSample); f.Add(3,&tStartTime); f.Add(4,&nStartSamples); f.Add(5,&nEndingSamples); f.Add(6,&bLoop); return 0; }
 	virtual bool IsPlaying()
 	{
 		return NFMSound::IsPlaying( pSound );
@@ -136,7 +142,7 @@ public:
 	CSoundScene( NDb::CTMusic *_pAmbient, NDb::CTMusic *_pCombat, CFuncBase<STime> *_pTime );
 
 	virtual CSound* Add3DSound( NDb::CSound *pSample, CFuncBase<CVec3> *pPos, STime tStart );
-	virtual CSound2D* Add2DSound( NDb::CSound *pSample );
+	virtual CSound2D* Add2DSound( NDb::CSound *pSample, STime tStart = 0 );
 	virtual CSoundEffect* AddEffect( NDb::CSoundEffect *pEff, STime stBeginTime, CFuncBase<STime> *pTime, CFuncBase<CVec3> *pPos, const vector<int> &flags );
 
 	virtual void SetMusic( NDb::EMusicType eType );
@@ -199,17 +205,22 @@ CSound* CSoundScene::Add3DSound( NDb::CSound *pSample, CFuncBase<CVec3> *pPos, S
 	return pSound;
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-CSound2D* CSoundScene::Add2DSound( NDb::CSound *pSample )
+CSound2D* CSoundScene::Add2DSound( NDb::CSound *pSample, STime tStart )
 {
 	if ( !pSample )
 	{
 		ASSERT( pSample );
 		return 0;
 	}
-	CDGPtr< CPtrFuncBase<NFMSound::CSample2D> > pSam = share2DSamples.Get( pSample->GetRecordID() );
-	pSam.Refresh();
 	CSound2D *p = new CSound2D;
-	p->pSound = NFMSound::PlaySound( pSam->GetValue() );
+	// Retail v1.2 0x7061e0: prepare here; Draw starts playback after the sample is ready.
+	p->pSample = share2DSamples.Get( pSample->GetRecordID() );
+	if ( NFMSound::IsInitialized() )
+		p->pSample.Refresh();
+	p->tStartTime = tStart;
+	p->nStartSamples = pSample->nStartSamples;
+	p->nEndingSamples = pSample->nEndingSamples;
+	p->bLoop = pSample->bLoop;
 	sounds2D.push_back( p );
 	return p;
 }
@@ -381,10 +392,27 @@ void CSoundScene::Draw( CTransformStack *pTS )
 	for ( list< CPtr<CSound2D> >::iterator it = sounds2D.begin(); it != sounds2D.end(); )
 	{
 		CSound2D *pSound = *it;
-		if ( !pSound || !IsValid( pSound->pSound ) )
+		if ( !pSound || ( !IsValid( pSound->pSound ) && !pSound->pSample ) )
 		{
 			it = sounds2D.erase( it );
 			continue;
+		}
+		// Retail v1.2 0x70594a..0x7059b5: restore the saved sample lazily,
+		// preserving its offset and loop region when creating the new runtime channel.
+		if ( NFMSound::IsInitialized() && !pSound->pSound )
+		{
+			pSound->pSample.Refresh();
+			NFMSound::CSample2D *pData = pSound->pSample->GetValue();
+			if ( pData )
+			{
+				pSound->pSound = NFMSound::PlaySound( pData,
+					(int)pSound->tStartTime, pSound->nStartSamples, pSound->nEndingSamples, pSound->bLoop );
+				if ( !IsValid( pSound->pSound ) )
+				{
+					it = sounds2D.erase( it );
+					continue;
+				}
+			}
 		}
 		++it;
 	}

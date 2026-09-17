@@ -11,6 +11,7 @@ typedef NGfx::SGeomVecNT1 STnLVertex;
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NGScene
 {
+extern bool bLowRAM; // gfx_low_ram, registered in GTexture.cpp
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // IPart
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -909,6 +910,17 @@ struct SGfxCacheTransformer : public SPartTransformer<SGenericTransformer>
 		if ( !pObjInfo )
 			return;
 		int nPartVerts = pObjInfo->GetVertices().size();
+		if ( nPartVerts == 0 )
+		{
+			p->gfxData.clear();
+			return;
+		}
+		// Retail v1.2 0x503ebb: only low-RAM mode bypasses the part cache.
+		if ( bLowRAM )
+		{
+			nVert += DoTransform( p, &geom[nVert], transformed );
+			return;
+		}
 		int nSize = sizeof(SGfxVertex) * nPartVerts;
 		if ( p->gfxData.size() != nSize )
 		{
@@ -1084,7 +1096,10 @@ void CVBCombiner::Recalc()
 	{
 		if ( ct == CT_DYNAMIC )
 		{
-			SGfxOutputTransformer trans( &pValue, nVerts, bufUsage );
+			// Retail v1.1 0x4ff6f1 / v1.2 0x4ff8f1 uses the same per-part
+			// cache as static batches. SetCombiner invalidates changed parts;
+			// an animated neighbour must not force every mesh to be skinned again.
+			SGfxCacheTransformer trans( &pValue, nVerts, bufUsage );
 			SimpleTransform( &trans );
 		}
 		else

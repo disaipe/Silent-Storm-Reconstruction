@@ -5,6 +5,7 @@
 #endif // _MSC_VER > 1000
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #include "Time.h"
+namespace NGScene { class CScreenshotTexture; }
 namespace NInput
 {
 	struct SEvent;
@@ -63,6 +64,7 @@ class CInterfaceCommand: public CObjectBase
 // Interface Commands
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 void Command( CInterfaceCommand *pCmd );
+void CommandWithAutoSave( const string &szName, CInterfaceCommand *pCmd );
 bool HaveInterfaceCommand();	// retail @0x1f4e40: is an interface command queued (aborts Step's skip fast-forward)
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 class CICContainer: public CInterfaceCommand
@@ -105,10 +107,12 @@ class CICSave: public CInterfaceCommand
 private:
 	bool bSilent;
 	string szName;
+	CObj<NGScene::CScreenshotTexture> pScreenShotTexture;
 
 public:
-	CICSave() {}
-	CICSave( const string &_szName, bool _bSilent = false ): szName( _szName ), bSilent( _bSilent ) {}
+	CICSave() : bSilent( false ) {}
+	CICSave( const string &_szName, bool _bSilent = false );
+	CICSave( const string &_szName, NGScene::CScreenshotTexture *pTexture, bool _bSilent );
 
 	virtual void Exec();
 };

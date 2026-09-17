@@ -1,5 +1,7 @@
 #include "StdAfx.h"
 #include "wInterface.h"
+#include "wHeightLayers.h"
+#include "Grid.h"
 #include "wInterfaceVisitors.h"
 #include "GView.h"
 #include "GSceneUtils.h"
@@ -46,6 +48,43 @@ const int N_FOV = 60;
 // default 0, saved), game_showweathereffect -> bool @0x97fec8 (VarBoolHandler, default 1, saved).
 int nSelectionMode = 0;
 static bool bShowWeatherEffect = true;
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Retail 0x6cffc0 / v1.2 0x6d0590: suppress precipitation below the
+// highest terrain/roof layer. Outside the map (or without layers), keep it.
+class CParticleFilter : public NGScene::IParticleFilter
+{
+	OBJECT_BASIC_METHODS( CParticleFilter );
+	ZDATA
+	CObj<NWorld::IHeightLayers> pLayers;
+	ZEND int operator&( CStructureSaver &f ) { f.Add(2,&pLayers); return 0; }
+public:
+	CParticleFilter() {}
+	CParticleFilter( NWorld::IHeightLayers *_pLayers ) : pLayers(_pLayers) {}
+	void FilterParticles( vector<CVec3> *pPositions, vector<unsigned char> *pFlags )
+	{
+		pFlags->clear();
+		if ( !pLayers )
+		{
+			pFlags->resize( pPositions->size(), 0 );
+			return;
+		}
+		pFlags->resize( pPositions->size(), 1 );
+		const CArray2D<float> &heights = pLayers->GetLayer( 100 )->heights;
+		for ( int i = 0; i < pPositions->size(); ++i )
+		{
+			const CVec3 &pos = (*pPositions)[i];
+			int nX = Float2Int( pos.x * FP_INV_GRID_STEP );
+			int nY = Float2Int( pos.y * FP_INV_GRID_STEP );
+			if ( (unsigned)nX >= (unsigned)heights.GetXSize() ||
+				(unsigned)nY >= (unsigned)heights.GetYSize() || pos.z >= heights[nY][nX] )
+				(*pFlags)[i] = 0;
+		}
+	}
+	virtual void Filter( vector<CVec3> *pPositions, vector<unsigned char> *pFlags )
+	{
+		FilterParticles( pPositions, pFlags );
+	}
+};
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // ChooseBodyColor @0x2cb6b0 -- overwrite the body model's SKIN material slot (pMaterials[1] = the neck/hands skin)
 // with the chosen race's material, so the body skin tone tracks the FaceGen Nationality slider (in retail the head
@@ -1278,14 +1317,13 @@ void CRenderGame::UpdateSound( bool bAdvanceTime, CTransformStack *pTS, STime cu
 //      light fades out (Blend weights its FIRST light by f; disasm 0x6cbadf: EAX=pRainLight).
 //   3. weather changed: stamp tWeatherChange/wasWeather and rebuild the precipitation effect.
 //      Retail (disasm 0x6cbb5f): RAIN -> pScene->CreateRain( NDb::GetParticleInstance(3407),
-//      GetTime(), new CParticleFilter( pWorld->GetHeightLayers(1) ) ); SNOW -> pScene->
+//      GetTime(), new CParticleFilter( pWorld->GetHeightLayers() ) ); SNOW -> pScene->
 //      CreateParticles( NDb::GetTEffect(732)->GetEffect(&rnd), identity place, GetTime(), filter ).
-//      The dev scene has no CreateRain/CParticleFilter/height-layer plumbing yet, so the effect
-//      cannot be BUILT here; pWeatherEffect still round-trips the save wire (tag 14).
+//      Both precipitation types use the height filter.
 // v1.2 @0x6cbb90 restructured step 3: ANY weather change just drops the effect + stamps, and a
 // trailing reconcile block (@0x6cbd73) compares IsValid(pWeatherEffect) against the new
 // game_showweathereffect toggle -- build for RAIN/SNOW when on, drop otherwise. The build arm is
-// blocked on the same missing scene factories; the drop arm is live.
+// restored below for both precipitation types.
 void CRenderGame::SyncWeather()
 {
 	if ( !IsValid( pSunLight ) )
@@ -1345,8 +1383,19 @@ void CRenderGame::SyncWeather()
 	{
 		if ( ( eWeather == NWorld::IWorld::WEATHER_RAIN || eWeather == NWorld::IWorld::WEATHER_SNOW ) && bShowWeatherEffect )
 		{
-			// retail builds the rain (scene vtbl+0x4c) / snow (vtbl+0x44) renderable here (see the
-			// function banner) -- blocked on the missing scene factories, so the effect stays absent
+			if ( eWeather == NWorld::IWorld::WEATHER_RAIN )
+				pWeatherEffect = pScene->CreateRain( NDb::GetParticleInstance(3407),
+					GetTime(), new CParticleFilter( pWorld->GetHeightLayers() ) );
+			else
+			{
+				// Retail v1.2 0x6cbe3e: snow is the repeating standard effect 732.
+				SRand rnd;
+				SFBTransform place;
+				Identity( &place.forward );
+				Identity( &place.backward );
+				pWeatherEffect = pScene->CreateParticles( NDb::GetTEffect(732)->GetEffect(&rnd),
+					0, GetTime(), place, NGScene::SRoomInfo(), new CParticleFilter( pWorld->GetHeightLayers() ) );
+			}
 		}
 		else
 		{
@@ -1525,6 +1574,7 @@ using namespace NRender;
 BASIC_REGISTER_CLASS( IShowUnit );
 BASIC_REGISTER_CLASS( IRenderGame );
 REGISTER_SAVELOAD_CLASS( 0x01941130, CRenderGame );
+REGISTER_SAVELOAD_CLASS( 0x01163130, CParticleFilter );
 REGISTER_SAVELOAD_CLASS( 0x01941131, CSelection );
 REGISTER_SAVELOAD_CLASS( 0x01941132, CShowWorldUnit );
 REGISTER_SAVELOAD_CLASS( 0x01941133, CFakeWorldUnit );

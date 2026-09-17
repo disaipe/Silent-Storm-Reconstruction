@@ -288,7 +288,9 @@ NDb::CRPGUniform* CInventory::GetUniform() const
 	if ( !IsValid( pOwner ) )
 		return 0;
 
-	return pOwner->GetPers()->pUniform;
+	// Retail v1.1 0x69d820 / v1.2 0x69d850: the unit's saved uniform,
+	// not its persona's default (custom heroes can wear a different uniform).
+	return pOwner->pUniform;
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 void CInventory::SetPanzerklein( NDb::CPanzerklein *_pPK, IInventory *pPKInventory )

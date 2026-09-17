@@ -3,6 +3,7 @@
 #include "GView.h"
 #include "Gfx.h"
 #include "SWTexture.h"
+#include "ScreenShot.h"
 #include "GScene.h"
 #include "G2DView.h"
 #include "A5Script.h"
@@ -266,6 +267,21 @@ void CICLoad::Exec()
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // CICSave
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+CICSave::CICSave( const string &_szName, bool _bSilent ):
+	szName( _szName ), bSilent( _bSilent )
+{
+	pScreenShotTexture = new NGScene::CScreenshotTexture;
+	pScreenShotTexture->Generate();
+}
+CICSave::CICSave( const string &_szName, NGScene::CScreenshotTexture *pTexture, bool _bSilent ):
+	szName( _szName ), bSilent( _bSilent ), pScreenShotTexture( pTexture )
+{
+	if ( !IsValid( pScreenShotTexture ) )
+	{
+		pScreenShotTexture = new NGScene::CScreenshotTexture;
+		pScreenShotTexture->Generate();
+	}
+}
 void CICSave::Exec()
 {
 	if ( strcspn( szName.c_str(), S_INVALID_SAVE_CHARS ) != szName.length() )
@@ -274,11 +290,13 @@ void CICSave::Exec()
 		return;
 	}
 
-	StepApp( true, true, false );
 	CArray2D<NGfx::SPixel8888> sScreenShot;
-	NGfx::MakeScreenShot( &sScreenShot, true );
+	// Retail consumes the screenshot captured when the command was queued.
+	// Pumping StepApp here could run another transition before the snapshot.
+	pScreenShotTexture->Get( &sScreenShot );
 
-	ShowSplash( NDb::GetUIContainer( 349 ), sScreenShot );
+	if ( !bSilent )
+		ShowSplash( NDb::GetUIContainer( 349 ), sScreenShot );
 
 	CSaveManager *pSaveManager = GetSaveManager();
 
@@ -418,9 +436,9 @@ static void ProcessStandardEvents( const NInput::SEvent &eEvent )
 	else if ( cWireframe.ProcessEvent( eEvent ) )
 		NGScene::SetWireframe( bWireFrame = !bWireFrame );
 	else if ( cLoad.ProcessEvent( eEvent ) )
-		Command( new NMainLoop::CICLoad( string( S_SLOT_QUICKSAVE ) ) );
+		Command( new NMainLoop::CICLoad( GetQuickSaveSlot( true ) ) );
 	else if ( cSave.ProcessEvent( eEvent ) )
-		Command( new NMainLoop::CICSave( string( S_SLOT_QUICKSAVE ) ) );
+		Command( new NMainLoop::CICSave( GetQuickSaveSlot( false ) ) );
 	else if ( cScreenShot.ProcessEvent( eEvent ) )
 	{
 		if ( MakeScreenShot() )
@@ -491,6 +509,16 @@ void DoneInterface()
 void Command( CInterfaceCommand *pCmd )
 {
 	cmds.push_back( pCmd );
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////
+void CommandWithAutoSave( const string &szName, CInterfaceCommand *pCmd )
+{
+	// Retail v1.2 0x5f63d0: save the pre-transition state before executing pCmd.
+	vector<CPtr<CInterfaceCommand> > commands;
+	if ( NGlobal::GetVar( "game_autosaves", 1 ).GetFloat() != 0 )
+		commands.push_back( new CICSave( szName ) );
+	commands.push_back( pCmd );
+	Command( new CICContainer( commands ) );
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // retail @0x1f4e40

@@ -157,6 +157,7 @@ public:
 	CPtr<CTEffect> pShotEffect2;
 	CPtr<CTEffect> pShotEffect3;
 
+	CTEffect* GetShotEffect( int nType ) const;
 	virtual void Import();
 };
 ////////////////////////////////////////////////////////////////////////////////////////////////////

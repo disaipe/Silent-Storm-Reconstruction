@@ -109,7 +109,7 @@ public:
 };
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 CChapterMap::CChapterMap():
-	bindShowGlobal( "showglobal" ), bindMenu( "menu" ), bindJournal( "clues" ),
+	bindShowGlobal( "showglobal" ), bindMenu( "gamemenu" ), bindJournal( "clues" ),
 	bV12WorldCmdFlag( false )	// v1.2 ctor @0x5a7560
 {
 	// retail ctor @0x1a6a60 tail: `mov byte ptr [esi + 0x4d], bl` with bl = 0 (xor ebx,ebx) --
@@ -198,17 +198,19 @@ bool CChapterMap::ProcessEvent( const NInput::SEvent &sEvent )
 {
 	NInput::SetSection( "game" );
 
+	// Retail routes CMissionBase's gamemenu bind before cursor/UI events.
+	if ( bindMenu.ProcessEvent( sEvent ) )
+	{
+		NMainLoop::Command( new CICInGameMenu( pGlobalGame->players.front(), false, bCanSave ) );
+		return true;
+	}
+
 	pCursor->ProcessEvent( sEvent );
 
 	if ( pInterface->ProcessEvent( sEvent ) )
 		return true;
 
-	if ( bindMenu.ProcessEvent( sEvent ) )
-	{
-		NMainLoop::Command( new CICInGameMenu( pGlobalGame->players.front() ) ); 
-		return true;
-	}
-	else if ( bindJournal.ProcessEvent( sEvent ) )
+	if ( bindJournal.ProcessEvent( sEvent ) )
 	{
 		NMainLoop::Command( new CICClues( pGlobalGame ) ); 
 		return true;

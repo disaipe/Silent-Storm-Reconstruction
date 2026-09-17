@@ -143,7 +143,7 @@ class CGameView: public IGameView
 	CObjectBase* CreateParticles( int nPFlags, bool bCastShadows, bool bTreeCrown, CPtrFuncBase<CParticleEffect> *pEffect,
 		CFuncBase<SFBTransform> *pPlacement,
 		const SBound &bound, const SRoomInfo &_g );
-	CObjectBase* TrueCreateParticles( bool _bIsDynamic, NDb::CEffect *pEffect, STime stBeginTime, CFuncBase<STime> *pTime, CFuncBase<SFBTransform> *pPlacement, const SRoomInfo &_g, NAnimation::CSkeletonAnimator *pScAnim = 0 );
+	CObjectBase* TrueCreateParticles( bool _bIsDynamic, NDb::CEffect *pEffect, STime stBeginTime, CFuncBase<STime> *pTime, CFuncBase<SFBTransform> *pPlacement, const SRoomInfo &_g, NAnimation::CSkeletonAnimator *pScAnim = 0, IParticleFilter *pFilter = 0 );
 	void Draw( CTransformStack *pTS, CTransformStack *pClipTS, NGfx::CRenderContext *pRC, ERenderPath rp );
 	void MakeTargetRect( CTRect<float> *pRes, const SDrawInfo &drawInfo );
 	IMaterial* CreateMaterialShared( NDb::CMaterial *p );
@@ -164,8 +164,9 @@ public:
 	virtual CObjectBase* CreateTerrainWall( CPtrFuncBase<CTerrainPart> *pPart, NDb::CTexture *pTexture, const SFullRoomInfo &_g = SFullRoomInfo() );
 	virtual CObjectBase* CreateGrassSector( CGrassAnimator *pEffect, NDb::CTexture *pTexture, CFuncBase<SFBTransform> *pPlacement, const SBound &bound, const SRoomInfo &_g = SRoomInfo() );
 	virtual CObjectBase* CreateSelection( const vector<CObjectBase*> &target, const CVec4 &vColor );
-	virtual CObjectBase* CreateParticles( NDb::CEffect *pEffect, STime stBeginTime, CFuncBase<STime> *pTime, CFuncBase<SFBTransform> *pPlacement, const SRoomInfo &_g, NAnimation::CSkeletonAnimator *pScAnim );
-	virtual CObjectBase* CreateParticles( NDb::CEffect *pEffect, STime stBeginTime, CFuncBase<STime> *pTime, const SFBTransform &place, const SRoomInfo &_g );
+	virtual CObjectBase* CreateParticles( NDb::CEffect *pEffect, STime stBeginTime, CFuncBase<STime> *pTime, CFuncBase<SFBTransform> *pPlacement, const SRoomInfo &_g, NAnimation::CSkeletonAnimator *pScAnim, IParticleFilter *pFilter );
+	virtual CObjectBase* CreateParticles( NDb::CEffect *pEffect, STime stBeginTime, CFuncBase<STime> *pTime, const SFBTransform &place, const SRoomInfo &_g, IParticleFilter *pFilter );
+	virtual CObjectBase* CreateRain( NDb::CParticleInstance *pInstance, CFuncBase<STime> *pTime, IParticleFilter *pFilter, const SRoomInfo &_g );
 	virtual CBuilding* CreateBuildingPart( int nPartID, const SMapBuilding &info, NBuilding::CBuildingInfoHold *pBI );
 	virtual CPolyline* CreatePolyline( const vector<CVec3> &points, const CVec3 &color );
 	virtual CObjectBase* CreateExplosion( CFuncBase<STime> *pTime, NDb::CEffect *pEffect, CFuncBase<CExplosionInfo> *pExplosion, const CVec3 &pos, const SRoomInfo &_g );
@@ -673,8 +674,26 @@ static void InitParticleTextures( T *pAnimator, NDb::CParticleInstance *pInstanc
 	pAnimator->textureIDs.resize( nLast + 1 );
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Retail 0x58af10 / v1.2 0x58b910: rain follows the scene camera, with an
+// identity placement and a map-sized bound rather than a normal effect emitter.
+CObjectBase* CGameView::CreateRain( NDb::CParticleInstance *pInstance, CFuncBase<STime> *pTime,
+	IParticleFilter *pFilter, const SRoomInfo &_g )
+{
+	if ( !pInstance->pParticle )
+		return 0;
+	CRainAnimator *pAnimator = new CRainAnimator( pTime, pScene->GetCamera(), pFilter );
+	InitParticleTextures( pAnimator, pInstance );
+	int nPFlags = PF_DYNAMIC;
+	if ( pInstance->light == NDb::CParticleInstance::L_LIT )
+		nPFlags |= PF_LIT;
+	SBound bound;
+	bound.BoxInit( CVec3(0,0,0), CVec3(1000,1000,50) );
+	return CreateParticles( nPFlags, pInstance->bDoesCastShadow, pInstance->bIsCrown,
+		pAnimator, pIdentityTransform, bound, _g );
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////
 CObjectBase* CGameView::TrueCreateParticles( bool _bIsDynamic, NDb::CEffect *pEffect, STime stBeginTime, 
-	CFuncBase<STime> *pTime, CFuncBase<SFBTransform> *pPlacement, const SRoomInfo &_g, NAnimation::CSkeletonAnimator *pScAnim )
+	CFuncBase<STime> *pTime, CFuncBase<SFBTransform> *pPlacement, const SRoomInfo &_g, NAnimation::CSkeletonAnimator *pScAnim, IParticleFilter *pFilter )
 {
 	CPtr< CFuncBase<SFBTransform> > pTransformHolder( pPlacement );
 	CPtr<NAnimation::CSkeletonAnimator> pAnimatorHolder( pScAnim );
@@ -688,7 +707,7 @@ CObjectBase* CGameView::TrueCreateParticles( bool _bIsDynamic, NDb::CEffect *pEf
 		if ( !pParticle )
 			continue;
 
-		CParticleAnimator *pAnimator = new NGScene::CParticleAnimator( pInstance, stBeginTime );
+		CParticleAnimator *pAnimator = new NGScene::CParticleAnimator( pInstance, stBeginTime, pFilter );
 		pAnimator->pInfo = shareParticles.Get( pParticle->GetRecordID() );
 		pAnimator->pTime = pTime;
 		SFBTransform trans;
@@ -719,7 +738,11 @@ CObjectBase* CGameView::TrueCreateParticles( bool _bIsDynamic, NDb::CEffect *pEf
 			nPFlags |= PF_STATIC;
 		else
 			nPFlags |= PF_DYNAMIC;
-		pRes->AddPart( CreateParticles( nPFlags, pInstance->bDoesCastShadow, pInstance->bIsCrown, pAnimator, pMSR, pParticle->bound, _g ) );
+		SBound bound = pParticle->bound;
+		// Retail 0x58aa3a..0x58aaa1: a wrapped cloud covers the map, not just its source cell.
+		if ( pParticle->vWrapSize.x != 0 )
+			bound.BoxInit( CVec3(0, 0, 0), CVec3(1000, 1000, 50) );
+		pRes->AddPart( CreateParticles( nPFlags, pInstance->bDoesCastShadow, pInstance->bIsCrown, pAnimator, pMSR, bound, _g ) );
 	}
 	for ( int i = 0; i < pEffect->lights.size(); ++i )
 	{
@@ -755,15 +778,15 @@ CObjectBase* CGameView::TrueCreateParticles( bool _bIsDynamic, NDb::CEffect *pEf
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 CObjectBase* CGameView::CreateParticles( NDb::CEffect *pEffect, STime stBeginTime, 
-	CFuncBase<STime> *pTime, CFuncBase<SFBTransform> *pPlacement, const SRoomInfo &_r, NAnimation::CSkeletonAnimator *pScAnim )
+	CFuncBase<STime> *pTime, CFuncBase<SFBTransform> *pPlacement, const SRoomInfo &_r, NAnimation::CSkeletonAnimator *pScAnim, IParticleFilter *pFilter )
 {
-	return TrueCreateParticles( true, pEffect, stBeginTime, pTime, pPlacement, _r, pScAnim );
+	return TrueCreateParticles( true, pEffect, stBeginTime, pTime, pPlacement, _r, pScAnim, pFilter );
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 CObjectBase* CGameView::CreateParticles( NDb::CEffect *pEffect, STime stBeginTime, CFuncBase<STime> *pTime, 
-	const SFBTransform &place, const SRoomInfo &_g )
+	const SFBTransform &place, const SRoomInfo &_g, IParticleFilter *pFilter )
 {
-	return TrueCreateParticles( false, pEffect, stBeginTime, pTime, new CCFBTransform( place ), _g );
+	return TrueCreateParticles( false, pEffect, stBeginTime, pTime, new CCFBTransform( place ), _g, 0, pFilter );
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 CObjectBase* CGameView::CreateExplosion( CFuncBase<STime> *pTime, NDb::CEffect *pEffect,

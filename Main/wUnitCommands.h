@@ -57,7 +57,8 @@ enum EUnitCommandResult
 	                                  // (retail ordinal 16; here appended -> 17)
 	UCR_DOOR_LOCKED,                  // locked door, no key and no charged picklock in hand --
 	                                  // CExecOpenClose::CanDoIt @0x3bd290 (retail ordinal 17; here appended -> 18)
-	UCR_OK_RELOAD                    // attack replaced by a reload (retail ordinal 2)
+	UCR_OK_RELOAD,                   // attack replaced by a reload (retail ordinal 2)
+	UCR_CANT_SEE_TARGET              // aimed body part has no direct line of sight (retail ordinal 14)
 };
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 class CCmd: public CObjectBase

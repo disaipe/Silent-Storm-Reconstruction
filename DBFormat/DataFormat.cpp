@@ -1912,6 +1912,7 @@ CTemplVariant* GetTemplVariant( int nID ) { return Get<CTemplVariant>( nID ); }
 CTRndModel* GetTRndModel( int nModelID ) { return Get<CTRndModel>( nModelID ); }
 CTEffect* GetTEffect( int nTEffectID ) { return Get<CTEffect>( nTEffectID ); }
 CEffect* GetEffect( int nEffectID ) { return Get<CEffect>( nEffectID ); }
+CParticleInstance* GetParticleInstance( int nID ) { return Get<CParticleInstance>( nID ); }
 CTexture* GetTexture( int nTextureID ) { return Get<CTexture>( nTextureID ); }
 CAnimation* GetAnimation( int nAnimID ) { return Get<CAnimation>( nAnimID ); }
 CGeometry* GetGeometry( int nGeometryID ) { return Get<CGeometry>( nGeometryID ); }

@@ -40,6 +40,9 @@ public:
 	CScenarioTask( NDb::CScenarioTask *_pDBTask, CScenarioClue *_pParentClue = 0 ): pDBTask( _pDBTask ), pParentClue( _pParentClue ), eState( TS_UNKNOWN ), bDetected( false ), bVisible( true ) {}
 	NDb::CScenarioTask* GetDBTask() const { return pDBTask; }
 	CScenarioClue* GetParentClue() const { return pParentClue; }
+	NDb::CString* GetDescription() const { return IsValid( pDBTask ) ? pDBTask->pDescription.GetPtr() : 0; }
+	bool IsVisible() const { return bVisible; }
+	bool IsDetected() const { return bDetected; }
 	ETaskState GetState() const { return eState; }
 	void SetState( ETaskState _eState ) { eState = _eState; }
 };
@@ -213,6 +216,12 @@ public:
 	bool IsDestroyed() { return bDestroyed; }
 	void SetDestroyed( bool _bDestroyed ) { bDestroyed = _bDestroyed;	}
 	CScenarioGoal* GetGoal() const { return pGoal; }
+	NDb::CString* GetDescription() const
+	{
+		if ( !IsValid( pDBClue ) )
+			return 0;
+		return IsValid( pDBClue->pGoal ) ? pDBClue->pGoal->pName.GetPtr() : pDBClue->pDescription.GetPtr();
+	}
 	bool IsDetected() const { return bDetected; }
 	void SetDetected( bool _bDetected ) { bDetected = _bDetected; }
 	//

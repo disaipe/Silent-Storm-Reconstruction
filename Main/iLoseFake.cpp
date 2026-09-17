@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include "Gfx.h"
+#include "..\Misc\StrProc.h"
 #include "iMain.h"
 #include "G2DView.h"
 #include "..\MiscDll\Commands.h"
@@ -296,9 +297,10 @@ void CLeaveZoneMenuInterface::Initialize( IMission *_pMission, NDb::CString *pTi
 	pInterface = new NUI::CInterface( pCursor );
 
 	pScreenShot = new NUI::CScreenShot( NUI::SWindowInfo( pInterface, NUI::SPoint( 0, 0 ), NUI::SPoint( 1024, 768 ), "clues", NUI::STYLE_ENABLED | NUI::STYLE_VISIBLE | NUI::STYLE_BOTTOMMOST ) );
+	// Retail 0x5f1291: grayscale applies to supplied screenshots too.
+	pScreenShot->SetMode( NUI::CScreenShot::BLACKANDWHITE, CVec4( 0.677f, 0.877f, 1.0f, 1.0f ) );
 	if ( !IsValid( pScreenShotTexture ) )
 	{
-		pScreenShot->SetMode( NUI::CScreenShot::BLACKANDWHITE, CVec4( 0.5f, 0.5f, 0.5f, 1 ) );
 		pScreenShot->Generate();
 	}
 	else
@@ -340,10 +342,11 @@ bool CLeaveZoneMenuInterface::ProcessEvent( const NInput::SEvent &sEvent )
 	}
 	else if ( bindConfirm.ProcessEvent( sEvent ) || bindEndMission.ProcessEvent( sEvent ) )
 	{
-		// confirm / end -> close the modal and end the mission. (The retail also inserts an autosave
-		// CICSave when bAutoSave; its slot-name DB string id isn't recovered, so it is omitted here.)
+		// Retail v1.2 0x5f1b91: the leave-confirmation path always saves,
+		// even when bAutoSave is false. Save after closing the modal, before OnRealExit.
 		vector<CPtr<NMainLoop::CInterfaceCommand> > cmds;
 		cmds.push_back( new NMainLoop::CICExitModal() );
+		cmds.push_back( new NMainLoop::CICSave( NStr::ToAscii( NUI::GetDBString( 20244 ) ), pScreenShotTexture, false ) );
 		cmds.push_back( new CICEndMission( pMission ) );
 		NMainLoop::Command( new NMainLoop::CICContainer( cmds ) );
 		return false;	// ORIGINAL BUG (confirmed): returns false on confirm/endmission

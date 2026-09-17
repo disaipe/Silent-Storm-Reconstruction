@@ -253,11 +253,9 @@ bool CUnitAnimator::GetHipPos( CVec3 *pRes )
 		NAnimation::SBonePose sBone = pose[nIndex];
 		sBone.MakeGlobal( pose );
 
-		float fZ = pTerrainFunc->GetHeight( sBone.pos.x, sBone.pos.y );
-
-		pRes->x = sBone.pos.x;
-		pRes->y = sBone.pos.y;
-		pRes->z = fZ;
+		// Retail v1.1 0x73b6bc / v1.2 0x73bcbc: retain the animated
+		// hip's full world position, including height while carried.
+		*pRes = sBone.pos;
 		return true;
 	}
 
@@ -306,6 +304,7 @@ bool CUnitAnimator::GetBarrelPos( NDb::CGeometry *pWeaponGeometry, NAnimation::S
 					pszBoneName = "MachineGun";
 					break;
 				case NDb::WT_RLAUNCHER:
+				case NDb::WT_PLAZMAGUN: // retail v1.2 0x73bfc8: both use the rocket-launcher locator
 					pszBoneName = "RocketLauncher";
 					break;
 				default:

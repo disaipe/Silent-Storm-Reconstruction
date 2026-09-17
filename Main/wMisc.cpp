@@ -156,6 +156,28 @@ void C3DSound::EndSound()
 	}
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// C2DSound: v1.2 ctor 0x7803b0, Visit 0x77fa70, EndSound 0x77fc70.
+////////////////////////////////////////////////////////////////////////////////////////////////////
+C2DSound::C2DSound( NDb::CSound *_pSound )
+: CTimedObject( _pSound->nEndingSamples > 0 ? 10000000 : 1000 ), pSound(_pSound)
+{
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////
+void C2DSound::Visit( ISoundVisitor *p )
+{
+	if ( !bFinished )
+		p->Add2DSound( GetEventTime(), pSound );
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////
+void C2DSound::EndSound()
+{
+	if ( !bFinished )
+	{
+		bFinished = true;
+		bindGlobal.Update();
+	}
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // CDGrassEvent
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 CDGrassEvent::CDGrassEvent( const CVec3 &_vPlace )
@@ -254,6 +276,11 @@ C3DSound *Create3DSound( const CVec3 &pos, NDb::CSound *pSound )
 	return new C3DSound( pos, pSound );
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+C2DSound *Create2DSound( NDb::CSound *pSound )
+{
+	return new C2DSound( pSound );
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////
 CTimedObject *CreateDGrassEvent( const CVec3 &ptPlace )
 {
 	return new CDGrassEvent(ptPlace);
@@ -264,6 +291,7 @@ using namespace NWorld;
 BASIC_REGISTER_CLASS( CTimedObject )
 REGISTER_SAVELOAD_CLASS( 0x01512120, CDParticles )
 REGISTER_SAVELOAD_CLASS( 0x01512121, C3DSound )
+REGISTER_SAVELOAD_CLASS( 0x00263140, C2DSound )
 REGISTER_SAVELOAD_CLASS( 0x01512122, CDGrassEvent )
 REGISTER_SAVELOAD_CLASS( 0xB3130170, CDMesh )   // @0x37f8d0 retail saveload id
 //REGISTER_SAVELOAD_CLASS( 0x01512130, CDFlash )

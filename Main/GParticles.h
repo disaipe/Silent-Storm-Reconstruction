@@ -46,16 +46,15 @@ public:
 	// pFilter @+0x44 (last member): the release ADDED this over Jan03 -- an optional cull/transform
 	// hook handed down to the produced effect by Recalc @0x143b50 (value.pFilter = pFilter), where
 	// CStandardParticleEffect::AddParticles @0x141360 applies it (`if (pFilter) pFilter->Filter()`).
-	// Retail has NO code-path setter: the only producers are DoPtr<IParticleFilter> @0x145c10
-	// (this chunk) and MakeCopy @0x145050 -- and every tag-8 payload in all 9 v1.2 saves is null.
-	// Serialized regardless, so the chunk is consumed and dev-written saves round-trip retail's shape.
+	// The filtered CreateParticles overload supplies this for snow (retail ctor 0x58c370).
 	CObj<IParticleFilter> pFilter;
 	// retail @0x145ab0: 2=stBeginTime(4), 3=pInstance, 4=pTime, 5=pPlacement, 6=pInfo,
 	// 7=textureIDs (DoVector), 8=pFilter
 	ZEND int operator&( CStructureSaver &f ) { f.Add(2,&stBeginTime); f.Add(3,&pInstance); f.Add(4,&pTime); f.Add(5,&pPlacement); f.Add(6,&pInfo); f.Add(7,&textureIDs); f.Add(8,&pFilter); return 0; }
 
 	CParticleAnimator() {}
-	CParticleAnimator( NDb::CParticleInstance *_pInstance, STime t ): pInstance(_pInstance), stBeginTime(t) {}
+	CParticleAnimator( NDb::CParticleInstance *_pInstance, STime t, IParticleFilter *_pFilter = 0 ):
+		pInstance(_pInstance), stBeginTime(t), pFilter(_pFilter) {}
 };
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 class CGrassTracker;
@@ -140,6 +139,8 @@ public:
 	ZEND int operator&( CStructureSaver &f ) { f.Add(2,&pTime); f.Add(3,&pCamera); f.Add(4,&pFilter); f.Add(5,&textureIDs); f.Add(6,&tStart); return 0; }
 
 	CRainAnimator() { tStart = 0; }
+	CRainAnimator( CFuncBase<STime> *_pTime, CFuncBase<CVec3> *_pCamera, IParticleFilter *_pFilter )
+		: pTime(_pTime), pCamera(_pCamera), pFilter(_pFilter), tStart(0) {}
 };
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 }

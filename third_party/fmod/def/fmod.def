@@ -45,6 +45,7 @@ EXPORTS
     _FSOUND_SetPan@8
     _FSOUND_GetCurrentPosition@4
     _FSOUND_GetLoopMode@4
+    _FSOUND_SetLoopMode@8
     _FSOUND_GetPriority@4
     _FSOUND_3D_SetAttributes@12
     _FSOUND_3D_Listener_SetAttributes@32
