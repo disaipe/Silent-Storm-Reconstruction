@@ -117,8 +117,8 @@ void CFastRenderer::InitParallel( const CVec2 &_ptOrigin, float fAngle, float fS
 	MakeMatrix( &t, CVec3(fStep, fStep, 1), CVec3(_ptOrigin.x,_ptOrigin.y,0), fAngle );
 	transform = t.backward;
 	// shift by 0.5 pixel
-	transform.x += transform.w * 0.499f; // should be 0.5f, but until terrain patches are not shifted this is required
-	transform.y += transform.w * 0.499f;
+	transform.RowX() += transform.RowW() * 0.499f; // should be 0.5f, but until terrain patches are not shifted this is required
+	transform.RowY() += transform.RowW() * 0.499f;
 	// init ts
 	ts.MakeParallel( region.Width() + 0.01f, region.Height() + 0.01f );
 	SHMatrix cam;
@@ -147,9 +147,9 @@ void CFastRenderer::InitParallel( const SHMatrix &cameraPos, float fHalfSize, in
 	ts.MakeParallel( fHalfSize * 2, fHalfSize * 2, -5000, 5000 );
 	ts.SetCamera( cameraPos );
 	transform = ts.Get().forward;
-	transform.x *= nHalfSize;
-	transform.y *= nHalfSize;
-	transform.z = transform.z * 10000 - transform.w * 5000;
+	transform.RowX() *= nHalfSize;
+	transform.RowY() *= nHalfSize;
+	transform.RowZ() = transform.RowZ() * 10000 - transform.RowW() * 5000;
 	// setup grids
 	SetRegion( CTRect<int>( -nHalfSize, -nHalfSize, nHalfSize, nHalfSize ) );
 	bPerspective = false;
@@ -165,8 +165,8 @@ void CFastRenderer::InitProjective( const SHMatrix &cameraPos, float fDistance, 
 	ts.SetCamera( cameraPos );
 	transform = ts.Get().forward;
 	CTRect<int> region( -nHalfSize, -nHalfSize, nHalfSize, nHalfSize );
-	transform.x *= nHalfSize;
-	transform.y *= nHalfSize;
+	transform.RowX() *= nHalfSize;
+	transform.RowY() *= nHalfSize;
 	//
 	SetRegion( region );
 	//grid.SetSizes( region.Width(), region.Height() );

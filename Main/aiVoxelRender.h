@@ -134,10 +134,10 @@ public:
 		//pBaseVoxel[ nDeltaX * nX + nDeltaY * nY + nDeltaZ * Float2Int( fShift + fWZ * ( nResolution - 1 ) ) ];
 		ts.SetCamera( cam );
 		transform = ts.Get().forward;
-		transform.x = transform.x * 0.5f + transform.w * 0.5f; // [0,1] range instead of [-1,1]
-		transform.y = transform.y * 0.5f + transform.w * 0.5f; // [0,1] range
-		transform.x *= nResolution;
-		transform.y *= nResolution;
+		transform.RowX() = transform.RowX() * 0.5f + transform.RowW() * 0.5f; // [0,1] range instead of [-1,1]
+		transform.RowY() = transform.RowY() * 0.5f + transform.RowW() * 0.5f; // [0,1] range
+		transform.RowX() *= nResolution;
+		transform.RowY() *= nResolution;
 	}
 	friend class CRasterizer<TFinal>;
 };

@@ -332,14 +332,14 @@ template <int nMaxNumMatrices>
 inline void CMatrixStack43<nMaxNumMatrices>::Push( const CQuat &rot )
 {
 	SHMatrix matrix;
-	rot.DecompEulerMatrix( matrix );
+	rot.DecompEulerMatrix( &matrix );
 	Push33( matrix );
 }
 template <int nMaxNumMatrices>
 inline void CMatrixStack43<nMaxNumMatrices>::Push( const CVec3 &pos, const CQuat &rot )
 {
 	SHMatrix matrix;
-	rot.DecompEulerMatrix( matrix );
+	rot.DecompEulerMatrix( &matrix );
 	matrix._14 = pos.x; matrix._24 = pos.y; matrix._34 = pos.z;
 	Push43( matrix );
 }

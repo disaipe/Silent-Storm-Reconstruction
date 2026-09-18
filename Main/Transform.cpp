@@ -279,8 +279,8 @@ void CTransformStack::MakeProjective( float fAspect, float fFovX, float fZMin, f
 	ret._33 = Q;
 	ret._34 = -Q*near_plane;
 	ret._43 = 1;
-	ret.x += vShift.x * ret.w;
-	ret.y += vShift.y * ret.w;
+	ret.RowX() += vShift.x * ret.RowW();
+	ret.RowY() += vShift.y * ret.RowW();
 	Init( ret );
 
 	PrepareClipPlanes();
@@ -380,9 +380,9 @@ bool CTransformStack::GetCoverRect( CTRect<float> *pRes, const CVec3 &_ptCenter,
 		return true;
 	}
 
-	float fSX = CalcScale( m.x );
-	float fSY = CalcScale( m.y );
-	float fSW = CalcScale( m.w );
+	float fSX = CalcScale( m.RowX() );
+	float fSY = CalcScale( m.RowY() );
+	float fSW = CalcScale( m.RowW() );
 
 	float fR1 = 1 / fRadius;
 	float fB = ptCenter.w / fSW * fR1;

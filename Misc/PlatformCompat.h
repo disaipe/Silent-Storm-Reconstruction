@@ -254,6 +254,18 @@ inline int sprintf_s( char *pBuf, size_t nSize, const char *pszFormat, ... )
 	va_end( va );
 	return nRes;
 }
+// MSVC also offers a template overload that deduces the bound of a char array,
+// so callers write sprintf_s( buf, "..." ) with no size argument. Reproduced
+// here -- the engine uses that form in several places.
+template <size_t N>
+inline int sprintf_s( char ( &buf )[N], const char *pszFormat, ... )
+{
+	va_list va;
+	va_start( va, pszFormat );
+	int nRes = vsnprintf( buf, N, pszFormat, va );
+	va_end( va );
+	return nRes;
+}
 
 // ----------------------------------------------------------------------------
 //  Virtual-key codes. Only the ones the engine actually names are listed; the

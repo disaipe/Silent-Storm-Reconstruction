@@ -136,6 +136,12 @@ public:
 	unsigned short GetLadderStep() const { ASSERT( !nIntegral ); return nY; }
 	void SetXY( unsigned int _nX, unsigned int _nY ) { nX = _nX; nY = _nY; }
 	void SetY( unsigned int _nY ) { nY = _nY; }
+	// SetLayer/SetIntegral: the bit-fields are private and callers used to poke them
+	// directly -- MSVC does not enforce access on members of an anonymous struct inside
+	// a union, GCC does. Unlike SetOnLayer these touch ONLY the named field, so an
+	// inherited nPose/nFinal survives (aiSmoothPath.cpp relies on that).
+	void SetLayer( unsigned short _n ) { nLayer = _n; }
+	void SetIntegral( unsigned short _n ) { nIntegral = _n; }
 	void SetDirection( unsigned short _n ) { nDirection = _n; }
 	void SetPose( unsigned short _n ) { nPose = _n; } // CM_*
 	void SetOnLayer( int _nLayer, int _nX, int _nY, int _nIntegral = 1 ) { nX = _nX; nY = _nY; nIntegral = _nIntegral; nLayer = _nLayer; nPose = 0; nFinal = 0; }

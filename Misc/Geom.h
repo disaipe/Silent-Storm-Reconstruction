@@ -286,6 +286,19 @@ public :
 	const CVec3 RowYVec3() const { return CVec3( _21, _22, _23 ); }
 	const CVec3 RowZVec3() const { return CVec3( _31, _32, _33 ); }
 	const CVec3 RowWVec3() const { return CVec3( _41, _42, _43 ); }
+	// Mutable row views. The union originally also spelled the four rows as
+	// "CVec4 x, y, z, w", and callers both read and WRITE whole rows
+	// (transform.x += transform.w * k). CVec4 is four floats with the same
+	// layout as a matrix row, so a reference into the row's storage aliases
+	// exactly what that union member did.
+	CVec4& RowX() { return *reinterpret_cast<CVec4*>( &_11 ); }
+	CVec4& RowY() { return *reinterpret_cast<CVec4*>( &_21 ); }
+	CVec4& RowZ() { return *reinterpret_cast<CVec4*>( &_31 ); }
+	CVec4& RowW() { return *reinterpret_cast<CVec4*>( &_41 ); }
+	const CVec4& RowX() const { return *reinterpret_cast<const CVec4*>( &_11 ); }
+	const CVec4& RowY() const { return *reinterpret_cast<const CVec4*>( &_21 ); }
+	const CVec4& RowZ() const { return *reinterpret_cast<const CVec4*>( &_31 ); }
+	const CVec4& RowW() const { return *reinterpret_cast<const CVec4*>( &_41 ); }
 public :
 	// matrix-vector multiplication
 	SHMatrix() {};
