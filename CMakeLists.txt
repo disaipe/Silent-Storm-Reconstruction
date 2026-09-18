@@ -1,52 +1,96 @@
 # ============================================================================
 #  Silent Storm engine -- CMake build
 #
-#  Win32 / x86 only
-#  Configure with:            cmake -S . -B build -A Win32
-#  Build with:                cmake --build build --config Release
+#  Windows (Win32/x86, MSVC): the original, complete target.
+#    Configure with:            cmake -S . -B build -A Win32
+#    Build with:                cmake --build build --config Release
+#
+#  Linux (experimental, in progress -- see docs/linux-port.md / docs/linux-build.md):
+#    Configure with:            cmake -S . -B build-linux -DCMAKE_BUILD_TYPE=Debug
+#    Build with:                cmake --build build-linux
+#    Only a subset of modules build so far (Misc/FileIO/MiscDll/Image/ADOImport/
+#    FModSound/Input/Script/DBFormat) -- Main/Game are gated behind
+#    S2_LINUX_FULL_ENGINE (default OFF) because Main/Gfx*.cpp still has raw D3D9
+#    calls that need the dxvk-native port (docs/linux-port.md, render section)
+#    before they'll compile. Sound and video are no-op stubs on Linux for now.
 #
 #  Replaces the old A5new.sln. Third-party code lives under third_party/.
 # ============================================================================
 cmake_minimum_required(VERSION 3.21)
-project(A5 CXX C RC)
-
-if(NOT MSVC)
-  message(FATAL_ERROR "MSVC toolset required.")
+if(WIN32)
+  project(A5 CXX C RC)
+else()
+  project(A5 CXX C)
 endif()
-if(NOT CMAKE_SIZEOF_VOID_P EQUAL 4)
-  message(FATAL_ERROR "Win32/x86 only -- configure with:  cmake -S . -B build -A Win32")
+
+if(WIN32)
+  if(NOT MSVC)
+    message(FATAL_ERROR "MSVC toolset required on Windows.")
+  endif()
+  if(NOT CMAKE_SIZEOF_VOID_P EQUAL 4)
+    message(FATAL_ERROR "Win32/x86 only -- configure with:  cmake -S . -B build -A Win32")
+  endif()
+elseif(NOT UNIX)
+  message(FATAL_ERROR "Only Windows (MSVC) and Linux are supported.")
 endif()
 
 set(CMAKE_CXX_STANDARD 14)
 set(root "${CMAKE_CURRENT_SOURCE_DIR}")
 
-# Dynamic CRT (/MD, /MDd) -- matches the original projects and the committed import libs.
-cmake_policy(SET CMP0091 NEW)
-set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
+if(WIN32)
+  # Dynamic CRT (/MD, /MDd) -- matches the original projects and the committed import libs.
+  cmake_policy(SET CMP0091 NEW)
+  set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
 
-# Engine-wide compile settings: __fastcall default (/Gr), big translation units,
-# C++ exceptions, parallel compile, and the common WIN32 defines. externA5 is
-# libpng's API-decoration macro -- 'extern' here (we build libpng statically).
-add_compile_options(/Gr /Zm300 $<$<COMPILE_LANGUAGE:CXX>:/EHsc> /wd4996)  # no /MP: ADOImport uses #import
-add_compile_definitions(
-  WIN32 _WINDOWS externA5=extern
-  $<$<CONFIG:Debug>:_DEBUG FAST_DEBUG>
-  $<$<NOT:$<CONFIG:Debug>>:NDEBUG>)
+  # Engine-wide compile settings: __fastcall default (/Gr), big translation units,
+  # C++ exceptions, parallel compile, and the common WIN32 defines. externA5 is
+  # libpng's API-decoration macro -- 'extern' here (we build libpng statically).
+  add_compile_options(/Gr /Zm300 $<$<COMPILE_LANGUAGE:CXX>:/EHsc> /wd4996)  # no /MP: ADOImport uses #import
+  add_compile_definitions(
+    WIN32 _WINDOWS externA5=extern
+    $<$<CONFIG:Debug>:_DEBUG FAST_DEBUG>
+    $<$<NOT:$<CONFIG:Debug>>:NDEBUG>)
 
-# The engine's .rc files #include "afxres.h" (an MFC header), but the engine isn't
-# MFC; redirect it to the SDK's non-MFC winres.h via a generated shim on the RC path.
-file(WRITE "${CMAKE_BINARY_DIR}/rc_compat/afxres.h" "#include <winres.h>\n")
+  # The engine's .rc files #include "afxres.h" (an MFC header), but the engine isn't
+  # MFC; redirect it to the SDK's non-MFC winres.h via a generated shim on the RC path.
+  file(WRITE "${CMAKE_BINARY_DIR}/rc_compat/afxres.h" "#include <winres.h>\n")
+else()
+  # externA5 stays a no-op here too (Image/libpng linkage doesn't need dllimport
+  # decoration on Linux -- everything links statically into one binary).
+  add_compile_definitions(
+    externA5=extern
+    $<$<CONFIG:Debug>:_DEBUG FAST_DEBUG>
+    $<$<NOT:$<CONFIG:Debug>>:NDEBUG>)
+  # This codebase leans on several MSVC-only language extensions (anonymous
+  # struct/union members with non-trivial types in Misc/Geom.h; explicit member-
+  # template specialization inside a class body in FileIO/Streams.h). GCC/Clang's
+  # -fms-extensions permits both without touching the source.
+  add_compile_options($<$<COMPILE_LANGUAGE:CXX>:-fms-extensions>)
+  find_package(SDL2 REQUIRED)
+  find_package(Threads REQUIRED)
+  option(S2_LINUX_FULL_ENGINE
+    "Also configure Main/Game on Linux (needs the dxvk-native render port -- not done yet, will not compile)"
+    OFF)
+endif()
 
 # ----------------------------------------------------------------------------
 #  third_party
 # ----------------------------------------------------------------------------
-# zlib -- SHARED: the engine's zconf.h defaults consumers to __declspec(dllimport)
-# (zlib is expected to be a DLL), so build one. ZLIB_DLL (this target only) = export;
-# consumers see dllimport and resolve against the generated import lib.
+# zlib -- Windows: SHARED, since the engine's zconf.h defaults consumers to
+# __declspec(dllimport) (zlib is expected to be a DLL). ZLIB_DLL (this target only)
+# = export; consumers see dllimport and resolve against the generated import lib.
+# Linux: plain STATIC -- zconf.h's "#if defined(ZLIB_DLL)" branch always expands to
+# __declspec(...) regardless of platform (this vendored copy isn't platform-guarded),
+# which GCC/Clang don't understand as a bare keyword -- so ZLIB_DLL must stay undefined
+# here, which naturally selects zconf.h's "#else define ZEXTERN extern" branch instead.
 file(GLOB zlib_src "${root}/third_party/zlib/*.c")
-add_library(zlib SHARED ${zlib_src})
+if(WIN32)
+  add_library(zlib SHARED ${zlib_src})
+  target_compile_definitions(zlib PRIVATE ZLIB_DLL _CRT_SECURE_NO_WARNINGS _CRT_NONSTDC_NO_DEPRECATE)
+else()
+  add_library(zlib STATIC ${zlib_src})
+endif()
 target_include_directories(zlib PUBLIC "${root}/third_party/zlib")
-target_compile_definitions(zlib PRIVATE ZLIB_DLL _CRT_SECURE_NO_WARNINGS _CRT_NONSTDC_NO_DEPRECATE)
 
 # libpng (static; the MMX-asm variants are dropped in favour of the C path)
 file(GLOB png_src "${root}/third_party/libpng/*.c")
@@ -61,8 +105,10 @@ file(GLOB squish_src "${root}/third_party/squish/squish/*.cpp")
 add_library(squish STATIC ${squish_src})
 target_include_directories(squish PUBLIC "${root}/third_party/squish" PRIVATE "${root}/third_party/squish/squish")
 
-# Proprietary-DLL interop: the import libs are GENERATED at build time from the
-# committed .def export tables.
+# Proprietary-DLL interop: Windows-only (the fmod/bink/LifeStudio DLLs, and the .lib/.def
+# import-lib generation itself via MSVC's lib.exe, don't apply on Linux -- FModSound and
+# Bink are no-op stubs there instead; see FModSound/FMSoundStub.cpp, Main/GBinkPlayerStub.cpp).
+if(WIN32)
 set(_implib_dir "${CMAKE_BINARY_DIR}/_implibs")
 get_filename_component(_vcbin "${CMAKE_C_COMPILER}" DIRECTORY)
 
@@ -133,6 +179,7 @@ add_library(lifestudio_shim INTERFACE)
 target_include_directories(lifestudio_shim INTERFACE "${root}/third_party/lifestudio/include")
 target_link_libraries(lifestudio_shim INTERFACE
   lifestudio_init "${_implib_dir}/LifeStudioHeadAPI.lib" "${_implib_dir}/GDPFile.lib")
+endif() # WIN32
 
 # ----------------------------------------------------------------------------
 #  engine modules  (each is a directory of *.cpp + a StdAfx.h PCH)
@@ -143,9 +190,18 @@ target_link_libraries(lifestudio_shim INTERFACE
 include("${root}/sources.cmake")
 
 function(s2_module name type)
-  cmake_parse_arguments(M "" "" "LINK;DEFINES;WHOLE" ${ARGN})
+  # SRC overrides the default ${name}_SRC list (from sources.cmake) -- used on Linux to
+  # swap in platform-specific translation units (e.g. InputSDL2.cpp instead of Input.cpp)
+  # without touching sources.cmake, which sources.cmake's own header says stays baked from
+  # the original .vcxproj manifests.
+  cmake_parse_arguments(M "" "" "LINK;DEFINES;WHOLE;SRC" ${ARGN})
   set(src "")
-  foreach(_rel IN LISTS ${name}_SRC)
+  if(M_SRC)
+    set(_names ${M_SRC})
+  else()
+    set(_names ${${name}_SRC})
+  endif()
+  foreach(_rel IN LISTS _names)
     get_filename_component(_abs "${root}/${name}/${_rel}" ABSOLUTE)
     list(APPEND src "${_abs}")
   endforeach()
@@ -159,9 +215,17 @@ function(s2_module name type)
   else()
     add_executable(${name} ${src})
   endif()
-  target_include_directories(${name} PRIVATE "${CMAKE_BINARY_DIR}/rc_compat")  # afxres.h -> winres.h
+  if(WIN32)
+    target_include_directories(${name} PRIVATE "${CMAKE_BINARY_DIR}/rc_compat")  # afxres.h -> winres.h
+  endif()
+  # A case-sensitive filesystem (Linux) needs the on-disk casing exactly -- some module
+  # directories have "StdAfx.h", others "stdafx.h" (both existed already; the Linux
+  # case-mismatch cleanup normalised #include references but left each module's own
+  # historical file casing as-is).
   if(EXISTS "${root}/${name}/StdAfx.h")
     target_precompile_headers(${name} PRIVATE "${root}/${name}/StdAfx.h")
+  elseif(EXISTS "${root}/${name}/stdafx.h")
+    target_precompile_headers(${name} PRIVATE "${root}/${name}/stdafx.h")
   endif()
   if(M_LINK)
     target_link_libraries(${name} PUBLIC ${M_LINK})
@@ -177,6 +241,7 @@ function(s2_module name type)
   target_compile_definitions(${name} PRIVATE $<$<STREQUAL:${type},lib>:_USRDLL> ${M_DEFINES})
 endfunction()
 
+if(WIN32)
 # leaves
 s2_module(Misc        lib)
 # (Scintilla + OpenDynamix are only used by MapEdit, which isn't built -- omitted.)
@@ -241,9 +306,57 @@ s2_module(LSConverter  console LINK FileIO Image libpng Misc squish lifestudio_s
 #   Scintilla    -- only used by MapEdit.
 #   OpenDynamix  -- only used by MapEdit (ODE physics; would also need ODE headers).
 
+else() # UNIX -- see docs/linux-port.md for the per-subsystem replacement plan.
+# leaves
+s2_module(Misc lib)
+target_link_libraries(Misc PUBLIC Threads::Threads)   # PlatformCompat.cpp uses std::thread
+# core
+s2_module(FileIO    lib LINK Misc)
+s2_module(MiscDll   lib LINK FileIO Misc DEFINES MISCDLL_EXPORTS)
+s2_module(Image     lib LINK zlib libpng squish)
+# ADOImport: BasicDBLinux.cpp instead of BasicDB.cpp (drops the ADO/COM content-import
+# pipeline, which nothing calls on Linux anyway -- see docs/linux-port.md, "Разбор этапа «БД»").
+s2_module(ADOImport lib SRC BasicDBLinux.cpp StdAfx.cpp LINK FileIO Misc DEFINES ADOIMPORT_EXPORTS)
+# FModSound: no-op stub instead of the real FMOD-backed implementation (no obtainable
+# Linux build of this FMOD vintage -- see docs/linux-port.md, "Разбор этапа «Звук»").
+s2_module(FModSound lib SRC FMSoundStub.cpp StdAfx.cpp LINK FileIO Misc)
+# Input: Bind.cpp is shared unchanged (verified hardware-agnostic); InputSDL2.cpp replaces
+# the DirectInput8-backed Input.cpp with a minimal stub (see docs/linux-port.md, "Разбор
+# этапа «Ввод»" -- full SDL2 device/binding support is tracked separately).
+s2_module(Input     lib SRC Bind.cpp InputSDL2.cpp StdAfx.cpp LINK FileIO MiscDll Misc SDL2::SDL2)
+s2_module(Script    lib LINK FileIO Input MiscDll Misc)
+s2_module(DBFormat  lib LINK ADOImport FileIO Misc)
+
+if(S2_LINUX_FULL_ENGINE)
+  # Main_SRC minus GBinkPlayer.cpp (no-op stub instead, see Main/GBinkPlayerStub.cpp) and
+  # 2DSceneSW.cpp/SWTexture.cpp (the MMX software rasterizer -- a fallback path when D3D9
+  # hardware T&L isn't available; excluded rather than porting its asm until proven needed).
+  # NOTE: Main/Gfx.cpp, GfxRender.cpp, GfxBuffers.cpp still call raw D3D9 (IDirect3DDevice9)
+  # directly -- this target will NOT compile until the dxvk-native render port lands
+  # (docs/linux-port.md, render section). S2_LINUX_FULL_ENGINE exists so a plain
+  # `cmake --build` succeeds on the modules that ARE ready without this expected failure.
+  set(Main_SRC_LINUX ${Main_SRC})
+  list(REMOVE_ITEM Main_SRC_LINUX "GBinkPlayer.cpp" "2DSceneSW.cpp" "SWTexture.cpp")
+  list(APPEND Main_SRC_LINUX "GBinkPlayerStub.cpp")
+  s2_module(Main lib SRC ${Main_SRC_LINUX}
+                       LINK ADOImport DBFormat FileIO FModSound Input MiscDll Misc Script SDL2::SDL2)
+  # MainLinux.cpp + WinFrameSDL2.cpp instead of Main.cpp + WinFrame.cpp + the .rc resource
+  # (see Game/MainLinux.cpp, Game/WinFrameSDL2.cpp).
+  s2_module(Game console WHOLE Main SRC MainLinux.cpp WinFrameSDL2.cpp StdAfx.cpp
+                       LINK ADOImport DBFormat FileIO FModSound Input MiscDll Misc Script SDL2::SDL2)
+endif()
+
+# Tools not yet ported (need a Linux content-authoring story of their own -- see
+# docs/linux-port.md -- but aren't needed to run already-built content):
+#   DataImport, PkgBuilder, ShaderCompiler, FontGen, TexConv, TexMipStrip, LSConverter.
+# Kept on disk, not built here (same as on Windows): MapEdit, Scintilla, OpenDynamix.
+endif()
+
 # ----------------------------------------------------------------------------
-#  Visual Studio debugging
+#  Visual Studio debugging (Windows only -- meaningless on Linux, and the Game
+#  target may not even exist there unless S2_LINUX_FULL_ENGINE is on)
 # ----------------------------------------------------------------------------
+if(WIN32)
 set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT Game)
 
 set(S2_GAME_DIR "" CACHE PATH "Silent Storm install dir")
@@ -264,3 +377,4 @@ if(S2_GAME_DIR)
 else()
   message(STATUS "Game install not found -- pass -DS2_GAME_DIR=\"<path>\" to set the working dir.")
 endif()
+endif() # WIN32
