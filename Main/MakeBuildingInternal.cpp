@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 #include "MakeBuildingInternal.h"
-#include "..\DBFormat\DataMap.h"
+#include "../DBFormat/DataMap.h"
 
 
 namespace NBuilding

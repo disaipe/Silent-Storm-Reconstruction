@@ -38,37 +38,14 @@ public:
 	CDBPtr() {}
 	CDBPtr( T *_ptr ): CBase( _ptr ) {}
 	CDBPtr( const CDBPtr &a ): CBase( a.Get() ) {}
-	CDBPtr& operator=( T *_ptr ) { Set( _ptr ); return *this; }
-	CDBPtr& operator=( const CDBPtr &a ) { SetObject( a.Get() ); return *this; }
+	CDBPtr& operator=( T *_ptr ) { this->Set( _ptr ); return *this; }
+	CDBPtr& operator=( const CDBPtr &a ) { this->SetObject( a.Get() ); return *this; }
 	//
-	int operator&( CStructureSaver &f ) 
-	{ 
-		if ( NDatabase::bIsDatabaseLoading )
-		{
-			ASSERT( 0 );
-			f.DoPtr( this );
-		}
-		else
-		{
-			if ( f.IsReading() )
-			{
-				int nID = -1;
-				f.Add( 1, &nID );
-				CDBTable<T> *pTable = NDatabase::GetTable<T>();
-				ASSERT( pTable );
-				if ( pTable )
-					*this = ( pTable->GetRecord( nID ) );
-				ASSERT( nID == -1 || GetPtr() );
-			}
-			else
-			{
-				CDBRecord *pRec = (CDBRecord*)GetPtr();
-				int nID = pRec ? pRec->GetRecordID() : -1;
-				f.Add( 1, &nID );
-			}
-		}
-		return 0;
-	}
+	// NOTE: declared here, DEFINED below (after NDatabase::GetTable<>). The body
+	// names CDBTable<> and NDatabase::GetTable<>, neither of which is declared at
+	// this point; MSVC resolved those only at instantiation time, but the standard
+	// requires non-dependent names to be visible where the template is defined.
+	int operator&( CStructureSaver &f );
 };
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 class CDBTableBase
@@ -150,6 +127,41 @@ namespace NDatabase
 			return pRes;
 		}
 	inline CDBTableBase* GetTableByRecord( CDBRecord *p ) { return GetTable( GetRecordTypes().GetObjectTypeID( p ) ); }
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// out-of-line body of CDBPtr<T>::operator& -- see the note at its declaration
+template <class T>
+int CDBPtr<T>::operator&( CStructureSaver &f )
+{
+	if ( NDatabase::bIsDatabaseLoading )
+	{
+		ASSERT( 0 );
+		f.DoPtr( this );
+	}
+	else
+	{
+		if ( f.IsReading() )
+		{
+			int nID = -1;
+			f.Add( 1, &nID );
+			CDBTable<T> *pTable = NDatabase::GetTable<T>();
+			ASSERT( pTable );
+			if ( pTable )
+				*this = ( pTable->GetRecord( nID ) );
+			ASSERT( nID == -1 || this->GetPtr() );
+		}
+		else
+		{
+			CDBRecord *pRec = (CDBRecord*)this->GetPtr();
+			int nID = pRec ? pRec->GetRecordID() : -1;
+			f.Add( 1, &nID );
+		}
+	}
+	return 0;
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////
+namespace NDatabase
+{
 	void Serialize( CDataStream &file, CStructureSaver::EMode mode );
 	// release BasicDB.obj @0x3570 -- drop all tables/records/relations, then re-create one empty
 	// table entry per registered descriptor (CModManager::Activate teardown before the DB reload)
@@ -185,9 +197,9 @@ namespace NDatabase
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #define REGISTER_DATABASE_CLASS( N, table, name ) NDatabase::AddTable( N, table, \
-(NDatabase::RecordCreateFunc)name##::New##name );
+(NDatabase::RecordCreateFunc)name::New##name );
 #define REGISTER_DATABASE_CLASS_TEMPL( N, table, name,className ) NDatabase::AddTable( N, table, \
-(NDatabase::RecordCreateFunc)name##::New##className );
+(NDatabase::RecordCreateFunc)name::New##className );
 #define REGISTER_DATABASE_RELATION( table ) NDatabase::AddRelation( table );
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #endif

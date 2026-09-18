@@ -1,8 +1,8 @@
 #include "StdAfx.h"
 #include "RodJunction.h"
 #include "BuildingSchema.h"
-#include "..\Misc\RandomGen.h"
-#include "..\DBFormat\DataRPG.h"
+#include "../Misc/RandomGen.h"
+#include "../DBFormat/DataRPG.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NBuilding
 {

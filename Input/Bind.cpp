@@ -1,6 +1,10 @@
 #include "StdAfx.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// dinput.h is included only for the Windows build's benefit -- nothing in this
+// file actually touches the DirectInput API (see the header note below).
+#ifdef _WIN32
 #include <dinput.h>
+#endif
 #include "../Misc/basic2.h"
 #include "../Misc/StrProc.h"
 #include "../MiscDll/Commands.h"

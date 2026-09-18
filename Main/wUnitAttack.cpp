@@ -11,7 +11,7 @@
 #include "RPGGame.h"
 #include "aiMap.h"
 #include "aiCollider.h"
-#include "../misc/RandomGen.h"
+#include "../Misc/RandomGen.h"
 #include "wObject.h"
 #include "wUnitStates.h"
 #include "wAckBase.h"

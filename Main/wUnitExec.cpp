@@ -12,7 +12,7 @@
 #include "rpgCheatConstants.h"
 #include "wObject.h"
 #include "wAckBase.h"
-#include "../misc/RandomGen.h"
+#include "../Misc/RandomGen.h"
 #include "../MiscDll/LogStream.h"
 #include "../DBFormat/DataPerk.h"
 #include "../DBFormat/DataFormat.h"

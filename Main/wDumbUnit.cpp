@@ -9,7 +9,7 @@
 #include "RPGItem.h"
 #include "RPGUnit.h"
 #include "RPGUnitMission.h"
-#include "../misc/RandomGen.h"
+#include "../Misc/RandomGen.h"
 #include "GAnimation.h"
 #include "InventoryUnit.h"
 #include "wMisc.h"

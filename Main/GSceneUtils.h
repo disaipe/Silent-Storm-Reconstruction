@@ -5,7 +5,7 @@
 #endif // _MSC_VER > 1000
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #include "DG.h"
-#include "..\misc\Geom.h"
+#include "../Misc/Geom.h"
 #include "RectLayout.h"
 #include "Time.h"
 #include "GSkeleton.h"

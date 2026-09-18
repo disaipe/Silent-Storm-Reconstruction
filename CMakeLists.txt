@@ -309,7 +309,7 @@ s2_module(LSConverter  console LINK FileIO Image libpng Misc squish lifestudio_s
 else() # UNIX -- see docs/linux-port.md for the per-subsystem replacement plan.
 # leaves
 s2_module(Misc lib)
-target_link_libraries(Misc PUBLIC Threads::Threads)   # PlatformCompat.cpp uses std::thread
+target_link_libraries(Misc PUBLIC Threads::Threads ${CMAKE_DL_LIBS})   # PlatformCompat.cpp uses std::thread and dlopen
 # core
 s2_module(FileIO    lib LINK Misc)
 s2_module(MiscDll   lib LINK FileIO Misc DEFINES MISCDLL_EXPORTS)

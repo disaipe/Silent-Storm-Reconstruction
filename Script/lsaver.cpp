@@ -2,8 +2,11 @@
 #include "lsaver.h"
 #include "lstring.h"
 //////////////////////////////////////////////////////////////////////////
-typedef unordered_map<CLuaFuncID, int> CLuaIDToFuncMap;
-typedef unordered_map<int, CLuaFuncID> CLuaFuncToIDMap;
+// The maps key C function pointers against their serialized CLuaFuncID; only
+// the ID ever reaches a save file, so widening the in-memory pointer key from
+// int to intptr_t (64-bit-safe) does not change the on-disk format.
+typedef unordered_map<CLuaFuncID, intptr_t> CLuaIDToFuncMap;
+typedef unordered_map<intptr_t, CLuaFuncID> CLuaFuncToIDMap;
 CLuaFuncToIDMap luaFuncToIDMap;
 CLuaIDToFuncMap luaIDToFuncMap;
 lua_State *pLUASaverState;
@@ -17,7 +20,7 @@ void lua_StartSerialize( lua_State *pL )
 //////////////////////////////////////////////////////////////////////////
 static void lua_GetID( CLuaFuncID *pID, lua_CFunction func )
 {
-	int nFunc = reinterpret_cast<int>( func );
+	intptr_t nFunc = reinterpret_cast<intptr_t>( func );
 	CLuaFuncToIDMap::iterator i = luaFuncToIDMap.find( nFunc );
 	ASSERT( i != luaFuncToIDMap.end() );  // unregistered lua C function!
 	*pID = i->second;
@@ -25,7 +28,7 @@ static void lua_GetID( CLuaFuncID *pID, lua_CFunction func )
 //////////////////////////////////////////////////////////////////////////
 static void lua_GetID( CLuaFuncID *pID, lua_Hook func )
 {
-	int nFunc = reinterpret_cast<int>( func );
+	intptr_t nFunc = reinterpret_cast<intptr_t>( func );
 	CLuaFuncToIDMap::iterator i = luaFuncToIDMap.find( nFunc );
 	ASSERT( i != luaFuncToIDMap.end() );  // unregistered lua C function!
 	*pID = i->second;
@@ -35,7 +38,7 @@ static lua_CFunction lua_GetFunc( const CLuaFuncID& id )
 { 
 	CLuaIDToFuncMap::iterator i = luaIDToFuncMap.find( id );
 	ASSERT( i != luaIDToFuncMap.end() );  // unregistered lua C function!
-	int nFunc = i->second;
+	intptr_t nFunc = i->second;
 	return ( lua_CFunction )nFunc;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -43,20 +46,20 @@ static lua_Hook lua_GetHook( const CLuaFuncID& id )
 {
 	CLuaIDToFuncMap::iterator i = luaIDToFuncMap.find( id );
 	ASSERT( i != luaIDToFuncMap.end() );  // unregistered lua C function!
-	int nFunc = i->second;
+	intptr_t nFunc = i->second;
 	return ( lua_Hook )nFunc;
 }
 //////////////////////////////////////////////////////////////////////////
 void lua_RegisterFunc( lua_CFunction func, const CLuaFuncID& id )
 {
-	int nFunc = reinterpret_cast<int>( func );
+	intptr_t nFunc = reinterpret_cast<intptr_t>( func );
 	luaFuncToIDMap[ nFunc ] = id;
 	luaIDToFuncMap[ id ] = nFunc;
 }
 //////////////////////////////////////////////////////////////////////////
 void lua_RegisterFunc( lua_Hook func, const CLuaFuncID& id )
 {
-	int nFunc = reinterpret_cast<int>( func );
+	intptr_t nFunc = reinterpret_cast<intptr_t>( func );
 	luaFuncToIDMap[ nFunc ] = id;
 	luaIDToFuncMap[ id ] = nFunc;
 }

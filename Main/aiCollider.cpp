@@ -3,7 +3,7 @@
 #include "Bound.h"
 #include "aiObject.h"
 #include "aiMap.h"
-#include "../dbformat/DataRPG.h"
+#include "../DBFormat/DataRPG.h"
 #include "wTSFlags.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

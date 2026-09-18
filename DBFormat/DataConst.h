@@ -4,8 +4,13 @@
 #pragma once
 #endif // _MSC_VER > 1000
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-#include "..\ADOImport\BasicDB.h"
-#include "..\misc\RandomGen.h"
+#include "../ADOImport/BasicDB.h"
+#include "../Misc/RandomGen.h"
+////////////////////////////////////////////////////////////////////////////////////////////////////
+namespace NDb { struct SVariantFlags; }
+// defined in DataFormat.cpp -- declared here because CRndPtr<T>::GetRnd calls it;
+// a non-dependent name must be visible where the template is defined.
+bool IsSuitableVariant( const vector<int> &vInputParams, const vector<NDb::SVariantFlags> &flags );
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 template <class T> 
 class CRndPtr : public CDBRecord

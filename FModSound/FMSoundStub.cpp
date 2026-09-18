@@ -47,12 +47,6 @@ class CStream: public CObjectBase
 	OBJECT_NOCOPY_METHODS( CStream );
 };
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-BASIC_REGISTER_CLASS( CSample2D )
-BASIC_REGISTER_CLASS( CSample3D )
-BASIC_REGISTER_CLASS( CSound2D )
-BASIC_REGISTER_CLASS( CSound3D )
-BASIC_REGISTER_CLASS( CStream )
-////////////////////////////////////////////////////////////////////////////////////////////////////
 bool SearchDevices() { return true; }
 bool Init( const SStartInfo & ) { return true; }
 void Done() {}
@@ -83,4 +77,13 @@ void SetMusicMasterVolume( int ) {}
 void SetSpeakerType( ESpeakerType ) {}
 ESpeakerType GetSpeakerType() { return SOUND_SM_STEREO; }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-}
+} // namespace NFMSound
+// BASIC_REGISTER_CLASS expands to explicit template specialisations, which the
+// standard only allows at namespace scope -- registered here, outside
+// NFMSound, exactly as FMSound.cpp does it.
+using namespace NFMSound;
+BASIC_REGISTER_CLASS( CSound3D )
+BASIC_REGISTER_CLASS( CSound2D )
+BASIC_REGISTER_CLASS( CSample3D )
+BASIC_REGISTER_CLASS( CSample2D )
+BASIC_REGISTER_CLASS( CStream )

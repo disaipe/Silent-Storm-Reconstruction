@@ -5,6 +5,10 @@
 // ============================================================================
 #include "PlatformCompat.h"
 #include <thread>
+#include <mutex>
+#include <condition_variable>
+#include <chrono>
+#include <dlfcn.h>
 #include <iconv.h>
 #include <vector>
 #include <string>
@@ -14,10 +18,52 @@
 
 namespace
 {
-	struct SThreadHandle
+	// Win32 HANDLEs are opaque and shared across object kinds; WaitForSingleObject
+	// and CloseHandle accept any of them. Model that with a common polymorphic
+	// base so the two calls can dispatch without the caller telling them which.
+	struct SWaitable
+	{
+		virtual ~SWaitable() {}
+		virtual DWORD Wait( DWORD dwMilliseconds ) = 0;
+	};
+
+	struct SThreadHandle : SWaitable
 	{
 		std::thread thread;
 		explicit SThreadHandle( std::thread &&t ) : thread( std::move( t ) ) {}
+		DWORD Wait( DWORD ) override
+		{
+			if ( thread.joinable() )
+				thread.join();
+			return WAIT_OBJECT_0;
+		}
+	};
+
+	struct SEventHandle : SWaitable
+	{
+		std::mutex mutex;
+		std::condition_variable cond;
+		bool bSignalled;
+		bool bManualReset;
+		SEventHandle( bool _bManualReset, bool _bInitialState )
+			: bSignalled( _bInitialState ), bManualReset( _bManualReset ) {}
+		DWORD Wait( DWORD dwMilliseconds ) override
+		{
+			std::unique_lock<std::mutex> lock( mutex );
+			if ( dwMilliseconds == 0 )
+			{
+				if ( !bSignalled )
+					return WAIT_TIMEOUT;
+			}
+			else if ( dwMilliseconds == INFINITE )
+				cond.wait( lock, [this]() { return bSignalled; } );
+			else if ( !cond.wait_for( lock, std::chrono::milliseconds( dwMilliseconds ),
+			                          [this]() { return bSignalled; } ) )
+				return WAIT_TIMEOUT;
+			if ( !bManualReset )
+				bSignalled = false;   // auto-reset: one waiter consumes the signal
+			return WAIT_OBJECT_0;
+		}
 	};
 
 	// CP_ACP on the retail build was CP1251 (Russian system locale) -- the game
@@ -215,16 +261,65 @@ HANDLE CreateThread( void *, size_t, LPTHREAD_START_ROUTINE pStartRoutine,
 	return new SThreadHandle( std::move( t ) );
 }
 
-DWORD WaitForSingleObject( HANDLE hHandle, DWORD )
+DWORD WaitForSingleObject( HANDLE hHandle, DWORD dwMilliseconds )
 {
-	SThreadHandle *pHandle = static_cast<SThreadHandle *>( hHandle );
-	if ( pHandle && pHandle->thread.joinable() )
-		pHandle->thread.join();
-	return WAIT_OBJECT_0;
+	SWaitable *pHandle = static_cast<SWaitable *>( hHandle );
+	if ( !pHandle || hHandle == INVALID_HANDLE_VALUE )
+		return WAIT_OBJECT_0;
+	return pHandle->Wait( dwMilliseconds );
 }
 
 BOOL CloseHandle( HANDLE hObject )
 {
-	delete static_cast<SThreadHandle *>( hObject );
+	if ( !hObject || hObject == INVALID_HANDLE_VALUE )
+		return FALSE;
+	delete static_cast<SWaitable *>( hObject );
 	return TRUE;
+}
+
+HANDLE CreateEvent( void *, BOOL bManualReset, BOOL bInitialState, const char * )
+{
+	return new SEventHandle( bManualReset != FALSE, bInitialState != FALSE );
+}
+
+BOOL SetEvent( HANDLE hEvent )
+{
+	SEventHandle *pEvent = dynamic_cast<SEventHandle *>( static_cast<SWaitable *>( hEvent ) );
+	if ( !pEvent )
+		return FALSE;
+	{
+		std::lock_guard<std::mutex> lock( pEvent->mutex );
+		pEvent->bSignalled = true;
+	}
+	// manual-reset releases every waiter, auto-reset exactly one
+	if ( pEvent->bManualReset )
+		pEvent->cond.notify_all();
+	else
+		pEvent->cond.notify_one();
+	return TRUE;
+}
+
+BOOL ResetEvent( HANDLE hEvent )
+{
+	SEventHandle *pEvent = dynamic_cast<SEventHandle *>( static_cast<SWaitable *>( hEvent ) );
+	if ( !pEvent )
+		return FALSE;
+	std::lock_guard<std::mutex> lock( pEvent->mutex );
+	pEvent->bSignalled = false;
+	return TRUE;
+}
+
+HMODULE LoadLibraryA( const char *pszFileName )
+{
+	return pszFileName ? dlopen( pszFileName, RTLD_NOW ) : 0;
+}
+
+BOOL FreeLibrary( HMODULE hModule )
+{
+	return hModule && dlclose( hModule ) == 0 ? TRUE : FALSE;
+}
+
+void *GetProcAddress( HMODULE hModule, const char *pszProcName )
+{
+	return hModule && pszProcName ? dlsym( hModule, pszProcName ) : 0;
 }

@@ -66,8 +66,11 @@ void CClassFactory<T>::RegisterTypeBase( int nTypeID, newFunc func, VFT vft )
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // macro for registering CFundament derivatives
-#define REGISTER_CLASS( factory, N, name ) factory.RegisterType( N, name##::New##name, (name*)0 );
-#define REGISTER_TEMPL_CLASS( factory, N, name, className ) factory.RegisterType( N, name##::New##className, (name*)0 );
-#define REGISTER_CLASS_NM( factory, N, name, nmspace ) factory.RegisterType( N, nmspace::name##::New##name, (nmspace::name*)0 );
+// NOTE: `name##::` used to be written here -- pasting an identifier with `::`
+// does not form a valid preprocessing token and only ever worked as an MSVC
+// leniency. Plain juxtaposition produces exactly the same expansion.
+#define REGISTER_CLASS( factory, N, name ) factory.RegisterType( N, name::New##name, (name*)0 );
+#define REGISTER_TEMPL_CLASS( factory, N, name, className ) factory.RegisterType( N, name::New##className, (name*)0 );
+#define REGISTER_CLASS_NM( factory, N, name, nmspace ) factory.RegisterType( N, nmspace::name::New##name, (nmspace::name*)0 );
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #endif // __BASICFACTORY_H_

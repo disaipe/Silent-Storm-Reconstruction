@@ -13,7 +13,7 @@
 #include "aiMap.h"
 #include "aiCollider.h"
 #include "phCollider.h"	// PhysCollideInfo (impact path; the free NAI::CollideInfo was removed)
-#include "../misc/RandomGen.h"
+#include "../Misc/RandomGen.h"
 #include "../MiscDll/LogStream.h"
 #include "wObject.h"
 #include "wUnitStates.h"

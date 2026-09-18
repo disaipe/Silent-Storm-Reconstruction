@@ -4,7 +4,7 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "..\DBFormat\DataConst.h"
+#include "../DBFormat/DataConst.h"
 #include "DiscretePos.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NDb

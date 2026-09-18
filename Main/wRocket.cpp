@@ -5,7 +5,7 @@
 #include "aiMap.h"
 #include "RPGGame.h"
 #include "RPGItemInfo.h"
-#include "..\DBFormat\DataRPG.h"
+#include "../DBFormat/DataRPG.h"
 #include "wUnitServer.h"
 #include "Transform.h"
 #include "GSceneUtils.h"

@@ -5,9 +5,9 @@
 #endif // _MSC_VER > 1000
 
 #include "GResource.h"
-#include "..\Misc\2DArray.h"
-#include "..\DBFormat\DataConst.h"
-#include "..\DBFormat\DataFormat.h"
+#include "../Misc/2DArray.h"
+#include "../DBFormat/DataConst.h"
+#include "../DBFormat/DataFormat.h"
 #include "DiscretePos.h"
 struct SRand;
 enum ELayer;

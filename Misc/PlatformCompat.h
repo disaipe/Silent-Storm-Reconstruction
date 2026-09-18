@@ -209,6 +209,36 @@ inline char *itoa( int nValue, char *pBuf, int nRadix )
 	return pBuf;
 }
 
+// Case-insensitive string compares (MSVC spellings).
+inline int stricmp( const char *a, const char *b ) { return strcasecmp( a, b ); }
+inline int strnicmp( const char *a, const char *b, size_t n ) { return strncasecmp( a, b, n ); }
+inline int _stricmp( const char *a, const char *b ) { return strcasecmp( a, b ); }
+inline int _strnicmp( const char *a, const char *b, size_t n ) { return strncasecmp( a, b, n ); }
+
+// MSVC's wide-string numeric parsers.
+inline double _wtof( const wchar_t *psz ) { return wcstod( psz, 0 ); }
+inline int _wtoi( const wchar_t *psz ) { return (int)wcstol( psz, 0, 10 ); }
+inline long _wtol( const wchar_t *psz ) { return wcstol( psz, 0, 10 ); }
+
+// ----------------------------------------------------------------------------
+//  Events and modules.
+//
+//  Events are condition_variable-backed and share the HANDLE space with
+//  threads (see PlatformCompat.cpp -- WaitForSingleObject/CloseHandle dispatch
+//  on a common waitable base). Modules map onto dlopen/dlsym; nothing in the
+//  Linux build loads a DLL yet, but Win32Helper.h's CDLLHandle needs the
+//  symbols to compile.
+// ----------------------------------------------------------------------------
+HANDLE CreateEvent( void *pSecAttr, BOOL bManualReset, BOOL bInitialState, const char *pszName );
+BOOL SetEvent( HANDLE hEvent );
+BOOL ResetEvent( HANDLE hEvent );
+
+typedef void *HMODULE;
+HMODULE LoadLibraryA( const char *pszFileName );
+BOOL FreeLibrary( HMODULE hModule );
+void *GetProcAddress( HMODULE hModule, const char *pszProcName );
+inline HMODULE LoadLibrary( const char *pszFileName ) { return LoadLibraryA( pszFileName ); }
+
 // ----------------------------------------------------------------------------
 //  Timing.
 // ----------------------------------------------------------------------------
@@ -241,6 +271,7 @@ inline void LeaveCriticalSection( CRITICAL_SECTION *cs ) { cs->m.unlock(); }
 // ----------------------------------------------------------------------------
 typedef DWORD ( *LPTHREAD_START_ROUTINE )( LPVOID );
 #define WAIT_OBJECT_0 0u
+#define WAIT_TIMEOUT 0x102u
 #define INFINITE 0xFFFFFFFFu
 
 HANDLE CreateThread( void *pSecAttr, size_t nStackSize, LPTHREAD_START_ROUTINE pStartRoutine,
