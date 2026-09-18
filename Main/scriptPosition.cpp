@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "A5Script.h"
 #include "scriptCommon.h"
 #include "scriptPtr.h"
@@ -6,7 +6,7 @@
 #include "wUnitServer.h"
 #include "wOSBase.h"
 #include "aiRoute.h"
-#include "grid.h"
+#include "Grid.h"
 #include "wMain.h"
 //
 #include "scriptPosition.h"

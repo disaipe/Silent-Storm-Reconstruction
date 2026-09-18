@@ -1,9 +1,9 @@
-#include "stdafx.h"
+#include "StdAfx.h"
 //
 #include "../DBFormat/DataPerk.h"
 #include "../MiscDll/LogStream.h"
 #include "../Misc/RandomGen.h"		// SRand (TakeRandomPerks)
-#include "rpgPerk.h"
+#include "RPGPerk.h"
 //
 #include <fstream>
 //

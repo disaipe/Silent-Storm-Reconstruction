@@ -1,8 +1,8 @@
 // RouteDlg.cpp : implementation file
 //
 
-#include "stdafx.h"
-#include "mapedit.h"
+#include "StdAfx.h"
+#include "MapEdit.h"
 #include "RouteDlg.h"
 #include "MapEdit.h"
 #include "dbDefs.h"

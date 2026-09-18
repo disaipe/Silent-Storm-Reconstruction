@@ -1,5 +1,5 @@
 #include "StdAfx.h"
-#include "rpgobject.h"
+#include "RPGObject.h"
 #include "../DBFormat/DataFormat.h"
 #include "../DBFormat/DataRPG.h"
 #include "../DBFormat/DataGeometry.h"

@@ -15,7 +15,7 @@
 #include "../Main/Transform.h"
 #include "../Main/aiMap.h"
 #include "../Main/MemObject.h"
-#include "../Main/gAnimation.h"
+#include "../Main/GAnimation.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 const int CLUE_SLOT_ID = 188;
 const int EXPLOSION_ID = 189;

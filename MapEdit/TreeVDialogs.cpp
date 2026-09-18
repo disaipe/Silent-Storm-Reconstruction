@@ -1,8 +1,8 @@
 // TreeVDialogs.cpp : implementation file
 //
 
-#include "stdafx.h"
-#include "mapedit.h"
+#include "StdAfx.h"
+#include "MapEdit.h"
 #include "TreeVDialogs.h"
 
 #ifdef _DEBUG

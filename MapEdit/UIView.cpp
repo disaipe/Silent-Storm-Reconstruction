@@ -1,12 +1,12 @@
 // UIView.cpp : implementation file
 //
 
-#include "stdafx.h"
-#include "mapedit.h"
+#include "StdAfx.h"
+#include "MapEdit.h"
 #include "UIView.h"
 #include "UIContainer.h"
 #include "UIControls.h"
-#include "Preferences.h"
+#include "preferences.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -242,7 +242,7 @@ void CUIView::OnDraw( CDC* pDC )
 			rects[i].track.m_rect = rects[i].pCtrl->GetRect();
 			rects[i].track.Draw( &dcBuf, false );
 		}
-		// активные объекты прорисовывыем сверху
+		//    
 		for ( int i = 0; i < activeRects.size(); ++i )
 		{
 			vector<SRect>::iterator it = GetRect( activeRects[i] );

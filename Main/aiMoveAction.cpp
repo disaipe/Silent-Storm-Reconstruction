@@ -3,7 +3,7 @@
 #include "aiAction.h"
 #include "aiPosition.h"
 #include "aiPath.h"
-#include "rpgUnitMission.h"
+#include "RPGUnitMission.h"
 #include "wMain.h"
 #include "wUnitServer.h"
 #include "aiUnit.h"

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "wAckBase.h"
 #include "../Misc/RandomGen.h"
 #include "../DBFormat/DataAck.h"

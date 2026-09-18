@@ -1,8 +1,8 @@
 // TexSpotPage.cpp : implementation file
 //
 
-#include "stdafx.h"
-#include "mapedit.h"
+#include "StdAfx.h"
+#include "MapEdit.h"
 #include "TexSpotPage.h"
 
 #ifdef _DEBUG

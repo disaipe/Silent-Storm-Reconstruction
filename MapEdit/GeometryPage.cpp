@@ -1,10 +1,10 @@
 // GeometryPage.cpp : implementation file
 //
 
-#include "stdafx.h"
-#include "mapedit.h"
+#include "StdAfx.h"
+#include "MapEdit.h"
 #include "GeometryPage.h"
-#include "IWysiwyg.h"
+#include "iWysiwyg.h"
 #include "TreeSelItemDlg.h"
 #include "dbDefs.h"
 #include "ItemsMgr.h"

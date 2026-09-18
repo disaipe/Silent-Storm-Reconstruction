@@ -8,7 +8,7 @@
 #include "..\DBFormat\DataRPG.h"
 #include "wUnitServer.h"
 #include "Transform.h"
-#include "gSceneUtils.h"
+#include "GSceneUtils.h"
 #include "wMain.h"
 
 namespace NWorld
@@ -181,7 +181,7 @@ bool CRocketServer::Segment()
 	//
 	if ( pWorld->GetTime()->GetValue() > tFinish )
 	{
-		// add фиктивную grenade
+		// add  grenade
 		pWorld->ThrowGrenade( curPos, velocity, pWorld->GetTime()->GetValue(), 
 			0, pModel, pRocket->GetDBAmmo()->pExplosiveBullet, pIgnored );
 		return true;

@@ -13,11 +13,11 @@
 #include "wMain.h"
 #include "wUnitServer.h"
 #include "wUnitCommands.h"
-#include "rpgItem.h"
+#include "RPGItem.h"
 #include "RPGItemSet.h"       // full NRPG::CGrenadeItem / CWeaponItem defs (the IGrenadeItem/IWeaponItem
                               // bases must be VISIBLE here, else the item->interface upcast silently fails)
-#include "rpgUnitMission.h"
-#include "rpgUnitInfo.h"
+#include "RPGUnitMission.h"
+#include "RPGUnitInfo.h"
 #include "RPGUnit.h"          // NRPG::CUnit::Skills (suit HP via ST_VP), CDynamicSkill
 //
 #include "aiActions.h"

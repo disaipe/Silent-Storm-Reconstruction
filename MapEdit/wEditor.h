@@ -7,7 +7,7 @@
 #include "../Main/wAnimation.h"
 #include "../Main/wTerrain.h"
 #include "../Main/MapBuild.h"
-#include "../Main/terraininfo.h"
+#include "../Main/TerrainInfo.h"
 #include "weInterface.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NRPG

@@ -1,8 +1,8 @@
 // ParamsView.cpp : implementation file
 //
 
-#include "stdafx.h"
-#include "mapedit.h"
+#include "StdAfx.h"
+#include "MapEdit.h"
 #include "PiecesInfoView.h"
 #include "..\Misc\StrProc.h"
 #include "..\Main\BuildingClip.h"
@@ -79,7 +79,7 @@ int CPiecesInfoView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_wndList.Create( dwStyle, rect, this, IDC_PIECESINFO_CTRL );
 	m_wndList.SetExtendedStyle( LVS_EX_GRIDLINES | LVS_EX_FULLROWSELECT );
 	m_wndList.GetClientRect( &rect );
-	// вставляем первую колонку
+	//   
 	LV_COLUMN  column;
 	memset( &column, 0, sizeof( LV_COLUMN) );
 	column.mask = LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
@@ -275,7 +275,7 @@ void CPiecesInfoView::EditRecord( NM_LISTVIEW *pNMListView )
 	else 
 	{
 		if ( nNewHash != nData )
-			pieces.erase( pieces.find( nData ) ); // уже проверено, что элемент существует
+			pieces.erase( pieces.find( nData ) ); //  ,   
 		UpdateItem( iItem, nNewHash, sNewInfo );
 	}
 	pieces[nNewHash] = sNewInfo;

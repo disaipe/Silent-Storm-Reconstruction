@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "StdAfx.h"
 
 #include "wMain.h"
 #include "wMainPath.h"
@@ -6,7 +6,7 @@
 #include "wUnitServer.h"
 #include "wUnitCommands.h"
 
-#include "rpgUnitInfo.h"
+#include "RPGUnitInfo.h"
 #include "rpgCheatConstants.h"
 
 #include "aiUnit.h"

@@ -3,7 +3,7 @@
 // dockwnd.cpp : implementation file
 //
 
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "MapEdit.h"
 #include "TreeWnd.h"
 #include "resource.h"
@@ -166,7 +166,7 @@ LRESULT CTmplTreeWnd::OnTabSel(WPARAM wParam, LPARAM lParam)
   m_tabWnd.GetActiveTab( pWnd );
   if ( pWnd )
   {
-		// CRAP слишком медленно 
+		// CRAP   
     // pWnd->SendMessage( WM_COMMAND, ID_RELOAD_TREE );
   }
   return true;

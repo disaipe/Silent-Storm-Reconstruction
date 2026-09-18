@@ -8,7 +8,7 @@
 #include "../DBFormat/DataFormat.h"
 #include "../DBFormat/DataRPG.h"
 #include "../DBFormat/DataChest.h"	// NDb::CRPGChestReal / SLootItem (ctor pBackpack consumption)
-#include "rpgPerk.h"
+#include "RPGPerk.h"
 #include "rpgPerkConstants.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NRPG

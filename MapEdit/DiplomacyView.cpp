@@ -1,5 +1,5 @@
-#include "stdafx.h"
-#include "mapedit.h"
+#include "StdAfx.h"
+#include "MapEdit.h"
 #include "DiplomacyView.h"
 #include "ItemsMgr.h"
 #include "../Misc/StrProc.h"

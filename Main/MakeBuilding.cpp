@@ -13,8 +13,8 @@
 #include "BuildingSchema.h"
 #include "..\Misc\BasicShare.h"
 #include "GGeometry.h"
-#include "aiobject.h"
-#include "aiobjectloader.h"
+#include "aiObject.h"
+#include "aiObjectLoader.h"
 #include "..\Misc\HPTimer.h"
 #include "MELayers.h"
 #include "..\MiscDll\LogStream.h"
@@ -488,7 +488,7 @@ static void MakeBuilding( SBuildingInfo *pInfo, const CBuildingGrid &grid, CBuil
 			}
 		}
 	}
-	// Стены
+	// 
 	int nWallLayer = MakeFragmentID( LID_WALLS, 0 );
 	if ( !grid.IsLayerVisible( nWallLayer ) )
 		return;
@@ -755,7 +755,7 @@ void MakeBuildingSchema( CBuildingSchema *pSchema, CBuildingGrid *pGrid, CBuildI
 	pSWMap.Refresh();
 	const CSolidAndWallMap &swMap = *_pSWMap;
 
-	// Сплошные объекты
+	//  
 	const unordered_map<int, CNodeMap<SSolidElement> > &solidMap = swMap.GetSolidMap();
 
 	CArray2D<bool> cellarWalls;
@@ -779,7 +779,7 @@ void MakeBuildingSchema( CBuildingSchema *pSchema, CBuildingGrid *pGrid, CBuildI
 			}
 		}
 	}
-	// Стены
+	// 
 	const CNodeMap<SGridNode> &wallGrid = swMap.GetWallGrid();
 	const vector<SLRNeighbs> &neighbs = swMap.GetNeighbs();
 
@@ -942,7 +942,7 @@ void BuildingHP( CBuildInfo *pBuildInfo, CBuildingGrid *pGrid, CSolidAndWallMap 
 	fMaxHP = 0;
 	fTotalHP = 0;
 	nTotalNodes = 0;
-  // Сплошные объекты
+  //  
 	const unordered_map<int, CNodeMap<SSolidElement> > &solidMap = swMap.GetSolidMap();
 	for (unordered_map<int, CNodeMap<SSolidElement> >::const_iterator it = solidMap.begin(); it != solidMap.end(); ++it )
 	{
@@ -962,7 +962,7 @@ void BuildingHP( CBuildInfo *pBuildInfo, CBuildingGrid *pGrid, CSolidAndWallMap 
 			}
 		}
 	}
-	// Стены
+	// 
 	const CNodeMap<SGridNode> &wallGrid = swMap.GetWallGrid();
 	const vector<SLRNeighbs> &neighbs = swMap.GetNeighbs();
 	for ( int i = 0; i < pBuildInfo->wallFragments.size(); ++i )

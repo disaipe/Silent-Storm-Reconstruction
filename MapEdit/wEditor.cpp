@@ -6,7 +6,7 @@
 #include "..\Misc\BasicShare.h"
 #include "..\Main\Transform.h"
 #include "..\Main\MemObject.h"
-#include "IWysiwyg.h"
+#include "iWysiwyg.h"
 #include "WysiwygSpotSel.h"
 #include "WysiwygSubTemplateSel.h"
 #include "..\Main\MakeBuilding.h"
@@ -786,7 +786,7 @@ void CEditorWorld::UpdateSubTemplate( int nUserID )
 			return;
 		}
 	}
-	// такого подтемплейта в списке неоказалось, может его только что добавили?
+	//     ,     ?
 	EBrushType type;
 	int nID;
 	NWysiwyg::GetFragmentID( nUserID, &type, &nID );
@@ -971,7 +971,7 @@ void CEditorWorld::UpdateUnit( int nDBUnitID )
 			return;
 		}
 	}
-	// такого юнита в списке неоказалось, может его только что добавили?
+	//     ,     ?
 	for ( int i = 0; i < pVar->pUnits.size(); ++i )
 	{
 		NDb::CUnit *pU = pVar->pUnits[i];
@@ -1037,7 +1037,7 @@ void CEditorWorld::UpdateObject( int nDBObjectID )
 		}
 		++i;
 	}
-	// такого юнита в списке неоказалось, может его только что добавили?
+	//     ,     ?
 	for ( int i = 0; i < pVar->pFinalElements.size(); ++i )
 	{
 		NDb::CFinalElement *pF = pVar->pFinalElements[i];

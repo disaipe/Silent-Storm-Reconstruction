@@ -1,6 +1,6 @@
 // TEdit.cpp : Defines the class behaviors for the application.
 //
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "MapEdit.h"
 #include "MainFrm.h"
 #include "ChildFrm.h"
@@ -10,7 +10,7 @@
 #include "templ.h"
 #include "FinalElem.h"
 #include "Unit.h"
-#include "placement.h"
+#include "Placement.h"
 #include "FinTypeDlg.h"
 #include "dbDefs.h"
 #include "Export.h"
@@ -56,7 +56,7 @@ externA5 bool gbIterfacePreview;
 bool gbLoadGameDB = true;
 
 SDBConnection dbConnection;
-//externA5 bool LoadResources();  // загрузка ресурсных деревьев из базы данных
+//externA5 bool LoadResources();  //      
 externA5 void ReleaseResources();
 
 class CPopInterfaceCmd: public NMainLoop::CInterfaceCommand
@@ -262,7 +262,7 @@ BOOL CTEditApp::InitInstance()
   pSplashWnd->Create();
 	puts( "SECSplashWnd" );
 	
-	const char szLoadErr[] = "Cant load data\nЌе найдена игрова€ база данных";
+	const char szLoadErr[] = "Cant load data\n    ";
 	while ( S_OK != OpenDBConnection( &dbConnection ) )
 	{
 		ErrExit( pSplashWnd, szLoadErr );
@@ -584,8 +584,8 @@ void CTEditApp::OnFileSaveall()
   BeginWaitCursor();
 	theTemplMgr.UpdateModified();
 	/*
-  // ѕри сохранении могут помен€тьс€ некоторые ID, 
-  // поэтому необходимо обновить некоторые окна
+  //      ID, 
+  //     
   CChildView *pView = GetTemplateView();
   if ( pView )
   {
@@ -594,7 +594,7 @@ void CTEditApp::OnFileSaveall()
       pView->SetPlacement( pPl );
   }
 	*/
-  // «апись данных из ресурсных деревьев
+  //     
   for ( unordered_map<int, SResTree>::const_iterator i = resTreesHash.begin(); i != resTreesHash.end(); ++i )
   {
     if ( i->second.pItemsTree )
@@ -616,7 +616,7 @@ void CTEditApp::DropTemplate( int id )
     pMainFrame->DropTemplate( id );
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// ѕоместить на зону какой либо объект
+//      
 bool CTEditApp::DropItem( int nTableID, int nItemID )
 {
 	CPoint pt;
@@ -630,22 +630,22 @@ bool CTEditApp::DropItem( int nTableID, int nItemID )
 	return DropItem( activeItem.nTableID, activeItem.pProps, bPropUpd ? &pMainFrame->m_pPropView->m_OIDlg : 0, nTableID, nItemID );
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// „тобы определить, можно ли бросить итем nItemID из таблицы nTableID 
-// в текущий активный итем, используем св€зи между таблицами
+//  ,     nItemID   nTableID 
+//    ,    
 bool CTEditApp::DropItem( int nDstTableID, const CPropMap *pDstProps, COIDlg *pView, int nTableID, int nItemID )
 {
   const SResTree *pDropRes = GetResTree( nTableID );
   if ( !pDstProps || !pDropRes /*|| pDstProps->empty()*/ )
     return false;
 	const int nDstItemID = pDstProps->begin()->second->GetOwnerID().nItemID;
-	// ќбработка исключений в правилах drag&drop
+	//     drag&drop
 	if ( CheckDropExeptions( nDstTableID, nTableID ) )
 	{
 		int nPropID = GetDropExeptionTarget( nTableID, nDstItemID, nTableID, nItemID );
 		if ( -1 != nPropID && pView )
 			pView->SetActiveProp( nPropID );
 	}
-  //  огда в темплейт кидаетс€ моделька, или темплейт, обрабатываем это по особому
+  //     ,  ,    
   if ( IDC_TEMPLATE_TREE == nDstTableID && !pView )
 	{
     switch ( nTableID )
@@ -670,8 +670,8 @@ bool CTEditApp::DropItem( int nDstTableID, const CPropMap *pDstProps, COIDlg *pV
 		return true;
 	}
 	if ( !pView )
-		return false; // это не изменение св-ва, а добавление объекта на карту
-  // ѕросматриваем все св-ва активного объекта и ищем св€зь с таблицей nTableID
+		return false; //    -,     
+  //   -        nTableID
   for ( CPropMap::const_iterator it = pDstProps->begin(); it != pDstProps->end(); ++it )
     if ( it->second->IsRelatedTable( nTableID ) )
     {
@@ -679,18 +679,18 @@ bool CTEditApp::DropItem( int nDstTableID, const CPropMap *pDstProps, COIDlg *pV
       if ( nActiveProp != it->second->GetID() && -1 != nActiveProp )
         continue;
 			if ( EMPTY_VALUE == nItemID )
-				// устанавливаем тип пол€ в VT_NULL, в базе даннных будет пустое значение
+				//     VT_NULL,      
 				it->second->SetValue( CVariant() );
 			else
 				it->second->SetValue( nItemID );
-			// обновл€ем внешний вид поселекченного итема, если он изменилс€ (есть исключени€)
+			//     ,    ( )
 			if ( IDC_TEMPLATE_TREE != nDstTableID && activeItem.nTableID == nDstTableID && activeItem.nItemID == nDstItemID )
 			{
 				const SResTree *pActiveRes = GetResTree( nDstTableID );
 				ASSERT( pActiveRes );
 				(*pActiveRes->pSelectCb)( activeItem.nItemID, pMainFrame->GetActiveVariant() );
 			}
-      // обновл€ем значени€ в окошке св-в
+      //     -
       pView->UpdateProperty( it->second->GetID() );
       OnFileSaveall();
       return true;
@@ -698,8 +698,8 @@ bool CTEditApp::DropItem( int nDstTableID, const CPropMap *pDstProps, COIDlg *pV
   return false;
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// ¬озвращает активную расстановку, если есть
-// указатель на расстановку временный и не должен сохран€тьс€
+//   ,  
+//        
 CPlacement* CTEditApp::GetActivePlacement() const
 {
 	if ( IDC_TEMPLATE_TREE != activeItem.nTableID )
@@ -1249,7 +1249,7 @@ const SResTree* CTEditApp::GetResTree( int nTreeID )
 
 void CTEditApp::SetActiveItem( int nResourceTree, int nItemID, int nVariantID, bool bUpdateHistory )
 {
-	// обработка forward/back листа
+	//  forward/back 
 	if ( bUpdateHistory && nResourceTree != -1 && nItemID != -1 )
 	{
 		SHistEvent ev( nResourceTree, nItemID );
@@ -1287,7 +1287,7 @@ void CTEditApp::SetActiveItem( int nResourceTree, int nItemID, int nVariantID, b
 		pMainFrame->m_pPropView->SetPropMap( activeItem.nTableID, activeItem.pProps );
 		if ( pRes->pSelectCb )
 		{
-			// pSelectCb должна вызыватьс€ после установки activeItem.pProps
+			// pSelectCb     activeItem.pProps
 			(*pRes->pSelectCb)( nItemID, -1 );
 		}
 		else
@@ -1404,7 +1404,7 @@ void CTEditApp::OnHelpTipoftheday()
 	WriteProfileInt( REG_SEC, REG_TIP, tipsDlg.GetShowAtStartup() );		
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// ѕроверка на исключение в правилах drag&drop
+//      drag&drop
 bool CTEditApp::CheckDropExeptions( int nTblTarget, int nTblDrop )
 {
 	switch ( nTblTarget )
@@ -1415,13 +1415,13 @@ bool CTEditApp::CheckDropExeptions( int nTblTarget, int nTblDrop )
 	return false;
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// возвращает ID св-ва в таблице nTblTarget куда можно бросить итем из таблицы nTblDrop
+//  ID -   nTblTarget       nTblDrop
 int CTEditApp::GetDropExeptionTarget( int nTblTarget, int nItemTarget, int nTblDrop, int nItemDrop )
 {
 	if ( IDC_MATERIALS_TREE == nTblTarget && IDC_TEXTURES_TREE == nTblDrop )
 	{
 		if ( EMPTY_VALUE == nItemDrop )
-			return nItemTarget; // fake текстуру можно бросать в любое поле
+			return nItemTarget; // fake      
 		const SResTree *pDropTree = GetResTree( nTblDrop );
 		const SResTree *pTargTree = GetResTree( nTblTarget );
 		if ( !pDropTree || !pTargTree )

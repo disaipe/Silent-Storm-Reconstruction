@@ -1,7 +1,7 @@
 #include "StdAfx.h"
 //
 namespace NWorld { class CWorld; }          // aiRoute.h's CAIRoute(NWorld::CWorld*,..) ctor needs it fwd-declared
-#include "mapBuild.h"
+#include "MapBuild.h"
 #include "aiPosition.h"
 #include "aiRoute.h"
 #include "../Misc/StrProc.h"          // NStr::ToLower

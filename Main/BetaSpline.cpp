@@ -1,7 +1,7 @@
 #include "StdAfx.h"
 //
 #include "../Misc/Geom.h"        // CVec3
-#include "../Misc/2Darray.h"     // CArray2D<T>
+#include "../Misc/2DArray.h"     // CArray2D<T>
 //
 #include "BetaSpline.h"
 //

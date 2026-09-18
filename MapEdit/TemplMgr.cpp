@@ -9,7 +9,7 @@
 #include "ItemsMgr.h"
 
 #include "templ.h"
-#include "placement.h"
+#include "Placement.h"
 #include "FinalElem.h"
 #include "Unit.h"
 #include "MapEdit.h"
@@ -66,8 +66,8 @@ CTemplateMgr::~CTemplateMgr()
   finElements.clear();
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Загрузка данных из базы
-// функция должна быть вызвана приложением до создания окон
+//    
+//        
 bool CTemplateMgr::Create()
 {
 	if ( !bDBInitialized )
@@ -84,18 +84,18 @@ bool CTemplateMgr::Create()
   return true;
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Загружает список темплейтов из базы данных
-// функция должна быть вызвана приложением до создания окон
-// и после LoadFinElements()
+//      
+//        
+//   LoadFinElements()
 bool CTemplateMgr::LoadTemplateTree()
 {
-  // Инициализируем интерфейс к базе данных
+  //     
 	string szTemplQuery = string("SELECT * FROM " ) + TEMPL_TBL;
 	string szVarQuery = string("SELECT * FROM " ) + VARIANTS_TBL;
   if ( S_OK != dbTempl.Open( szTemplQuery ) )
     return false;
   
-  // загружаем все темплейты
+  //   
   while ( dbTempl.MoveNext() == S_OK )
   {
     CTemplate *pTempl = dbgnew CTemplate( &dbVars );
@@ -108,8 +108,8 @@ bool CTemplateMgr::LoadTemplateTree()
     templates.push_back( pTempl );
     templID2Ind[dbTempl.m_TemplateId] = templates.size() - 1;
   }
-  // загрузка расстановок для прямоугольников
-  // предпологается, что расст. для конечных элементов уже загружены
+  //    
+  // ,  .     
 	if ( S_OK != dbVars.Open( szVarQuery ) )
 		return false;
   while ( dbVars.MoveNext() == S_OK )
@@ -125,9 +125,9 @@ bool CTemplateMgr::LoadTemplateTree()
   return true;
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Получить указатель на расстановку
-// расстановка создается и считывается из базы данных
-// после того, как она становится ненужна, необходимо вызвать ReleasePlacement()
+//    
+//       
+//  ,    ,   ReleasePlacement()
 CPlacement* CTemplateMgr::GetPlacement( int id )
 {
 	if ( id <= 0 )
@@ -154,15 +154,15 @@ void CTemplateMgr::ReleasePlacement( CPlacement *pPl )
     }		
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// сброс указателя на текущий темплейт
-// для установки указателя на 1ый темплейт вызвать MoveNextTempl()
+//     
+//     1   MoveNextTempl()
 void CTemplateMgr::MoveFirstTempl()
 {
   iCurTempl = -1;
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Продвижение указателя на текущий темплей в следующую позицию
-// возвращает "false", если достигнут конец списка
+//        
+//  "false",    
 bool CTemplateMgr::MoveNextTempl()
 {
   if ( iCurTempl >= (int)templates.size() - 1 )
@@ -171,8 +171,8 @@ bool CTemplateMgr::MoveNextTempl()
   return true;
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Получить ID текущего темплейта
-// Возвр. -1 если тек. темплейт не установлен
+//  ID  
+// . -1  .   
 int CTemplateMgr::GetCurTemplID()
 {
   if ( iCurTempl != -1 )
@@ -180,8 +180,8 @@ int CTemplateMgr::GetCurTemplID()
   return -1;
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Получить текущий темплейт
-// Возвр. 0 если тек. темплейт не установлен
+//   
+// . 0  .   
 CTemplate* CTemplateMgr::GetCurTempl()
 {
   if ( iCurTempl != -1 )
@@ -198,8 +198,8 @@ CTemplate* CTemplateMgr::GetTempl( int id )
   return 0;
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Получить временный ID для новой стенки
-// реальный ID становится известен после добавления в базу данных
+//   ID   
+//  ID       
 int CTemplateMgr::GetTempWallID()
 {
   return ++iMaxWallID;
@@ -218,7 +218,7 @@ bool CTemplateMgr::UpdateModifiedTempls()
   if ( FAILED( hr ) )
     return false;
 
-  // обновление в базе всех полученных по запросу темплейтов
+  //        
   while( dbTempl.MoveNext() == S_OK )
   {
     CTemplate *pTempl = GetTempl( dbTempl.m_TemplateId );
@@ -231,8 +231,8 @@ bool CTemplateMgr::UpdateModifiedTempls()
     dbTempl.m_Width  = pTempl->GetWidth();
     dbTempl.m_Height = pTempl->GetHeight();
     
-    // Запись обновления в базу
-    // используется аксессор, который не содержит связанных полей
+    //    
+    //  ,     
     hr = dbTempl.SetData( 1 );
 
     if ( FAILED(hr) )
@@ -278,17 +278,17 @@ bool CTemplateMgr::UpdateModifiedFinElems()
   return true;
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Функция для использования в классе CTemplate, 
-// нет необходимости ее вызывать в других местах
-// Установка "Modified" флага для темлейта с templID
-// данный темплейт будет обновлен в базе данных
-// при вызове UpdateModified()
+//      CTemplate, 
+//       
+//  "Modified"     templID
+//       
+//   UpdateModified()
 void CTemplateMgr::SetModifiedTempl( int templID )
 {
   PushUnique( modifiedTemplates, templID );
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Обновление модифицированных темплейтов в базе данных
+//      
 bool CTemplateMgr::UpdateModified()
 {
   bool ret = UpdateModifiedTempls();
@@ -354,11 +354,11 @@ void CTemplateMgr::SetupTemplateMap()
     templID2Ind[templates[i]->GetID()] = i;
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Загружает список конечных элементов из базы данных
-// функция должна быть вызвана до LoadTemplateTree()
+//       
+//      LoadTemplateTree()
 bool CTemplateMgr::LoadFinElements()
 {
-  // конечные элементы
+  //  
   {
     CFinElement tmp( &dbFin, 0, 0 );
     HRESULT hr = dbFin.Open( FINELEMS_TBL, tmp.GetPropList() );
@@ -377,7 +377,7 @@ bool CTemplateMgr::LoadFinElements()
       finID2FinInd[pEl->GetElementID()] = finElements.size() - 1;
     }
   }
-  // Юниты
+  // 
   {
     CUnitElement tmp( &dbFin, 0, 0 );
     HRESULT hr = dbFin.Open( UNITS_TBL, tmp.GetPropList() );
@@ -412,7 +412,7 @@ bool CTemplateMgr::LoadPlacement( int nVarID, CPlacement *pPl )
 {
 	if ( FAILED( dbVars.Open( string( "SELECT * FROM " ) + VARIANTS_TBL + " WHERE ID=" + IToA( nVarID ) ) ) )
 		return false;
-	// загрузка расстановоки
+	//  
 	if ( S_OK != dbVars.MoveNext() )
 		return false;
 

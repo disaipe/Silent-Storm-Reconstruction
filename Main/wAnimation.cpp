@@ -2,7 +2,7 @@
 #include "wAnimation.h"
 #include "wObject.h"
 #include "../Misc/2DArray.h"
-#include "../Misc/randomGen.h"
+#include "../Misc/RandomGen.h"
 #include "../DBFormat/DataAnimation.h"
 #include "../DBFormat/DataRPG.h"
 #include "aiMap.h"

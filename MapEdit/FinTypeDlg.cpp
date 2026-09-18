@@ -1,8 +1,8 @@
 // FinTypeDlg.cpp : implementation file
 //
 
-#include "stdafx.h"
-#include "mapedit.h"
+#include "StdAfx.h"
+#include "MapEdit.h"
 #include "FinTypeDlg.h"
 
 #ifdef _DEBUG

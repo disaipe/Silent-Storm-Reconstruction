@@ -2,7 +2,7 @@
 #include "../Misc/StrProc.h"
 #include "../MiscDll/LogStream.h"
 #include "../DBFormat/DataRPG.h"
-#include "rpgGlobal.h"
+#include "RPGGlobal.h"
 #include "scScenarioTracker.h"
 #include "wMain.h"
 #include "wUICommands.h"

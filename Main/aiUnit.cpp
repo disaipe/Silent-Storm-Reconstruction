@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 
-#include "aiLog.h"
+#include "AILog.h"
 #include "aiMap.h"
 #include "aiState.h"
 #include "aiPlayer.h"

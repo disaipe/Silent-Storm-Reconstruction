@@ -25,7 +25,7 @@
 #include "RPGDiplomacy.h"
 #include "../MiscDll/LogStream.h"
 #include "rpgCheatConstants.h"
-#include "rpgCritical.h"
+#include "RPGCritical.h"
 #include "wUnitCommands.h"
 #include "../Misc/EventsBase.h"   // NGlobal::ThrowEvent
 #include "eventUnit.h"            // NWorld::CEventOnSeeNewEnemy / CEventOnUnitDiedOrLoseConsciousness (AI events)

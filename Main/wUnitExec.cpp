@@ -22,7 +22,7 @@
 #include "wUnitAttackExec.h"
 #include "rpgCheatConstants.h"
 #include "wUnitStates.h"
-#include "rpgUnit.h"
+#include "RPGUnit.h"
 #include "wUnitQueue.h"
 namespace NWorld
 {

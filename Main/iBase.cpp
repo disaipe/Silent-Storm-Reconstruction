@@ -5,7 +5,7 @@
 #include "Camera.h"							// ICamera (GetTransform / GetScreenRect)
 #include "Transform.h"						// CTransformStack
 #include "bmpfile.h"						// WriteBMP( CArray2D<NGfx::SPixel8888>&, const char* )
-#include "../Misc/2Darray.h"				// CArray2D
+#include "../Misc/2DArray.h"				// CArray2D
 #include "../Misc/Geom.h"					// CVec2 / CTRect<float>
 #include "../FileIO/Streams.h"				// CFileStream::TryOpenRead
 #include "../MiscDll/LogStream.h"			// csGame / endl

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "StdAfx.h"
 //
 #include "A5Script.h"
 #include "scriptCommon.h"
@@ -7,7 +7,7 @@
 #include "wOSBase.h"
 #include "wObject.h"
 #include "RPGItemSet.h"
-#include "rpgAttackMech.h"
+#include "RPGAttackMech.h"
 #include "../DBFormat/DataRPG.h"
 #include "../DBFormat/DataFormat.h"
 #include "../DBFormat/DataObject.h"

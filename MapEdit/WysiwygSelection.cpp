@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 #include "..\Main\Camera.h"
-#include "IWysiwyg.h"
+#include "iWysiwyg.h"
 #include "WysiwygSelectionImpl.h"
 #include "..\Main\GView.h"
 #include "..\Misc\BasicShare.h"
@@ -415,7 +415,7 @@ bool CSelection::Update( const CVec2 &ptCursor, CObjectBase *pObj, int nUserID )
 		}
 		else
 		{
-			// после того, как объекты поселекчены их разрешается двигать только после некоторого времени
+			//  ,          
 			NHPTimer::STime tCurrent = tSelectTime;
 			double dTime = NHPTimer::GetTimePassed( &tCurrent );
 			if ( dTime >= START_MOVE_TIME )
@@ -600,7 +600,7 @@ void CSelection::OnLButtonUp( const CVec2 &ptPos )
 	pWorld->EnableTerrainUpdate( true );
 	bLBDown = false;
 	bool bRet = false;
-	// после того, как объекты поселекчены их разрешается двигать только после некоторого времени
+	//  ,          
 	NHPTimer::STime tCurrent = tSelectTime;
 	double dTime = NHPTimer::GetTimePassed( &tCurrent );
 	int nSelMask = GetSelectionMask();
@@ -953,7 +953,7 @@ bool CSelection::AddFragment( NBuilding::CBuildInfo *pInfo, CVec3 ptPos, int nGe
 	CVec3 ptDC = CVec3( 1, 1, 0 );
 	dpos.MoveAndRotate( &ptDC );
 
-	if ( pCP->nSizeY != 0 ) // стена или не стена ?
+	if ( pCP->nSizeY != 0 ) //     ?
 	{
 		fr.nID = pInfo->CreateNextFragmentID();
 		pInfo->solidFragments.push_back( fr );
@@ -1168,7 +1168,7 @@ void CSelection::OnPaste( const SForceSelection &sel, const CVec2 &ptCursor, boo
 	int nFloor = nSelectionMinFloor == N_DEF_SELMINF ? GetUserSettings().GetActiveFloor() : nSelectionMinFloor;
 	CVec2 pt = GetTileUnderPos( GetProjectiveRay( ptCursor ), nFloor );
 	bool bNewTemplatePaste = ptCursor == CVec2(-1,-1);
-	if ( bNewTemplatePaste ) // координаты кусора невалидны
+	if ( bNewTemplatePaste ) //   
 	{
 		float fBX = 2 * box.ptHalfBox.x * FP_INV_GRID_STEP;
 		float fBY = 2 * box.ptHalfBox.y * FP_INV_GRID_STEP;
@@ -1517,7 +1517,7 @@ inline void FillWallLine( vector<NBuilding::SBuildFragment> *pFragments, const C
 
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// rect - в метрах
+// rect -  
 void CSelection::GetFilledFragments( vector<NBuilding::SBuildFragment> *pFragments, 
 	int nCPartID, int nLayerID, float fFloor, int nRotationID, CVec2 ptStart, CVec2 ptEnd )
 {

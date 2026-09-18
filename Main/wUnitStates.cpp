@@ -12,7 +12,7 @@
 #include "../MiscDll/LogStream.h"
 #include "wAckBase.h"
 #include "RPGCritical.h"
-#include "time.h"
+#include "Time.h"
 #include "RPGGame.h"
 #include "aiPosition.h"
 #include "RPGGlobal.h"

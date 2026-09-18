@@ -46,7 +46,7 @@
 #include "../DBFormat/DataRPG.h"
 #include "aiJob.h"
 #include "A5Script.h"
-#include "scriptCallLua.h"
+#include "scriptCallLUA.h"
 #include "../DBFormat/DataScenario.h"
 #include "../DBFormat/DataMisc.h"			// NDb::CUIHint + NDatabase::GetTable/CDBIterator (AddNextUIHint)
 #include "scFlowChartItems.h"

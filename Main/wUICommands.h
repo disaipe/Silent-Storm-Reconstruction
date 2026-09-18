@@ -4,7 +4,7 @@
 #pragma once
 #endif // _MSC_VER > 1000
 //
-#include "camera.h"
+#include "Camera.h"
 #include "../DBFormat/DataSound.h"		// NDb::CSound complete (CUICmdPlaySound's CDBPtr saveload uses typeid)
 #include "../DBFormat/DataFormat.h"		// NDb::CTEffect complete (CUICmdPlayEffect's CDBPtr saveload uses typeid)
 #include "../DBFormat/DataLight.h"		// NDb::CTAmbientLight complete (CUICmdSetAmbient's CDBPtr saveload uses typeid)

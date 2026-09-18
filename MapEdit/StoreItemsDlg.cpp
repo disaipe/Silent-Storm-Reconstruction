@@ -1,7 +1,7 @@
 // StoreItemsDlg.cpp : implementation file
 //
 
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "MapEdit.h"
 #include "StoreItemsDlg.h"
 #include "TreeView.h"

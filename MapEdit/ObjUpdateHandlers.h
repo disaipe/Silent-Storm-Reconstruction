@@ -14,7 +14,7 @@
 #include "../DBFormat/DataTerrain.h"
 #include "../Input/Bind.h"
 #include "../Main/iMain.h"
-#include "../Main/meLayers.h"
+#include "../Main/MELayers.h"
 #include "UserSettingsSetup.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 extern CVec3 GetColor( DWORD dwColor );

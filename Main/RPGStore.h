@@ -4,7 +4,7 @@
 #pragma once
 #endif // _MSC_VER > 1000
 //
-#include "rpgGlobal.h"     // NRPG::SStoreItem (reused), NRPG::CGlobalPlayer (pSide)
+#include "RPGGlobal.h"     // NRPG::SStoreItem (reused), NRPG::CGlobalPlayer (pSide)
 #include "RPGItemMap.h"    // NRPG::CItemsMap, NRPG::SMapItem, CTPoint, NRPG::IInventoryItem
 //
 namespace NRPG

@@ -1,8 +1,8 @@
 // WaypointDlg.cpp : implementation file
 //
 
-#include "stdafx.h"
-#include "mapedit.h"
+#include "StdAfx.h"
+#include "MapEdit.h"
 #include "WaypointDlg.h"
 #include "..\Main\aiWaypoint.h"
 #include "..\Main\aiPosition.h"
@@ -202,7 +202,7 @@ BOOL CWaypointDlg::OnInitDialog()
 	m_commands.SetExtendedStyle( LVS_EX_GRIDLINES | LVS_EX_FULLROWSELECT /*| LVS_EX_ONECLICKACTIVATE*/ );
 	if ( !IsValid( pWaypoint ) )
 		return false;
-	// вставляем первую колонку
+	//   
 	LV_COLUMN  column;
 	memset( &column, 0, sizeof( LV_COLUMN) );
 	column.mask = LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;

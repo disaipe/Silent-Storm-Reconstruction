@@ -1,9 +1,9 @@
 // ChildView.cpp : implementation of the CChildView class
 //
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "MapEdit.h"
 #include "ChildView.h"
-#include "placement.h"
+#include "Placement.h"
 #include "dbDefs.h"
 #include "PaintBar.h"
 #include "LayerList.h"
@@ -159,7 +159,7 @@ public:
 	{
 		if ( bModified && !(pPlacement->*pCallback)( value ) )
 		{
-			CFinProp::SetValue( GetValue(), bModified ); // старое значение
+			CFinProp::SetValue( GetValue(), bModified ); //  
 			return;
 		}
 		CFinProp::SetValue( value, bModified );
@@ -353,7 +353,7 @@ int CChildView::OnCreate(LPCREATESTRUCT lpCreateStruct)
   SetSpacing( 24 );
 	SetZoom( 1 );
 
-	// Установка таймера по которому обнавляется внешний вид поселекченных итемов
+	//         
   SetTimer( SELREFRESH_TIMER_ID, SELREFRESH_INTERVAL, 0 );
 	
 	return 0;
@@ -399,7 +399,7 @@ void CChildView::OnPaint()
 	DrawLineGrid( &dcBuf );
 	pDCBuf = 0;
 	//
-	// рисуем текущий селекшен
+	//   
 	if ( !m_rSelection.IsRectEmpty() )
 	{
 		CPen pen( PS_DOT, 1, RGB( 0, 0, 0 ) );
@@ -528,7 +528,7 @@ void CChildView::SetupLayerList()
 			pGrass = &pTerr->info.grass;
 			if ( pTerr->info.nMaxGrassLayerID <= 0 )
 			{
-				// старый формат слоев травы
+				//    
 				pTerr->info.nMaxGrassLayerID = 1;
 				for ( int i = 0; i < pGrass->size(); ++i )
 					(*pGrass)[i].nID = pTerr->info.nMaxGrassLayerID++;
@@ -541,7 +541,7 @@ void CChildView::SetupLayerList()
 	pAlphaL->SetImage( pAlphas );
 	pHolesL->SetHoles( pHoles );
 
-	// запоминаем старое состояние слоев
+	//    
 	vector< pair<int, bool> > lrOrder;
 	pLayers->GetLayerOrder( &lrOrder );
 	CLayerCtrl *pActiveLr = pLayers->GetActiveLayer();
@@ -553,7 +553,7 @@ void CChildView::SetupLayerList()
 			layers[i].bLastVisible = ret;
 	}
 	pLayers->DeleteAllLayers();
-	DeleteLayers(); // динамически созданные слои
+	DeleteLayers(); //   
 
 	pLayers->AddLayer( pSubTemplL );
 	pLayers->AddLayer( pUnitsL );
@@ -646,7 +646,7 @@ BOOL CChildView::OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message)
 	if ( HTCLIENT != nHitTest || pWnd != this)
 		return CWnd ::OnSetCursor(pWnd, nHitTest, message);
 
-	// когда нажат CTRL, то mode = MODE_ZOOM
+	//   CTRL,  mode = MODE_ZOOM
 	short ctrl  = GetAsyncKeyState( VK_CONTROL );
 	short shift = GetAsyncKeyState( VK_SHIFT );
 	if ( 0x8000 & ctrl && !(0x8000 & shift) )
@@ -691,12 +691,12 @@ void CChildView::OnLButtonUp(UINT nFlags, CPoint point)
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 void CChildView::OnMouseMove(UINT nFlags, CPoint point) 
 {
-	// если двигаем мышь с нажатой левой кнопкой и нажатым CTRL - то zoom mode
+	//          CTRL -  zoom mode
 	if ( (nFlags & MK_LBUTTON) && (nFlags & MK_CONTROL) && !(MK_SHIFT &nFlags) )
 	{
 		TrackZoom();
 	}
-	// если двигаем мышь с нажатой левой кнопкой - то это выделение
+	//        -   
 	else if ( EM_RECTANGULAR_SELECTION == GetUserSettings().GetMode() && (nFlags & MK_LBUTTON) && ! ((MK_CONTROL | MK_SHIFT) & nFlags) )
 	{
 		if ( !m_rSelection.IsRectEmpty() )
@@ -810,7 +810,7 @@ void CChildView::DrawLineGrid( CDC *pDC )
 		count.resize( pts.size() / 2, 2 );
 		pDC->PolyPolyline( &pts[0], &count[0], count.size() );
 	}
-	/////// толстые линии
+	///////  
 	spacing *= 5;
 	GetGridPlacement( &r, &ptOrig, CSize( spacing, spacing ) ); 
 	if ( r.Width() < spacing || r.Height() < spacing )
@@ -1008,7 +1008,7 @@ void CChildView::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 	CWnd ::OnVScroll(nSBCode, nPos, pScrollBar);
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Новый коэффицент масштаба
+//   
 void CChildView::SetZoom( float fNewZoom )
 {
 	if ( !IsWindow( m_hWnd ) )
@@ -1025,7 +1025,7 @@ void CChildView::SetZoom( float fNewZoom )
 	}
 	fZoom = fNewZoom;
 	pWallsL->SetWallWidth( fZoom * 3 );
-	// Меняем размеры рабочего поля
+	//    
 	if ( pCurPlacement )
 	{
 		nWidth  = nDelta * pCurPlacement->GetWidth();
@@ -1040,7 +1040,7 @@ void CChildView::SetZoom( float fNewZoom )
 	UpdateWindow();
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Плавное увеличение\уменьшение масштаба
+//  \ 
 float CChildView::TrackZoom()
 {
   const float ZOOM_SPEED = 0.003f;
@@ -1283,7 +1283,7 @@ void CChildView::OnTimer(UINT nIDEvent)
 	if ( pLr )
 		pLr->OnTimer( this );
 
-	// выкидываем из очереди сообщения таймера, мы не успеваем их обрабатывать
+	//     ,     
 	MSG msg;
 	while( PeekMessage( &msg, m_hWnd, WM_TIMER, WM_TIMER, PM_REMOVE ) )
 		;
@@ -1421,7 +1421,7 @@ BOOL CChildView::PreTranslateMessage(MSG* pMsg)
 
 						for ( i = 0; i < layers.size(); ++i )
 						{
-							// альфа добавляется вместе с картой высот
+							//      
 							if ( (layers[i].bSingle && pLayers->HasLayer( layers[i].nLayerID )) || LID_ALPHA == layers[i].nLayerID )
 								continue;
 							dlg.items.push_back( pair<string, DWORD>( layers[i].szName, layers[i].nLayerID + 1 ) );
@@ -1717,7 +1717,7 @@ bool CChildView::ExportBmp()
 	CPoint pt;
 
 	BeginWaitCursor();
-	// один тайл == 1 пиксел
+	//   == 1 
 	float fOldZoom = GetZoom();
 	bool  bOldGrid = bGrid;
 	bGrid = false;
@@ -1763,7 +1763,7 @@ bool CChildView::ExportBmp()
 	pDC->BitBlt( leftTop.x, leftTop.y, pt.x + nWidth, pt.y, &dcBuf, 0, 0, SRCCOPY );
 #endif
 		
-	// Сохраняем TGA на диске
+	//  TGA  
 	NImage::CImage cimage;
 	NImage::Convert( image, nWidth, nHeight, &cimage );
 	bool bRet = false;
@@ -2162,7 +2162,7 @@ void CChildView::OnLinkLayer( CLayerCtrl *p )
 	{
 		if ( nGroup != -1 )
 		{
-			// удаляем из старой группы
+			//    
 			NBuilding::SLayerGroup &g = groups[nGroup];
 			vector<int>::iterator i = find( g.layers.begin(), g.layers.end(), p->GetLayerID() );
 			ASSERT( i != g.layers.end() );
@@ -2170,7 +2170,7 @@ void CChildView::OnLinkLayer( CLayerCtrl *p )
 		}
 		if ( pActive )
 		{
-			// связываем с активным слоем, если группы для активного слоя нет, то создаем ее
+			//    ,      ,   
 			int nActiveGroup = GetLayerGroup( pActive->GetLayerID(), groups );
 			if ( nActiveGroup != -1 )
 			{

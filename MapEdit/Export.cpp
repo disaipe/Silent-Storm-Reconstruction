@@ -1,7 +1,7 @@
 // Export.cpp : implementation file
 //
-#include "stdafx.h"
-#include "mapedit.h"
+#include "StdAfx.h"
+#include "MapEdit.h"
 #include "Export.h"
 #include "ItemsMgr.h"
 #include "dbDefs.h"
@@ -83,7 +83,7 @@ static string GetBatFile( FILE **ppFile, const string &szBat )
   char szBatPath[512];
   const static int nBatSz = szBat.length();
  
-  // Получаем имя бат файла, в кторый записываются команды экспорта  
+  //    ,       
   if ( GetTempPath( sizeof(szBatPath), szBatPath ) > sizeof(szBatPath) )
   {
 		HWND hwnd = theApp.GetMainWnd() ? theApp.GetMainWnd()->m_hWnd : 0;
@@ -209,7 +209,7 @@ static bool MkGeomExportCmd( int nID, CItemsMgr *pItems, char *pszCmdBuf, int nS
     return false;
 
 	int nOffset = 0;
-	// удаляем старые ресурсы
+	//   
 	for ( int i = 0; i < 4; ++i )
 	{
 		nOffset += _snprintf( pszCmdBuf + nOffset, nSize, "sysFile -del \"%s\\%d\";\n", szGeomDir.c_str(), (i << 16) + nID );
@@ -411,7 +411,7 @@ static bool MkAnimationExportCmd( int nID, CItemsMgr *pItems, char *pszCmdBuf, i
   if ( !CheckSrcDst( szSrc, szDst, bForceExport ) && !CheckSrcDst( szSrc2, szDst, bForceExport ) )
     return false;
   
-  // откапываем скелет для анимации
+  //    
   CPropMap::const_iterator itSk = pProps->find( "SkeletonID" );
   if ( itSk == pProps->end() )
     return false;
@@ -657,7 +657,7 @@ void ExportTextures( CItemsMgr *pItems, vector<int> nItemIDs, bool bForceExport 
   if ( !pFile )
     return;
 
-  // составляем команды для экспорта
+  //    
   int i, nExportNum = 0;
   const int n = nItemIDs.size();
   for ( i = 0; i < n; ++i )
@@ -763,7 +763,7 @@ void ExportFonts( CItemsMgr *pItems, vector<int> nItemIDs, bool bForceExport )
   if ( !pFile )
     return;
 
-  // составляем команды для экспорта
+  //    
   int nExportNum = 0;
   const int n = nItemIDs.size();
   for ( int i = 0; i < n; ++i )
@@ -783,7 +783,7 @@ void ExportFonts( CItemsMgr *pItems, vector<int> nItemIDs, bool bForceExport )
     if ( itTex == ie || itH  == ie || itW == ie || itIt == ie ||
          itAa  == ie || itPt == ie || itChr == ie || itFc == ie )
       continue;
-    // Получаем исходнау текстуру для шрифта
+    //     
     const SResTree *pTexs = theApp.GetResTree( IDC_TEXTURES_TREE );
     if ( !pTexs || !pTexs->pItemsTree )
       continue;
@@ -1071,7 +1071,7 @@ CExportResultDlg::CExportResultDlg( const string &szLog, CWnd* pParent /*=NULL*/
     else
       m_Log += pStr[i];
   }
-	m_Log += "\r\n"; // для удобства последущей фильтрации варнингов
+	m_Log += "\r\n"; //     
 	m_LogCopy = m_Log;
 }
 

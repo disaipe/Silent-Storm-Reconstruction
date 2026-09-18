@@ -1,10 +1,10 @@
 // MaterialEditPage.cpp : implementation file
 //
 
-#include "stdafx.h"
-#include "mapedit.h"
+#include "StdAfx.h"
+#include "MapEdit.h"
 #include "MaterialEditPage.h"
-#include "IWysiwyg.h"
+#include "iWysiwyg.h"
 #include "dbDefs.h"
 #include "TreeSelItemDlg.h"
 #include "MaterialSetEditDlg.h"

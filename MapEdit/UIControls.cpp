@@ -1,4 +1,4 @@
-#include "StdAFx.h"
+#include "StdAfx.h"
 #include "UIControls.h"
 #include "CtrlObjectInspector.h"
 #include "MapEdit.h"
@@ -69,7 +69,7 @@ bool CUIControl::Update( bool bSaveData /* = true  */ )
 	if ( bSaveData )
 	{
 		CUIControlAccessor copy = *this;
-		// открываем в базе запись, которую хотим обновить
+		//    ,   
 		string szQuery = string( "SELECT * FROM " ) + UICONTROLS_TBL + " WHERE ID=" + IToA( nID );
 		HRESULT hr = Open( szQuery.c_str() );
 		if ( FAILED( hr ) ||S_OK != MoveNext() )
@@ -103,13 +103,13 @@ bool CUIControl::Update( bool bSaveData /* = true  */ )
 	//
 	if ( bSaveData )
 	{
-		// заполняем данные
+		//  
 		m_nUIContainerID = nUIContainerID;
 		m_nLeft   = rect.left;
 		m_nTop    = rect.top;
 		m_nRight  = rect.right;
 		m_nBottom = rect.bottom;
-		// записываем данные в базу, используя соответсвующий аксессор
+		//    ,   
 		HRESULT hr = SetData( m_nType );
 		if ( FAILED( hr ) )
 		{
@@ -117,7 +117,7 @@ bool CUIControl::Update( bool bSaveData /* = true  */ )
 			return false;
 		}
 		CUIControlAccessor copy = *this;
-		Close(); // сбрасывает все данные в аксессоре
+		Close(); //     
 		*static_cast<CUIControlAccessor*>(this) = copy;
 	}
 	CMainFrame *pMF = dynamic_cast<CMainFrame*>( theApp.GetMainWnd() );

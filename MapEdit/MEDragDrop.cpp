@@ -4,7 +4,7 @@
 #include "iWysiwyg.h"
 #include "../Main/BuildingInfo.h"
 #include "../Main/MakeBuilding.h"
-#include "../Main/gView.h"
+#include "../Main/GView.h"
 #include "MEUserSettings.h"
 #include "../DBFormat/DataFormat.h"
 #include "../DBFormat/DataObject.h"

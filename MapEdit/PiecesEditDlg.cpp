@@ -1,7 +1,7 @@
 // PiecesEditDlg.cpp : implementation file
 //
 
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "MapEdit.h"
 #include "PiecesEditDlg.h"
 #include "../DBFormat/DataGeometry.h"

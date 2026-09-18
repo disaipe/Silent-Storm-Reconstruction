@@ -2,7 +2,7 @@
 #include "A5Script.h"
 //
 #include "wMain.h"
-#include "rpgUnit.h"
+#include "RPGUnit.h"
 #include "../MiscDll/LogStream.h"
 #include "scriptPtr.h"
 #include "scriptCommon.h"

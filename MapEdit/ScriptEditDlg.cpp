@@ -1,7 +1,7 @@
 // ScriptEditDlg.cpp : implementation file
 //
 
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "MapEdit.h"
 #include "ScriptEditDlg.h"
 #include "ItemsMgr.h"

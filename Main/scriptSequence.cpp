@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "A5Script.h"
 #include "scriptCommon.h"
 #include "wMain.h"
@@ -12,9 +12,9 @@
 #include "scriptPtr.h"
 #include "scriptPosition.h"				// NScript::CLUAObjectPosition (Play3DSound/PlayEffect)
 #include "rpgCheatConstants.h"
-#include "rpgUnitMission.h"
-#include "rpgUnit.h"
-#include "rpgGlobal.h"					// NRPG::CGlobalGame::hintsSet (ShowHint dedup)
+#include "RPGUnitMission.h"
+#include "RPGUnit.h"
+#include "RPGGlobal.h"					// NRPG::CGlobalGame::hintsSet (ShowHint dedup)
 #include "wAnimation.h"
 #include "../MiscDll/LogStream.h"
 #include "aiCommander.h"

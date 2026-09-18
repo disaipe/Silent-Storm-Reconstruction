@@ -1,7 +1,7 @@
 #ifndef __RPGPERK_H_
 #define __RPGPERK_H_
 //
-#include "../Misc/Set.h"
+#include "../Misc/set.h"
 //
 #include "../DBFormat/DataPerk.h"
 namespace NDb

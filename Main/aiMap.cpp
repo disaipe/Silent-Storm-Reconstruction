@@ -10,7 +10,7 @@
 #include "../DBFormat/DataRPG.h"
 #include "GSceneUtils.h"
 #include "Transform.h"
-#include "ocTree.h"
+#include "OcTree.h"
 #include "GMesh.h"
 #include "aiRender.h"
 #include "aiObjectLoader.h"

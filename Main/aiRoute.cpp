@@ -1,6 +1,6 @@
-#include "stdafx.h"
+#include "StdAfx.h"
 //
-#include "mapBuild.h"
+#include "MapBuild.h"
 #include "aiPosition.h"
 #include "aiTaskCommand.h"
 #include "aiWaypoint.h"

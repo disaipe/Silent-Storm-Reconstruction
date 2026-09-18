@@ -1,7 +1,7 @@
 // CtrlObjectInspector.cpp : implementation file
 //
 
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "WinUser.h"
 #include "CtrlObjectInspector.h"
 #include "OIEdit.h"
@@ -818,7 +818,7 @@ bool CCtrlObjectInspector::AddPropertiesValue( PropID idProp, DomenID idDomen, c
 		m_mapGroups[idGroup].aPorops.push_back( &m_mapProps[idProp] );
     if ( m_mapGroups[idGroup].bRadioGroup && m_mapGroups[idGroup].aPorops.size() == 1 )
 		{
-			// делаем активным первый элемент в радио-группе
+			//      -
       m_mapGroups[idGroup].iActiveProp = idProp;
 		}
     CDC *pDC = GetDC();
@@ -878,7 +878,7 @@ bool CCtrlObjectInspector::SetPropertiesValue( PropID idProp, const CVariant &va
 			SCOIPaintElem *pElem = GetVirtualElem( m_nCurVirtualLine );
 			if ( pElem && pElem->pProp && pElem->pProp->idProp == idProp )
 			{
-				// если редактируемое значение == idProp, то не сохраняем результаты редактирования
+				//    == idProp,     
 				if ( pActiveWnd )
 					pActiveWnd->ShowWindow( SW_HIDE );
 				m_nCurVirtualLine = -1;
@@ -928,7 +928,7 @@ void CCtrlObjectInspector::UpdateScrollers( int nFirstVirtualLine )
 {
 	const int nElems = m_aPaintElems.size();
 
-	// CRAP как узнать виден скрол бар или нет ?
+	// CRAP        ?
 	CWnd *pSWnd = GetScrollBarCtrl( SB_VERT );
 	if ( pSWnd && ::IsWindow( pSWnd->m_hWnd ) )
 	{

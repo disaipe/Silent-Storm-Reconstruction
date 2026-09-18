@@ -1,12 +1,12 @@
 #include "StdAfx.h"
 //
-#include "aiLog.h"
+#include "AILog.h"
 #include "aiUnit.h"
 #include "aiPlayer.h"
 #include "aiCommander.h"
 #include "aiInventory.h"     // CAIInventory::GetBestFireArms (GetDangerousAttackableEnemy)
 #include "aiWeapon.h"        // CAIFireArmsWeapon
-#include "rpgUnit.h"
+#include "RPGUnit.h"
 #include "wUnitServer.h"
 #include "wMain.h"           // NWorld::CWorld::GetDiplomacyState
 //

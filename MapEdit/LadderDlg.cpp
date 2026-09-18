@@ -1,7 +1,7 @@
 // LadderDlg.cpp : implementation file
 //
 
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "MapEdit.h"
 #include "LadderDlg.h"
 #include "../Main/BuildingInfo.h"

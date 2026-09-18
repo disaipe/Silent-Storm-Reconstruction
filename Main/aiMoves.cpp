@@ -2,7 +2,7 @@
 #include "aiMoves.h"
 #include "aiGrid.h"
 #include "Grid.h"
-#include "rpgUnitInfo.h"
+#include "RPGUnitInfo.h"
 namespace NAI
 {
 //

@@ -1,5 +1,5 @@
 #include "StdAfx.h"
-#include "mapedit.h"
+#include "MapEdit.h"
 #include "ScenarioView.h"
 #include "../Main/scFlowChart.h"
 #include "../DBFormat/DataScenario.h"

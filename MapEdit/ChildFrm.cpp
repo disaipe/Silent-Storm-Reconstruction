@@ -1,7 +1,7 @@
 // ChildFrm.cpp : implementation of the CChildFrame class
 //
 
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "MapEdit.h"
 
 #include "ChildFrm.h"

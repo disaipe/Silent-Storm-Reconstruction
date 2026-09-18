@@ -5,14 +5,14 @@
 #include "aiUnit.h"
 #include "aiInventory.h"
 #include "aiWeapon.h"
-#include "aiLog.h"
+#include "AILog.h"
 #include "wMain.h"
 #include "wUnitServer.h"
 #include "wUnitCommands.h"
-#include "rpgItem.h"
+#include "RPGItem.h"
 #include "aiState.h"
-#include "rpgUnitMission.h"
-#include "rpgUnitInfo.h"
+#include "RPGUnitMission.h"
+#include "RPGUnitInfo.h"
 //
 #include "aiAttackAction.h"
 //
@@ -382,14 +382,14 @@ NWorld::CCannon *CAITacticalCommander::FindNearestCannon( IAIUnit *pUnit )
 {
 	NWorld::CCannon *pRes = 0;
 	list< CObj<NWorld::IDynamicObject> > *miscObjects = GetWorld()->GetMiscObjects();
-	float fMinDistance = 10; // максимальный радиус поиска пулемета в метрах 
+	float fMinDistance = 10; //       
 	for ( list< CObj<NWorld::IDynamicObject> >::iterator i = miscObjects->begin(); i != miscObjects->end(); ++i )
 	{
 		if ( CDynamicCast<NWorld::CCannon> pCannon( *i ) )
 		{
 			if ( pCannon->GetItem()->HasAmmo() && !pCannon->IsBroken() && !pCannon->IsOccupied() )
 			{
-				// не вполне корректно, т.к. надо-бы проверять кол-во AP необходимое, чтобы дойти до cannon
+				//   , .. -  - AP ,    cannon
 				float fDistance = fabs( pCannon->GetPosition() - pUnit->GetUnitServer()->GetPosition().GetCP() );
 
 				if ( !pAICommander->IsObjectLocked( pCannon ) && fDistance < fMinDistance )
@@ -401,7 +401,7 @@ NWorld::CCannon *CAITacticalCommander::FindNearestCannon( IAIUnit *pUnit )
 					bool bCannonCanDamageEnemy = CannonCanDamageEnemy( pCannon );
 
 					if ( pExec && CannonCanDamageEnemy( pCannon ) )
-					// можем использовать cannon и есть в кого стрелять
+					//   cannon     
 					{
 						pRes = pCannon;
 						fMinDistance = fDistance;
@@ -422,10 +422,10 @@ void CAITacticalCommander::UseCannon( IAIUnit *pAIUnit )
 	if ( IsValid( pCannon ) )
 	{
 		pAILog->Clear();
-		// проверяем, что cannon в рабочем состоянии
+		// ,  cannon   
 		if ( !( pCannon->GetItem()->HasAmmo() && !pCannon->IsBroken() && CannonCanDamageEnemy( pCannon ) ) )
 		{
-			// отвязываемся от cannon
+			//   cannon
 			pAIUnit->SetCannon( 0 );
 			pAILog->Add( new CAILogExitCannon( pAIUnit, pCannon ) );
 			pAICommander->UnLockObject( pCannon );
@@ -433,7 +433,7 @@ void CAITacticalCommander::UseCannon( IAIUnit *pAIUnit )
 	}
 	else		
 	{
-		// ищем cannon, который имеет смысл использовать
+		//  cannon,    
 		CPtr<NWorld::CCannon> pTmpCannon = FindNearestCannon( pAIUnit );
 		if ( IsValid( pTmpCannon ) )
 		{

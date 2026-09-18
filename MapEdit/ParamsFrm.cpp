@@ -1,8 +1,8 @@
 // ParamsFrm.cpp : implementation file
 //
 
-#include "stdafx.h"
-#include "mapedit.h"
+#include "StdAfx.h"
+#include "MapEdit.h"
 #include "ParamsFrm.h"
 
 #ifdef _DEBUG

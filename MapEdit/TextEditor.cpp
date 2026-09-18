@@ -1,7 +1,7 @@
 // TextEditor.cpp : implementation file
 //
 
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "MapEdit.h"
 #include "TextEditor.h"
 #include "Export.h"

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "StdAfx.h"
 //
 #include "A5Script.h"
 #include "aiControl.h"
@@ -6,7 +6,7 @@
 #include "aiPosition.h"
 #include "aiNearestPosition.h"	// NAI::GetNearestPosition (UnitSetToWaypoint blocked-cell relocation)
 #include "aiRoute.h"
-#include "rpgUnitMission.h"
+#include "RPGUnitMission.h"
 #include "aiUnit.h"
 #include "aiTaskCommand.h"
 #include "wUnitServer.h"

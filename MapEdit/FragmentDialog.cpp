@@ -1,5 +1,5 @@
-#include "stdafx.h"
-#include "mapedit.h"
+#include "StdAfx.h"
+#include "MapEdit.h"
 #include "FragmentDialog.h"
 #include "../Main/BuildingInfo.h"
 #include "MESerialize.h"

@@ -1,7 +1,7 @@
 // ObjBrowserDlg.cpp : implementation file
 //
 
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "MapEdit.h"
 #include "ObjBrowserDlg.h"
 #include "OIDlg.h"

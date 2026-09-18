@@ -1,5 +1,5 @@
 #include "StdAfx.h"
-#include "IWysiwyg.h"
+#include "iWysiwyg.h"
 #include "WysiwygMaterial.h"
 #include "WysiwygFragmentSel.h"
 #include "../DBFormat/DataMap.h"

@@ -2,7 +2,7 @@
 #include "ItemsMgr.h"
 #include "Placement.h"
 #include "PlacementDefs.h"
-#include "floor.h"
+#include "Floor.h"
 #include "MapEdit.h"
 #include "Walls.h"
 #include "dbDefs.h"
@@ -15,7 +15,7 @@ void MakeBuildingInfo( const CPlacement *pPl, NBuilding::CBuildInfo *pInfo )
 		return;
 	CItemsMgr *pItems = pRes->pItemsTree;
 	int nFragmentID = 0;
-	// заносим все имеющиеся строительные блоки в pIfno
+	//       pIfno
 	pInfo->wallFragments.clear();
 	pInfo->solidFragments.clear();
 	pInfo->nMaxFloor = MIN_FLOOR;
@@ -87,7 +87,7 @@ void MakeBuildingInfo( const CPlacement *pPl, NBuilding::CBuildInfo *pInfo )
 	const int nFloors = pInfo->nMaxFloor - pInfo->nMinFloor + 1;
 	if ( pInfo->roomMap.size() != nFloors )
 		pInfo->roomMap.resize( nFloors );
-	CTPoint<int> rsize( pInfo->nMaxX + 2, pInfo->nMaxY + 2 );  // добавляем по краям полоску в 1 тайл
+	CTPoint<int> rsize( pInfo->nMaxX + 2, pInfo->nMaxY + 2 );  //      1 
 	for ( i = pInfo->nMinFloor, j = 0; i < pInfo->nMaxFloor + 1; ++i, ++j )
 	{
 		CArray2D<BYTE> &rooms = pInfo->roomMap[j];

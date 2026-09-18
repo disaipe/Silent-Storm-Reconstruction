@@ -12,7 +12,7 @@
 #include "aiGrid.h"
 #include "RPGVision.h"
 #include "rpgCheatConstants.h"
-#include "rpgUnit.h"
+#include "RPGUnit.h"
 #include "wUnitServer.h"   // NWorld::CUnitServer::GetDiplomacyState -- friendly-fire ally block in cover penetration
 #include "wObject.h"       // NWorld::CCannon::GetCurrentUnit -- resolve a cannon/mech shooter for the ally block
 

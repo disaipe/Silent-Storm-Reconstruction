@@ -1,8 +1,8 @@
 // ChapterView.cpp : implementation file
 //
 
-#include "stdafx.h"
-#include "mapedit.h"
+#include "StdAfx.h"
+#include "MapEdit.h"
 #include "ChapterView.h"
 #include "../Main/ChapterInfo.h"
 #include "../Main/iMain.h"

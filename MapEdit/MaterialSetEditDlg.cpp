@@ -1,10 +1,10 @@
 // MaterialSetEditDlg.cpp : implementation file
 //
 
-#include "stdafx.h"
-#include "mapedit.h"
+#include "StdAfx.h"
+#include "MapEdit.h"
 #include "MaterialSetEditDlg.h"
-#include "IWysiwyg.h"
+#include "iWysiwyg.h"
 #include "dbDefs.h"
 #include "TreeSelItemDlg.h"
 #include "ItemsMgr.h"

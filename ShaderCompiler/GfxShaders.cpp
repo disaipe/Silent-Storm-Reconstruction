@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "GfxShadersDescr.h"
 #include "GfxShaders.h"
 static DWORD dwvsPureGeometry[] ={ 0xfffe0100, 0x9fffe, 0x58443344, 0x68532038, 0x72656461, 0x73734120, 0x6c626d65, 0x56207265, 0x69737265, 0x30206e6f, 0x31392e, 0x14, 0xc00f0000, 0x90e40000, 0xa0e4000a, 0xffff };

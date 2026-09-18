@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 
-#include "aiLog.h"
+#include "AILog.h"
 #include "aiUnit.h"
 #include "aiWeapon.h"
 #include "aiInventory.h"

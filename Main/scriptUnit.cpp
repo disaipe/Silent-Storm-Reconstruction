@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "A5Script.h"
 #include "scriptCommon.h"
 #include "scriptPtr.h"
@@ -6,12 +6,12 @@
 #include "wUnitServer.h"
 #include "aiPosition.h"
 #include "aiCommander.h"
-#include "rpgUnit.h"
-#include "rpgItemInfo.h"
+#include "RPGUnit.h"
+#include "RPGItemInfo.h"
 #include "RPGItemSet.h"				// NRPG::CWeaponItem / CGrenadeItem (UnitDrawWeapon / UnitSwitchToGrenade)
-#include "rpgUnitMission.h"
-#include "rpgCritical.h"
-#include "rpgGame.h"
+#include "RPGUnitMission.h"
+#include "RPGCritical.h"
+#include "RPGGame.h"
 #include "../DBFormat/DataRPG.h"
 #include "../DBFormat/DataFormat.h"		// NDb::CTRndModel::CreateModel (UnitHoldItem)
 #include "../DBFormat/DataMap.h"			// NDb::EDiplomacyState / DS_ENEMY (KillEmAll diplomacy gate)
@@ -20,15 +20,15 @@
 #include "wAckBase.h"
 #include "wUnitGroup.h"
 #include "aiRoute.h"
-#include "rpgAttackMech.h"
+#include "RPGAttackMech.h"
 #include "wUnitCommands.h"
 #include "wUnitAttackExec.h"				// NWorld::CreateInventoryItemForUnit @0x3ab3c0 (UnitCreateItem direct insert)
 #include "wUnitAttack.h"					// NWorld::UnitThrowGrenade (UnitGrenadeToUnit / UnitGrenadeToWaypoint)
-#include "rpgPerk.h"
-#include "rpgGlobal.h"
+#include "RPGPerk.h"
+#include "RPGGlobal.h"
 #include "aiUnit.h"
 #include "rpgCheatConstants.h"
-#include "weActiveItem.h"
+#include "wEActiveItem.h"
 #include "scScenarioTracker.h"
 #include "scFlowChartItems.h"
 #include "wUnitStates.h"

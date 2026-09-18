@@ -1,11 +1,11 @@
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "A5Script.h"
 #include "scriptCommon.h"
 #include "wMain.h"
 #include "wUnitServer.h"
-#include "rpgGlobal.h"
-#include "rpgDiplomacy.h"
-#include "rpgUnitMission.h"
+#include "RPGGlobal.h"
+#include "RPGDiplomacy.h"
+#include "RPGUnitMission.h"
 //
 #include "scriptDiplomacy.h"
 //

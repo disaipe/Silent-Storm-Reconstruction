@@ -2,7 +2,7 @@
 #include "GView.h"
 #include "G2DView.h"
 #include "Transform.h"
-#include "rpgUnitInfo.h"
+#include "RPGUnitInfo.h"
 #include "RPGUnit.h"        // NRPG::CUnit complete type (GetRPGUnit()->GetVoice() for the in-game ack voice)
 #include "wInterface.h"
 #include "wUICommands.h"

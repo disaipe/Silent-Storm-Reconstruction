@@ -5,7 +5,7 @@
 // CDBDifficulty::f{Enemy,Our}DamageMult, IUnitMissionInfo::IsAIPlayer.
 #include "../DBFormat/DataDifficulty.h"
 #include "wInterface.h"
-#include "rpgGlobal.h"
+#include "RPGGlobal.h"
 #include "RPGUnitInfo.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NRPG

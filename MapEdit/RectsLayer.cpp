@@ -7,7 +7,7 @@
 #include "RectTrack.h"
 #include "Unit_ObjDraw.h"
 #include "TemplMgr.h"
-#include "Templ.h"
+#include "templ.h"
 #include "ItemsMgr.h"
 #include "TreeSelItemDlg.h"
 #include "RouteDlg.h"
@@ -186,8 +186,8 @@ void CRectsLayer::OnLButtonDown( UINT nFlags, CPoint pt, ITemplateView *pView )
 		SelectedItem( pView, objType, idSelect );
 	bool bStartDrag = false;
 
-	// решаем что это - начало перетаскивания объекта 
-	// или выделение объекта находящегося внутри поселекченного объекта
+	//    -    
+	//       
 	if ( objType == MO_EMPTY && !actvObjs.empty() )
 		bStartDrag = true;
 	else
@@ -202,33 +202,33 @@ void CRectsLayer::OnLButtonDown( UINT nFlags, CPoint pt, ITemplateView *pView )
 	//
 	if ( bStartDrag )
 	{
-		// операции над поселекченными объектами
+		//    
 		for ( int i = 0; i < (int)actvObjs.size(); ++i )
 		{
 			const STemplTrack &track = trackRects[actvObjs[i].ind];
 			if ( track.pTrack->HitTest( pt ) != -1 )
 			{
-				// нашелся активный объект, в пределах которого был клик
+				//   ,     
 				nFlags &= MK_SHIFT | MK_CONTROL;
 				switch ( nFlags )
 				{
 					case MK_SHIFT:
 					{
-						// вращение
+						// 
 						int ang = track.pTrack->TrackRotate( pView->GetWnd(), 45 );
 						Rotate( pPlacement, actvObjs[i].type, actvObjs[i].id, ang, pView );
 						return;
 					}
 					case MK_CONTROL: //if ( nFlags & MK_CONTROL )
 					{
-						// клик с нажатым CTRL - деселектим объект 
+						//    CTRL -   
 						DeactivateObj( actvObjs[i].id );
 						return;
 					}
 				}
-				// если ничего из вышеперечисленного, значит будем драгать объект
+				//    ,    
 				
-				// получить bound область
+				//  bound 
 				GetCurTrackRect( &curTrackRect );
 				CPoint ptOld = track.pTrack->GetCeneter();
 				curTrackDCenter = curTrackRect.CenterPoint() - ptOld;
@@ -251,7 +251,7 @@ void CRectsLayer::OnLButtonDown( UINT nFlags, CPoint pt, ITemplateView *pView )
 			}
 		}
 	}
-	// Select объектов
+	// Select 
 	{
 		if ( idSelect >= 0 )
 		{
@@ -262,8 +262,8 @@ void CRectsLayer::OnLButtonDown( UINT nFlags, CPoint pt, ITemplateView *pView )
 				DeactivateObjs();
 				if ( SetActiveObj( objType, idSelect ) && !(RECURSION & nFlags) )
 				{
-					// чтобы не нужно было повторно кликать на объект для трэкинга
-					// RECURSION - защита от переполнения стека
+					//          
+					// RECURSION -    
 				//	OnLButtonDown( nFlags | RECURSION, pt, pView );
 				}
 			}
@@ -536,9 +536,9 @@ void CRectsLayer::SetupRects( ITemplateView *pView, bool bKeepActiveObjs )
 	Repaint();
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Определить куда можно поместить текущий трэкаемый прямоугольник,
-// поближе к желаемой юзером точке
-// ppt - центр трэкаемого прямоугольника
+//       ,
+//     
+// ppt -   
 void CRectsLayer::GetNearestPos( CPoint *ppt, ITemplateView *pView )
 {
   if ( !pPlacement )
@@ -626,7 +626,7 @@ void CRectsLayer::Rotate( CPlacement *pPl, EMapObjType objType, int objID, int a
 	}
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-//! получить ограничивающий прямоугольник для активных объектов
+//!      
 void CRectsLayer::GetCurTrackRect( CRect *pRect )
 {
   if ( actvObjs.empty() )
@@ -728,7 +728,7 @@ int CRectsLayer::DropObject( EMapObjType type, int nObjID, ITemplateView *pView,
 		int nr;
 		float z = ptPos.z;
 
-		pPlacement->GetObjPos( nFloor, type, id, &ptPos, &nr ); // берем реальное положение ptPos, куда смог поместиться объект
+		pPlacement->GetObjPos( nFloor, type, id, &ptPos, &nr ); //    ptPos,    
 		pPlacement->GetObjectSize( nFloor, type, id, &ptSize, &ptCenter );
 		ptPos.z = z;
 		pPlacement->RotateObj( nFloor, type, id, nRotation );

@@ -1,14 +1,14 @@
-#include "stdafx.h"
+#include "StdAfx.h"
 //
 #include "../DBFormat/DataRPG.h"
 //
 #include "aiWeapon.h"
 #include "aiUnit.h"
 //
-#include "rpgUnitMission.h"
-#include "rpgItemSet.h"
-#include "rpgToHit.h"
-#include "rpgUnit.h"
+#include "RPGUnitMission.h"
+#include "RPGItemSet.h"
+#include "RPGToHit.h"
+#include "RPGUnit.h"
 //
 #include "wUnitServer.h"
 //

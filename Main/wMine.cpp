@@ -10,7 +10,7 @@
 #include "wOSBase.h"
 #include "aiMap.h"
 #include "aiStability.h"
-#include "scriptCallLua.h"
+#include "scriptCallLUA.h"
 //
 namespace NWorld
 {

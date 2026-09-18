@@ -5,7 +5,7 @@
 #endif // _MSC_VER > 1000
 
 #include "aiPosition.h"
-#include "weActiveItem.h"
+#include "wEActiveItem.h"
 namespace NDb
 {
 	enum EShootMode;

@@ -1,7 +1,7 @@
 // GameView.cpp : implementation of the CGameView class
 //
 
-#include "stdafx.h"
+#include "StdAfx.h"
 
 #include "MapEdit.h"
 #include "GameView.h"
@@ -782,13 +782,13 @@ void CGameView::OnTimer(UINT nIDEvent)
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 void CGameView::OnNewTexspot() 
 {
-	// если из этого обработчика вызывать диалог, возикают глюки
+	//      ,  
 	nTerrSpotTimer = SetTimer( WALLSPOT_TIMER, 10, 0 );
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 void CGameView::OnNewTerrspot() 
 {
-	// если из этого обработчика вызывать диалог, возикают глюки
+	//      ,  
 	nTerrSpotTimer = SetTimer( TERRSPOT_TIMER, 10, 0 );
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////

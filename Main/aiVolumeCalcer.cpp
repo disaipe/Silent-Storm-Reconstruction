@@ -1,7 +1,7 @@
 #include "StdAfx.h"
 
 #include "aiMap.h"
-#include "gGeometry.h"
+#include "GGeometry.h"
 #include "aiObject.h"
 #include "aiObjectLoader.h"
 
@@ -17,7 +17,7 @@ namespace NAI
 	OBJECT_BASIC_METHODS(CConnectedPoints);
 public:
 	ZDATA
-	vector<WORD> Points; // точки
+	vector<WORD> Points; // 
 	unordered_map< WORD, CVec3 > PointsCoords; // points coordinates
 	unordered_map< WORD, vector<WORD> > Connectivities; // links between points
 	ZEND int operator&( CStructureSaver &f ) { f.Add(2,&Points); f.Add(3,&PointsCoords); f.Add(4,&Connectivities); return 0; }
@@ -126,7 +126,7 @@ class CTriangulater: public CConnectedPoints
 	ZDATA
 	ZPARENT(CConnectedPoints)
 	CVec3 vNormal;
-	WORD nSpecialPoint; // точка в которую "переводим" вершину пирамиды
+	WORD nSpecialPoint; //    ""  
 	vector<WORD> VisitedPoints;
 	ZEND int operator&( CStructureSaver &f ) { f.Add(2,(CConnectedPoints*)this); f.Add(3,&vNormal); f.Add(4,&nSpecialPoint); f.Add(5,&VisitedPoints); return 0; }
 	//
@@ -159,7 +159,7 @@ void CTriangulater::CalculateNormal( CVec3 ptTop )
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 int CTriangulater::GetTriangleSign( WORD _n1, WORD _n2, WORD _n3 )
 {
-	// распологаем точки в пор€дке их обхода в многоугольнике
+	//        
 	int n[3];
 	int k = 0;
 	n[0] = -1; n[1] = -1; n[2] = -1;
@@ -289,7 +289,7 @@ void CTriangulater::EraseInnerEdges( CConnectedPoints *pOwner )
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 void CTriangulater::SortPoints( CConnectedPoints *pOwner )
 {
-	// удал€ем некорректные точки
+	//   
 	vector<WORD> PassedPoints;
 	EraseInnerEdges( pOwner );
 	if ( Points.size() < 3 )
@@ -304,10 +304,10 @@ void CTriangulater::SortPoints( CConnectedPoints *pOwner )
 	TmpPoints.push_back( nPrev );
 	PassedPoints.push_back( nPrev );
 	TmpPoints.push_back( nCurrent );
-	// сравнение текущей точки с первой не примен€етс€, т.к. встречаютс€ незамкнутые контуры
+	//       , ..   
 	while ( find( PassedPoints.begin(), PassedPoints.end(), nCurrent ) == PassedPoints.end() )
 	{
-		// ищем следующую точку
+		//   
 		int nNext;
 		for ( vector<WORD>::iterator i = Connectivities[nCurrent].begin(); i != Connectivities[nCurrent].end(); ++i )
 			if ( *i != nPrev )
@@ -333,7 +333,7 @@ void CTriangulater::GetTriangulation( list<STriangle> *pRes, list<int> *pSign )
 {
 	//DebugOutput("Triangulation");
 	//
-	// ищем все треугольники со специальной точкой 
+	//       
 	vector<WORD>::iterator i;
 	vector<WORD>::iterator j;
 	for ( i = Connectivities[nSpecialPoint].begin(); i != Connectivities[nSpecialPoint].end(); ++i )
@@ -368,7 +368,7 @@ struct SPyramid
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 float SPyramid::GetVolume( CVec3 pt1, CVec3 pt2, CVec3 pt3, CVec3 pt4 )
 {
-	// находим площадь основани€
+	//   
 	CVec3 vA = pt4 - pt2;
 	float fA = fabs( vA );
 	CVec3 vC = pt4 - pt3;
@@ -377,13 +377,13 @@ float SPyramid::GetVolume( CVec3 pt1, CVec3 pt2, CVec3 pt3, CVec3 pt4 )
 	float fC = fabs( vC );
 	float fH = sqrt( fC*fC - fA1 * fA1 );
 	float fS = fA * fH / 2;
-	// нормаль к основанию пирамиды
+	//    
 	CVec3	vB( pt3 - pt2 );
 	CVec3 vN = vA ^ vB;
   Normalize( &vN );
-	// высота пирамиды
+	//  
 	float fPH = fabs( ( pt2 - pt1 ) * vN );
-	// объем пирамиды
+	//  
 	return fS * fPH / 3.f;
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -413,7 +413,7 @@ float CVolumeCalcer::CalculateVolume()
 	//
 	while ( Points.size() > 4 )
 	{
-		// выбираем точку и находим дл€ нее все соседние точки и их триангул€цию
+		//            
 		list<int> Signs;
 		list<STriangle> Triangles;
 		int n = Points.back();
@@ -434,7 +434,7 @@ float CVolumeCalcer::CalculateVolume()
 		//pTriangulater->DebugOutput( "Triangulation ( pre.sort )" );
 		pTriangulater->SortPoints( this );
 		//pTriangulater->DebugOutput( "Triangulation ( after.sort )" );
-		// переносим св€зи вершины в другую точку
+		//      
 		int k = Connectivities[n].front();
 //
 //		int nCount = 0;
@@ -457,7 +457,7 @@ float CVolumeCalcer::CalculateVolume()
 				}
 		//
 		pTriangulater->GetTriangulation( &Triangles, &Signs );
-		// составл€ем пирамиды из найденных треугольников
+		//     
 		list<STriangle>::const_iterator t = Triangles.begin();
 		list<int>::const_iterator s = Signs.begin();
 		//DEBUG{
@@ -467,7 +467,7 @@ float CVolumeCalcer::CalculateVolume()
 		float fTmpRes = 0;
 		for ( ; t != Triangles.end(); ++t, ++s )
 		{
-			// считаем объем
+			//  
 			SPyramid p;
 			fTmpRes += p.GetVolume( PointsCoords[n], 
 				PointsCoords[(*t).i1], PointsCoords[(*t).i2], PointsCoords[(*t).i3] ) * (*s);
@@ -481,12 +481,12 @@ float CVolumeCalcer::CalculateVolume()
 		RemovePoint( n );
 		RemoveIncorrectPoints( 3 );
 		DebugOutput( "Object" );
-		fRes += fabs( fTmpRes ); // суммарный объем всегда положительный
+		fRes += fabs( fTmpRes ); //    
 	}
 	//
 	if ( Points.size() == 4 )
 	{
-		// считаем объем
+		//  
 		SPyramid p;
 		fRes += p.GetVolume( PointsCoords[Points[0]], 
 			PointsCoords[Points[1]], PointsCoords[Points[2]], PointsCoords[Points[3]] );

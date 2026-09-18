@@ -1,5 +1,5 @@
 #include "StdAfx.h"
-#include "bspTree.h"
+#include "BSPTree.h"
 #include "aiVolumeCalcer.h"
 #include "Grid.h"
 namespace NAI

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "StdAfx.h"
 //
 #include "A5Script.h"
 #include "scriptCommon.h"
@@ -6,7 +6,7 @@
 #include "scScenarioTracker.h"
 #include "scFlowChartItems.h"
 #include "wUICommands.h"
-#include "rpgGlobal.h"
+#include "RPGGlobal.h"
 #include "../MiscDll/LogStream.h"		// csSystem (ScenarioSetGoal/TaskComplete warning)
 #include "wMain.h"        // NWorld::CWorld::GetGame (SetMaxCriticalSeverity)
 #include "RPGGame.h"      // NRPG::IGame::SetMaxCriticalSeverity

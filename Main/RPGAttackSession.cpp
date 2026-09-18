@@ -1,7 +1,7 @@
 #include "StdAfx.h"
 #include "RPGAttackSession.h"
 #include "RPGUnit.h"     // complete NRPG::CUnit       (for the CPtr<CUnit> member)
-#include "rpgGlobal.h"   // complete NRPG::CGlobalGame  (for the CPtr<CGlobalGame> member)
+#include "RPGGlobal.h"   // complete NRPG::CGlobalGame  (for the CPtr<CGlobalGame> member)
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // rpgAttackSession.obj -- NRPG::CUnitMissionForMedals attack-session bookkeeping.
 // Three pure-bookkeeping methods reconstructed from the release decomp. The decomp

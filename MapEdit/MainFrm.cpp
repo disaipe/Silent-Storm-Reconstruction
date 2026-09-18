@@ -1,7 +1,7 @@
 // MainFrm.cpp : implementation of the CMainFrame class
 //
 
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "MapEdit.h"
 
 #include "MainFrm.h"
@@ -319,7 +319,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
   RemoveAllVariants();
 
 	// create a new MDI child window
-	// Создаем закладку в которой редактируются расстановки
+	//      
 	CMDIChildWnd* pChildWnd = CreateNewChild(RUNTIME_CLASS(CChildFrame), IDR_MAINFRAME, NULL, m_hMDIAccel);
 	CChildFrame *pRectFrame = (CChildFrame*)pChildWnd;
   m_pRectView = &pRectFrame->m_wndView;
@@ -334,12 +334,12 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
   viewInds[GRID_VIEW] = 0;
 
 	// Dockable windows
-	// Ресурсное окно (должно быть хотя бы одно)
+	//   (    )
   if ( !m_treeViews.empty() )
     DockControlBarEx( m_treeViews[0], AFX_IDW_DOCKBAR_LEFT, 0, 0, 0.80f, 200);
   DWORD dwStyle = WS_CHILD|WS_VISIBLE|CBRS_RIGHT|CBRS_TOOLTIPS|CBRS_SIZE_DYNAMIC;
   DWORD dwStyleEx = CBRS_EX_COOL | CBRS_EX_BORDERSPACE | CBRS_EX_STDCONTEXTMENU ;
-	// Окно где отображается скриншут объекта
+	//     
 	UINT nID = SECControlBar::GetUniqueBarID(this, 100);
   if ( !m_pIconView->Create( this, _T("Quick View"), WS_CHILD|CBRS_RIGHT|CBRS_TOOLTIPS, 
 		CBRS_EX_COOLBORDERS | CBRS_EX_GRIPPER | CBRS_EX_GRIPPER_CLOSE | CBRS_EX_BORDERSPACE | CBRS_EX_STDCONTEXTMENU, nID ) )
@@ -350,7 +350,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
   m_pIconView->EnableDocking(CBRS_ALIGN_LEFT|CBRS_ALIGN_RIGHT);
   DockControlBarEx(	m_pIconView, AFX_IDW_DOCKBAR_LEFT, 0, 0, 0.20f, 100 );
 	//OnViewQuickview();
-	// Окно редактирования св-св
+	//   -
   nID = SECControlBar::GetUniqueBarID(this, 100);
   if (!m_pPropView->Create(this, _T("Properties Window"), dwStyle, dwStyleEx, nID))
   {
@@ -359,7 +359,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
   }  
   m_pPropView->EnableDocking(CBRS_ALIGN_ANY);
   DockControlBarEx(m_pPropView, AFX_IDW_DOCKBAR_RIGHT, 0, 0, 1.00, 250);
-	// Управление wysiwyg редактированием
+	//  wysiwyg 
 	nID = SECControlBar::GetUniqueBarID(this, 100);
   if (!wysiwygBar.Create(this, _T("Building brushes"), dwStyle, dwStyleEx, nID))
   {
@@ -368,7 +368,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
   }  
   wysiwygBar.EnableDocking(CBRS_ALIGN_ANY);
   DockControlBarEx( &wysiwygBar, AFX_IDW_DOCKBAR_RIGHT, 0, 0, 1.00, 250);
-	// Закладка с 3d окошком
+	//   3d 
   pChildWnd = CreateNewChild(RUNTIME_CLASS(CGameFrame), IDR_MAINFRAME, NULL, m_hMDIAccel);
   m_pGameFrame = (CGameFrame*)pChildWnd;
   m_pGameView = &m_pGameFrame->m_wndView;
@@ -381,7 +381,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
     pwsh->SetTitle( "Game View" );
   }
   viewInds[GAME_VIEW] = 1;
-	// Закладка с параметрами вариантов универсального темплейта
+	//      
 	pChildWnd = CreateNewChild(RUNTIME_CLASS(CParamsFrame), IDR_MAINFRAME, NULL, m_hMDIAccel);
   CParamsFrame *m_pParamsFrame = (CParamsFrame*)pChildWnd;
 	m_pParamsView = &m_pParamsFrame->m_View;
@@ -394,7 +394,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
     pwsh->SetTitle( "Parameters" );
   }
   viewInds[PARAMS_VIEW] = 2;
-	// Закладка с UI
+	//   UI
 	pChildWnd = CreateNewChild(RUNTIME_CLASS(CUIFrame), IDR_MAINFRAME, NULL, m_hMDIAccel);
   CUIFrame *m_pUIFrame = (CUIFrame*)pChildWnd;
 	m_pUIView = &m_pUIFrame->m_View;
@@ -407,7 +407,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
     pwsh->SetTitle( "UI" );
   }
   viewInds[UI_VIEW] = 3;
-	// Закладка с ChapterView
+	//   ChapterView
 	pChildWnd = CreateNewChild(RUNTIME_CLASS(CChapterFrame), IDR_MAINFRAME, NULL, m_hMDIAccel);
   CChapterFrame *pChapterFrame = (CChapterFrame*)pChildWnd;
 	pChapterView = &pChapterFrame->m_View;
@@ -420,7 +420,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
     pwsh->SetTitle( "Chapter" );
   }
   viewInds[CHAPTER_VIEW] = 4;
-	// Закладка с ScenarioView
+	//   ScenarioView
 	pChildWnd = CreateNewChild(RUNTIME_CLASS(CScenarioFrame), IDR_MAINFRAME, NULL, m_hMDIAccel);
 	CScenarioFrame *pScnearioFrame = (CScenarioFrame*)pChildWnd;
 	pScenarioView = &pScnearioFrame->m_View;
@@ -433,7 +433,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		pwsh->SetTitle( "Scenario" );
 	}
 	viewInds[SCENARIO_VIEW] = 5;
-	// Закладка с GlobalMapView
+	//   GlobalMapView
 	pChildWnd = CreateNewChild(RUNTIME_CLASS(CGlobalMapFrame), IDR_MAINFRAME, NULL, m_hMDIAccel);
 	CGlobalMapFrame *pGlobalMapFrame = (CGlobalMapFrame*)pChildWnd;
 	pGlobalMapView = &pGlobalMapFrame->m_View;
@@ -446,7 +446,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		pwsh->SetTitle( "GlobalMap" );
 	}
 	viewInds[GLOBALMAP_VIEW] = 6;
-	// Закладка с Diplomacy View
+	//   Diplomacy View
 	pChildWnd = CreateNewChild(RUNTIME_CLASS(CDiplomacyFrame), IDR_MAINFRAME, NULL, m_hMDIAccel);
 	CDiplomacyFrame *pDiplomacyFrame = (CDiplomacyFrame*)pChildWnd;
 	pDiplomacyView = &pDiplomacyFrame->m_View;
@@ -461,7 +461,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	viewInds[DIPLOMACY_VIEW] = 7;
 	//
 	MDIActivate( pRectFrame );
-	// Установка таймера по которому обнавляется список ресурсов из базы данных	
+	//          	
   nRefreshTimer = SetTimer( REFRESH_TIMER_ID, REFRESH_INTERVAL, 0 );
   if ( 0 == nRefreshTimer )
     MessageBox( GetResString( IDS_ERR_SET_REFRESH ).c_str(), 0, MB_OK | MB_ICONWARNING );
@@ -564,7 +564,7 @@ void CMainFrame::SetActive( EView view )
   MDIActivate( pwsh );
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// возвращает true, если сохранен предыдущий активный view
+//  true,     view
 bool CMainFrame::SetView( const vector<EView> &views )
 {
 	bool bRet = false;
@@ -705,8 +705,8 @@ BOOL CMainFrame::OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO*
   return SECWorkbook::OnCmdMsg( nID, nCode, pExtra, pHandlerInfo );
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Добавление кнопки в тулбар выбора текущей расстановки
-// Возвр. COMMAND ID, генерируемый кнопкой при нажатии
+//       
+// . COMMAND ID,    
 int CMainFrame::AddVariant( EPlacement type )
 {
   int n = m_pVarToolBar->GetBtnCount();
@@ -731,7 +731,7 @@ int CMainFrame::AddVariant( EPlacement type )
   return nID;
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Удаление всех кнопок из тулбара выбора вариантов
+//       
 const int STATIC_BUTT_NUM = 4;
 void CMainFrame::RemoveAllVariants()
 {
@@ -739,7 +739,7 @@ void CMainFrame::RemoveAllVariants()
     m_pVarBmpMgr->Release();
   const int n = m_pVarToolBar->GetBtnCount();
   
-  // первые несколько кнопок у нас статические
+  //      
   for ( int i = STATIC_BUTT_NUM; i < n; ++i )
   {
     m_pVarToolBar->RemoveButton( STATIC_BUTT_NUM );
@@ -755,10 +755,10 @@ void CMainFrame::RemoveAllVariants()
   m_pVarBmpMgr->AddBitmapResource( IDB_DELVARIANT, IDB_DELVARIANT, &nID, 1 );
   nID = ID_VARIANT_START + 1;
   m_pVarBmpMgr->AddBitmapResource( IDB_NEWVARIANT, IDB_NEWVARIANT, &nID, 1 );
-  m_pVarToolBar->AddButton( STATIC_BUTT_NUM, nID, true ); // сепаратор
+  m_pVarToolBar->AddButton( STATIC_BUTT_NUM, nID, true ); // 
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Установить активный вариант в тулбаре выбора вариантов
+//       
 void CMainFrame::SetActiveVariant( int nVariantID )
 {
   const int n = m_pVarToolBar->GetBtnCount();
@@ -796,7 +796,7 @@ void CMainFrame::UpdateTreeView( int nTreeID )
 void CMainFrame::OnTimer(UINT nIDEvent) 
 {
 	MSG msg;
-	// выкидываем из очереди сообщения таймера, мы не успеваем их обрабатывать
+	//     ,     
 	while( PeekMessage( &msg, m_hWnd, WM_TIMER, WM_TIMER, PM_REMOVE ) )
 		;
 	//
@@ -837,7 +837,7 @@ void CMainFrame::OnClose()
 		SaveBarState( REG_BARSLAYOUT );
 
 	RestoreSysColors();
-	// CRAP из-за Stigray\MFC bug
+	// CRAP - Stigray\MFC bug
 	//m_listControlBars.RemoveAll();
 
   SECWorkbook::OnClose();
@@ -856,7 +856,7 @@ void CMainFrame::RestoreLayout()
       ++nVisible;
   }
   if ( 0 == nVisible )
-  {// не видно ни одного ресурсного дерева
+  {//      
     DockControlBarEx( m_treeViews[0], AFX_IDW_DOCKBAR_LEFT, 0, 0, (float)1.00, 200);
     ShowControlBar( m_treeViews[0], true, false );
   }
@@ -1126,9 +1126,9 @@ void CMainFrame::OnUpdateViewLayers(CCmdUI* pCmdUI)
 	pCmdUI->SetCheck( pWnd->IsWindowVisible() );
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Обновление тулбара выбора текущей расстановки
-// если bSaveVarSelection = true, 
-// то после обновления пытаемся активизировать предыдущий активный вариант
+//     
+//  bSaveVarSelection = true, 
+//        
 void CMainFrame::SetVariants( const vector<int> &variants, bool bSaveVarSelection )
 {
 	RemoveAllVariants();
@@ -1215,7 +1215,7 @@ void CFullScrennView::PostFullScreenMode()
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Выбор активного этажа
+//   
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 void CMainFrame::OnFloorMinus1() 
 {

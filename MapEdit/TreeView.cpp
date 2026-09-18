@@ -4,13 +4,13 @@
 #include "TreeVDialogs.h"
 #include "dbDefs.h"
 #include "TemplMgr.h"
-#include "Templ.h"
+#include "templ.h"
 #include "..\FileIO\BasicChunk1.h"
 #include "..\Main\GResource.h"
 #include "..\DBFormat\DataMap.h"
 #include "..\DBFormat\DataFormat.h"
 #include "..\DBFormat\DataRPG.h"
-#include "placement.h"
+#include "Placement.h"
 #include "OIDlg.h"  // for WM_ME_CANCEL 
 #include "FindDialog.h"
 #include "PlacableDB.h"
@@ -189,7 +189,7 @@ void CMETreeView::OnDblClick(NMHDR* pNMHDR, LRESULT* pResult)
   if ( hti )
   {
     LPARAM lParam = m_treeCtrl.GetItemData( hti );
-    // Если поселекчен итем, шлем родительскому окну сообщение
+    //   ,    
     if ( !IsFolder( lParam ) )
       GetParent()->PostMessage( WM_ME_TREESEL, GetTreeID( hti ), lParam );
   }
@@ -401,7 +401,7 @@ void CMETreeView::ChangeParent( HTREEITEM hti, HTREEITEM htiNewParent, HTREEITEM
 
   if ( IsFolder( tvItem.lParam ) )
   {
-    // не пытаемся ли мы перетащить папку в свою подпапку ?
+    //          ?
     if ( !r.pItemsMgr->IsSubfolder( GetFoldID( tvItem.lParam) , nFolderID ) )
       r.pItemsMgr->SetParentFolder( r.nListenerID, GetFoldID( tvItem.lParam), nFolderID );
   }
@@ -430,7 +430,7 @@ void CMETreeView::OnRClick(NMHDR* pNMHDR, LRESULT* pResult)
   }
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Без этой функции триконтрола мы не увидим
+//       
 void CMETreeView::OnSize(UINT nType, int cx, int cy) 
 {
   CWnd::OnSize(nType, cx, cy);
@@ -449,7 +449,7 @@ void CMETreeView::OnNewFolder()
   if ( IDOK != dlg.DoModal() )
     return;
 
-  // найдем папку, которая будет являться родительской для новой
+  //  ,      
   HTREEITEM hti = m_treeCtrl.GetSelectedItem();
   if ( !hti && !(hti = m_treeCtrl.GetRootItem()) )
     return;
@@ -464,7 +464,7 @@ void CMETreeView::OnNewFolder()
   int nParent = GetFoldID( m_treeCtrl.GetItemData( hti ) );
 	nParent = FixRootFolder( &m_treeCtrl, hti, nParent );
 
-  // добавим новую папку в базу
+  //     
   int newID = r.pItemsMgr->AddFolder( r.nListenerID, nParent, LPCTSTR( dlg.m_NewName ) );
   if ( -1 == newID )
     return;
@@ -529,8 +529,8 @@ void CMETreeView::OnDeleteFolder()
 	DeleteFolder( hti );
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Создание структуры папок
-// возвращается указатель на папку с id = nID или 0, если такой папки нет
+//   
+//      id = nID  0,    
 HTREEITEM CMETreeView::MakeFolders( HTREEITEM *hRoot, int nTreeID, int nID )
 {
 	SRoot r; 
@@ -538,14 +538,14 @@ HTREEITEM CMETreeView::MakeFolders( HTREEITEM *hRoot, int nTreeID, int nID )
 		return 0;
 	HTREEITEM reth = 0;
 
-  // корневая папка
-  // итемы, которые не попали ни в какую друную папку кладутся сюда
+  //  
+  // ,          
   //folders[0].hti = m_treeCtrl.InsertItem( szRootName.c_str(), 0, 0 );
   HTREEITEM hti = m_treeCtrl.InsertItem( r.szRootName.c_str(), 0, 0 );
   m_treeCtrl.SetItemData( hti, MakeFoldParam( nTreeID ) );
 	*hRoot = hti;
   
-  // создаем также управлющую структуру для InsertBatch
+  //      InsertBatch
   r.pItemsMgr->MoveFirstFolder();
   while ( r.pItemsMgr->MoveNextFolder() )
   {
@@ -558,7 +558,7 @@ HTREEITEM CMETreeView::MakeFolders( HTREEITEM *hRoot, int nTreeID, int nID )
 	return reth;
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// возвращается указатель на итем с id = nID или 0, если такого итема нет
+//      id = nID  0,    
 HTREEITEM CMETreeView::MakeItems( int nTreeID, int nID )
 {
 	SRoot r; 
@@ -606,14 +606,14 @@ int CMETreeView::FolderAdded( int nTreeID, int nFolderID )
 		return 0;
 	HTREEITEM hTest = GetFolder( nTreeID, nFolderID );
 	if ( hTest )
-		return (int)hTest; // папка уже есть в дереве
+		return (int)hTest; //     
 	//
 	int nParentID = r.pItemsMgr->GetParentID( nFolderID );
   HTREEITEM hfold = GetFolder( nTreeID, nParentID );
 	if ( !hfold && -1 != nParentID )
 	{
-		// попытка добавить child папку, когда еще нет родительской
-		// пытаемся добавить родительскую
+		//   child ,    
+		//   
 		hfold = (HTREEITEM)FolderAdded( nTreeID, nParentID );
 	}
   
@@ -776,7 +776,7 @@ HTREEITEM CMETreeView::GetFolder( int nTreeID, int nFolderID )
   {
     path.push_back( foldID );
     int id = r.pItemsMgr->GetParentID( foldID );
-    // указывает сам на себя ?
+    //     ?
     ASSERT( id != foldID );
 		if ( path.size() > 100 )
 		{
@@ -819,7 +819,7 @@ struct SPrepareInsert
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 void CMETreeView::OnNewitem() 
 {
-  // найдем папку, которая будет являться родительской для новой
+  //  ,      
   HTREEITEM hti = m_treeCtrl.GetSelectedItem();
   if ( !hti && !(hti = m_treeCtrl.GetRootItem()) )
     return;
@@ -861,7 +861,7 @@ void CMETreeView::OnNewitem()
 		nItems = dlg.m_nQuantity;
   }  
   BeginWaitCursor();
-  // добавим новый итем в базу
+  //     
   int newID;
   if ( szNewName.find( '\'' ) != string::npos )
   {
@@ -897,7 +897,7 @@ void CMETreeView::OnNewitem()
 		}
 		newhti = (HTREEITEM)ItemAdded( r.nTreeID, newID );
 	}
-	// CRAP { слишком медленно
+	// CRAP {  
 	if ( r.nTreeID == IDC_TEMPLATE_TREE )
 		theApp.UpdateGameDB();
 	// } CRAP END
@@ -1046,7 +1046,7 @@ void CMETreeView::OnUpdatedbvalues()
 	EndWaitCursor();
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Собрать ID'шники всех итемов, которые находятся ниже по дереву от данной папки
+//  ID'  ,        
 void CMETreeView::CollectItems( HTREEITEM htiFolder, vector<int> *pItems )
 {
   if ( !htiFolder )
@@ -1167,7 +1167,7 @@ void CMETreeView::ResetTree()
 
 	m_treeCtrl.UpdateWindow();
 	
-	// по возможности сохраняем старый селекшен
+	//     
 	if ( hf )
 		m_treeCtrl.SelectItem( hf );
 	if ( hi )
@@ -1183,13 +1183,13 @@ void CMETreeView::OnShowWindow(BOOL bShow, UINT nStatus)
 		bInit = true;
 		ResetTree();
 	}
-	// для правильной работы QuickView окна, 
-	// которое показывает текущий поселекченный объект
+	//    QuickView , 
+	//     
 	//if ( !bShow )
 	//	m_treeCtrl.DeselectAllItems();
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// возвр. ID поселекченного итема или -1, если такого нет
+// . ID    -1,   
 bool CMETreeView::GetSelectedItemID( int *pnTreeID, int *pnItemID )
 {
 	HTREEITEM hti = m_treeCtrl.GetSelectedItem();
@@ -1244,7 +1244,7 @@ void CMETreeView::OnKeyDown(NMHDR* pNMHDR, LRESULT* pResult)
 				if ( hti )
 				{
 					LPARAM lParam = m_treeCtrl.GetItemData( hti );
-					// Если поселекчен итем, шлем родительскому окну сообщение
+					//   ,    
 					if ( !IsFolder( lParam ) )
 						GetParent()->PostMessage( WM_ME_TREESEL, GetTreeID( hti ), lParam );
 				}
@@ -1272,10 +1272,10 @@ bool CMETreeView::Copy( HTREEITEM htiDestFold, HTREEITEM htiSrcFold, bool bNeddC
 	SRoot r;
 	if ( !GetInfo( &r, htiSrcFold ) )
 		return false;
-	// не пытаемся ли мы перетащить папку в свою подпапку ?
+	//          ?
 	if ( r.pItemsMgr->IsSubfolder( GetFoldID( srcData ), GetFoldID( dstData ) ) )
 		return false;
-	// добавим новую папку в базу
+	//     
 	CString szName = bNeddCopyStr ? "Copy of " : "";
 	szName += m_treeCtrl.GetItemText( htiSrcFold );
   int newID = r.pItemsMgr->AddFolder( r.nListenerID, GetFoldID( dstData ), (LPCSTR)szName );
@@ -1306,7 +1306,7 @@ bool CMETreeView::Copy( HTREEITEM htiDestFold, HTREEITEM htiSrcFold, bool bNeddC
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 void CopyVariantProperties( CItemsMgr *pItemsMgr, int nDstID, int nDstVarID, int nSrcID, int nSrcVarID )
 {
-	// копируем все св-ва объекта
+	//   - 
 	const CPropMap *pSrcProps = pItemsMgr->GetPropList( nSrcID, nSrcVarID );
 	const CPropMap *pDstProps = pItemsMgr->GetPropList( nDstID, nDstVarID );
 	if ( pSrcProps && pDstProps )
@@ -1322,9 +1322,9 @@ void CopyVariantProperties( CItemsMgr *pItemsMgr, int nDstID, int nDstVarID, int
 				if (plist)
 					plist->Copy( dynamic_cast<CListProp*>( it->second.GetPtr() ) );
 				else
-					itd->second->SetValue( it->second->GetValue(), false ); // не записываем в базу каждое св-во в отдельности
+					itd->second->SetValue( it->second->GetValue(), false ); //      -  
 			}
-			// а теперь записываем всю PropMap в базу
+			//     PropMap  
 			if ( pItemsMgr->IsUniTemplate() )
 			{
 				if ( !pItemsMgr->SetVariantProps( nDstID, nDstVarID, pDstProps ) )
@@ -1367,7 +1367,7 @@ bool CMETreeView::CopyItem( HTREEITEM htiDestFold, HTREEITEM htiItem, bool bNedd
 	SRoot r;
 	if ( !GetInfo( &r, htiItem ) )
 		return false;
-	// добавим новый итем в базу
+	//     
 	CString szName = bNeddCopyStr ? "Copy of " : "";
 	szName += m_treeCtrl.GetItemText( htiItem );
   int newID = r.pItemsMgr->AddItem( r.nListenerID, GetFoldID( dstData ), (LPCSTR)szName, IDC_TEMPLATE_TREE != r.nTreeID );
@@ -1385,7 +1385,7 @@ bool CMETreeView::CopyItem( HTREEITEM htiDestFold, HTREEITEM htiItem, bool bNedd
 			break;
 	}
 
-	// копируем объект
+	//  
   if ( IDC_TEMPLATE_TREE == r.nTreeID )
 	{
 		CTemplate *pTempl = theTemplMgr.GetTempl( itemData );
@@ -1535,7 +1535,7 @@ void CMETreeView::OnItemExpanding(NMHDR* pNMHDR, LRESULT* pResult)
 	if ( TVE_TOGGLE == nAction )
 		nAction = m_treeCtrl.IsExpanded( hti ) ? TVE_COLLAPSE : TVE_EXPAND;
 
-	m_bExpanding = true; // защита от переполнения стека
+	m_bExpanding = true; //    
 
 	switch( nAction )
 	{
@@ -1743,7 +1743,7 @@ BOOL CMETreeView::OnDrop(COleDataObject* pDataObject, DROPEFFECT dropEffect, CPo
   CRect rect;
   GetClientRect( &rect );
 
-  // если объект кинули мимо нашего окна, посылаем сообщение родительскому окну и выходим
+  //      ,      
   if ( !rect.PtInRect( point ) && !IsFolder( lDragParam ) )
   {
     m_treeCtrl.SelectDropTarget( 0 );
@@ -1756,7 +1756,7 @@ BOOL CMETreeView::OnDrop(COleDataObject* pDataObject, DROPEFFECT dropEffect, CPo
   if ( hItemDrop == NULL || hItemDrop == m_hitemDrag || GetTreeID( hItemDrop ) != r.nTreeID )
     return false;
 
-  // Иначе перестраиваем структуру дерева
+  //    
 
   LPARAM lparam = m_treeCtrl.GetItemData( hItemDrop );
 
@@ -1772,7 +1772,7 @@ BOOL CMETreeView::OnDrop(COleDataObject* pDataObject, DROPEFFECT dropEffect, CPo
 		if ( DROPEFFECT_COPY == dropEffect )
 		{
 			BeginWaitCursor();
-			if ( !IsFolder( lparam ) ) // можно кидать только в папку
+			if ( !IsFolder( lparam ) ) //     
 				hItemDrop = m_treeCtrl.GetParentItem( hItemDrop );
 			if ( IsFolder( lDragParam ) )
 			{
@@ -1789,7 +1789,7 @@ BOOL CMETreeView::OnDrop(COleDataObject* pDataObject, DROPEFFECT dropEffect, CPo
 		}
 		else
 		{
-			if ( IsFolder( lparam ) ) // можно кидать только в папку
+			if ( IsFolder( lparam ) ) //     
 				ChangeParent( m_hitemDrag, hItemDrop );
 			else
 			{

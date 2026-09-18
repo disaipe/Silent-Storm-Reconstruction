@@ -1,8 +1,8 @@
 // AnalyseData.cpp : implementation file
 //
 
-#include "stdafx.h"
-#include "mapedit.h"
+#include "StdAfx.h"
+#include "MapEdit.h"
 #include "AnalyseData.h"
 #include "dbDefs.h"
 #include "ItemsMgr.h"
@@ -89,7 +89,7 @@ void CAnalyseDataDlg::GeometriesAndAIGeometriesTest()
 			UpdateData( false );
 			return;
 		}
-		// если пустая AIGeometry, то дальше не проверяем
+		//   AIGeometry,    
 		if ( CVariant::VT_NULL == iai->second->GetValue().GetType() )
 			continue;
 		const CPropMap *pAIProps = pAIGeoms->GetPropList( iai->second->GetValue() );
@@ -107,7 +107,7 @@ void CAnalyseDataDlg::GeometriesAndAIGeometriesTest()
 			UpdateData( false );
 			return;
 		}
-		// проверяем соответсвие скелета геометрии и скелета AI геометрии
+		//       AI 
 		if ( int( isk->second->GetValue() ) != int( iaisk->second->GetValue() ) )
 		{
 			m_log += CString( "Error: SkeletonID & AIGeometry->SkeletonID mismatch for GeometryID = " ) + IToA( pGeoms->GetItemID() ).c_str()
@@ -250,7 +250,7 @@ void CAnalyseDataDlg::EffectsSrcFilesExistence()
 		SrcExistence( "", theApp.GetResTree( IDC_PARTICLES_TREE ) );
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// возвр. true, если тип текстуры совпадает с одним из szTypes
+// . true,        szTypes
 static bool CheckTextureType( CItemsMgr *pItems, int nTex, const vector<string> &vszTypes )
 {
 	const CPropMap *props = pItems->GetPropList( nTex );

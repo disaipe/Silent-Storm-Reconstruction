@@ -1,8 +1,8 @@
 // UIFrame.cpp : implementation file
 //
 
-#include "stdafx.h"
-#include "mapedit.h"
+#include "StdAfx.h"
+#include "MapEdit.h"
 #include "UIFrame.h"
 #include "MainFrm.h"
 

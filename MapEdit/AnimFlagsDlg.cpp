@@ -1,7 +1,7 @@
 // AnimFlagsDlg.cpp : implementation file
 //
 
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "MapEdit.h"
 #include "AnimFlagsDlg.h"
 #include "ItemsMgr.h"

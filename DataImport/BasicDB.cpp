@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "../ADOImport/BasicDB.h"
 #include "../Misc/BasicFactory.h"
 #include "../FileIO/BasicChunk1.h"

@@ -3,7 +3,7 @@
 #include "../DBFormat/DataFormat.h"
 #include "../DBFormat/DataMap.h"
 #include "Grid.h"
-#include "../Misc/2Darray.h"
+#include "../Misc/2DArray.h"
 
 namespace NBuilding
 {

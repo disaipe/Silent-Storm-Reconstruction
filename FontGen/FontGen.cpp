@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
-#include "../Image/image.h"
-#include "../Image/imageTGA.h"
+#include "../Image/Image.h"
+#include "../Image/ImageTGA.h"
 #include "../Misc/StrProc.h"
 #include "FontFormat.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////

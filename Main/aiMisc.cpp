@@ -9,7 +9,7 @@
 #include "wMain.h"           // NWorld::CWorld::GetPathNetwork
 #include "wMainPath.h"       // NWorld::FindPath
 #include "wMainMoves.h"      // NWorld::GetMoveActionType (path-AP step action)
-#include "rpgUnitMission.h"  // NRPG::IUnitMission::GetActionAP
+#include "RPGUnitMission.h"  // NRPG::IUnitMission::GetActionAP
 //
 #include "aiMisc.h"
 //

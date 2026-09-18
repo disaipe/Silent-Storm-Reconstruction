@@ -20,7 +20,7 @@
 #include "../DBFormat/DataLight.h"
 #include "GAnimFormat.h"
 #include "TerrainInfo.h"
-#include "grid.h"
+#include "Grid.h"
 #include "GTerrain.h"
 #include "GTerrainTexture.h"
 #include "GParticleFormat.h"

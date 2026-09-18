@@ -2,7 +2,7 @@
 #include "GView.h"
 #include "G2DView.h"
 #include "Transform.h"
-#include "rpgUnitInfo.h"
+#include "RPGUnitInfo.h"
 #include "wInterface.h"
 #include "Sound.h"
 #include "Interface.h"

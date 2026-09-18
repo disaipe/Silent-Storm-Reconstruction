@@ -32,7 +32,7 @@
 #include "iBiographyPanel.h"
 #include "iActionDecorator.h"
 #include "UIWrap.h"
-#include "rpgUnitInfo.h"
+#include "RPGUnitInfo.h"
 #include "RPGUnit.h"        // NRPG::CUnit complete type (GetRPGUnit()->GetVoice() for the in-game ack voice)
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NUI

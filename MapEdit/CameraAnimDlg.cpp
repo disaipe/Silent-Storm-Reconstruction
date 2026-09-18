@@ -1,7 +1,7 @@
 // CameraAnimDlg.cpp : implementation file
 //
 
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "MapEdit.h"
 #include "CameraAnimDlg.h"
 #include "dbDefs.h"

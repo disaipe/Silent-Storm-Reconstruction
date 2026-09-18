@@ -6,12 +6,12 @@
 #include "aiMoveAction.h"
 #include "aiState.h"
 #include "aiJob.h"
-#include "aiLog.h"
+#include "AILog.h"
 #include "aiInventory.h"
 #include "aiWeapon.h"
 #include "aiDecision.h"
 #include "wMain.h"
-#include "rpgUnitMission.h"
+#include "RPGUnitMission.h"
 //
 #include "aiCompoundAction.h"
 //

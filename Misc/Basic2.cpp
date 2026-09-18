@@ -1,5 +1,5 @@
 #include "StdAfx.h"
-#include "Basic2.h"
+#include "basic2.h"
 // During a save-load object-table teardown a deserialized graph can still hold a dangling smart-ptr to a
 // sibling that was already freed (resource/DG layer). Releasing through it faults on freed+unmapped memory.
 // Only inside that teardown window (g_bSaveLoadTeardown), skip a release whose `this` is no longer mapped --

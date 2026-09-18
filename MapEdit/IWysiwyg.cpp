@@ -34,7 +34,7 @@
 #include "../Input/Bind.h"
 #include "../Main/G2DView.h"
 #include "WysiwygTerrain.h"
-#include "meDragDrop.h"
+#include "MEDragDrop.h"
 #include "weInterface.h"
 #include "../MapEdit/WaypointDB.h"
 #include "../MapEdit/TemplDBCmd.h"

@@ -6,7 +6,7 @@
 #include "../DBFormat/DataRPG.h"
 #include "../DBFormat/DataMisc.h"   // NDb::CRPGPicklock (CPicklockItem ctor + the CreateItem cascade)
 #include "../DBFormat/DataPerk.h"
-#include "rpgUnit.h"
+#include "RPGUnit.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NRPG
 {

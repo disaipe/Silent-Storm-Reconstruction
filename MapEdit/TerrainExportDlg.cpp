@@ -1,8 +1,8 @@
 // TerrainExportDlg.cpp : implementation file
 //
 
-#include "stdafx.h"
-#include "mapedit.h"
+#include "StdAfx.h"
+#include "MapEdit.h"
 #include "TerrainExportDlg.h"
 
 #ifdef _DEBUG

@@ -7,7 +7,7 @@
 #include "aiPosition.h"        // IPathNetwork (complete), SPathPlace, SUnitPosition
 #include "wUnitServer.h"       // NWorld::CUnitServer (complete): GetWorld/GetPosition/GetActionAP
 #include "wMain.h"             // NWorld::CWorld: GetPathNetwork
-#include "rpgUnitMission.h"    // NRPG::IUnitMission::GetActionAP + NRPG::AC_POSE_WALK/CROUCH (pose AP costs)
+#include "RPGUnitMission.h"    // NRPG::IUnitMission::GetActionAP + NRPG::AC_POSE_WALK/CROUCH (pose AP costs)
 #include "aiPath.h"            // NAI::CPath, NWorld::FindPath
 #include "aiMultiMoves.h"      // NAI::CMultiMovesTable + CPathPlaceTable::GetCost (reachable-area sweep)
 #include "aiRouteMisc.h"       // NAI::GetNearestPlaces (special-position neighbourhood search @0x8e980)

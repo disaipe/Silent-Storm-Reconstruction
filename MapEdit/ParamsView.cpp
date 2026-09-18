@@ -1,8 +1,8 @@
 // ParamsView.cpp : implementation file
 //
 
-#include "stdafx.h"
-#include "mapedit.h"
+#include "StdAfx.h"
+#include "MapEdit.h"
 #include "ParamsView.h"
 #include "Attributes.h"
 #include "ItemsMgr.h"
@@ -56,7 +56,7 @@ int CParamsView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_wndList.Create( dwStyle, rect, this, IDC_PARAMLIST_CTRL );
 	m_wndList.SetExtendedStyle( LVS_EX_GRIDLINES );
 	m_wndList.GetClientRect( &rect );
-	// вставляем первую колонку с именами атрибутов
+	//      
 	LV_COLUMN  column;
 	memset( &column, 0, sizeof( LV_COLUMN) );
 	column.mask = LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
@@ -64,7 +64,7 @@ int CParamsView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	column.cx = nWidth;
 	column.iSubItem = 0;
 	m_wndList.InsertColumn( 0, &column );
-	// читаем атрибуты
+	//  
 	pAttrList->ReadListFromDB();
 	UpdateAttributes();
 		

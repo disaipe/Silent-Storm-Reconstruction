@@ -1,12 +1,12 @@
 // WysiwygBar.cpp : implementation file
 //
 
-#include "stdafx.h"
-#include "mapedit.h"
+#include "StdAfx.h"
+#include "MapEdit.h"
 #include "WysiwygBar.h"
 #include "MaterialEditPage.h"
 #include "GeometryPage.h"
-#include "IWysiwyg.h"
+#include "iWysiwyg.h"
 #include "TexSpotPage.h"
 
 #ifdef _DEBUG

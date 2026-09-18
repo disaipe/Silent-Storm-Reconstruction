@@ -6,7 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #include "DG.h"
 #include "../DBFormat/DataRPG.h"
-#include "../Misc/2Darray.h"
+#include "../Misc/2DArray.h"
 #include "aiPMConst.h"		// NAI::F_TEST_SPHERE_RADIUS (unit collision radius, 0.31f)
 namespace NAI
 {

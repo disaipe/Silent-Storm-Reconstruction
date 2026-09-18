@@ -1,8 +1,8 @@
 // OIDlg.cpp : implementation file
 //
 
-#include "stdafx.h"
-#include "mapedit.h"
+#include "StdAfx.h"
+#include "MapEdit.h"
 #include "OIDlg.h"
 #include "ItemsMgr.h"
 #include "TreeSelItemDlg.h"
@@ -213,7 +213,7 @@ void COIDlg::UpdatePropList()
 			m_wndOI.SetListProperties( pProp->GetID(), dynamic_cast<CListProp*>( pProp.GetPtr() ) );
 		}
 	}
-	// Сворачиваем группы, в которых большое число элементов
+	//  ,     
 	for ( unordered_map<int, int>::const_iterator it = groups.begin(); it != groups.end(); ++it )
 	{
 		if ( it->first == 0 )
@@ -226,7 +226,7 @@ void COIDlg::UpdatePropList()
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 void COIDlg::SetPropMap( int nTableID, const CPropMap *_pPropMap )
 { 
-	// если изменим pPropMap до ClearAll, то можем потерять последнее измененное значение
+	//   pPropMap  ClearAll,      
 	m_wndOI.ClearAll();
 	//
 	nPropsTable = nTableID;

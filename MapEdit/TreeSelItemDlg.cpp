@@ -1,8 +1,8 @@
 // TreeSeltemDlg.cpp : implementation file
 //
 
-#include "stdafx.h"
-#include "mapedit.h"
+#include "StdAfx.h"
+#include "MapEdit.h"
 #include "TreeSelItemDlg.h"
 #include "TreeView.h"
 

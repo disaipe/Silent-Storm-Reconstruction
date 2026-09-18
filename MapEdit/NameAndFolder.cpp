@@ -1,8 +1,8 @@
 // NameAndFolder.cpp : implementation file
 //
 
-#include "stdafx.h"
-#include "mapedit.h"
+#include "StdAfx.h"
+#include "MapEdit.h"
 #include "NameAndFolder.h"
 #include "TreeView.h"
 

@@ -13,7 +13,7 @@
 //  touch class members directly.
 // ============================================================================
 #include "StdAfx.h"
-#include "FMsound.h"
+#include "FMSound.h"
 
 namespace NFMSound
 {

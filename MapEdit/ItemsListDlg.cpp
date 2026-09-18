@@ -1,7 +1,7 @@
 // ItemsListDlg.cpp : implementation file
 //
 
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "MapEdit.h"
 #include "ItemsListDlg.h"
 #include "Items4PersDB.h"

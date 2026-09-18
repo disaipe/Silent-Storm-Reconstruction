@@ -20,7 +20,7 @@
 //
 #include "RPGUnitInfo.h"
 #include "RPGItemSet.h"
-#include "rpgDiplomacy.h"
+#include "RPGDiplomacy.h"
 #include "rpgCheatConstants.h"
 //
 #include "aiCommander.h"

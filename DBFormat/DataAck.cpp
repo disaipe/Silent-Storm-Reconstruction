@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "DataAck.h"
 #include "DataFormat.h"
 #include "DataSound.h"

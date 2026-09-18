@@ -1,8 +1,8 @@
 // ChapterSectorDlg.cpp : implementation file
 //
 
-#include "stdafx.h"
-#include "mapedit.h"
+#include "StdAfx.h"
+#include "MapEdit.h"
 #include "ChapterSectorDlg.h"
 #include "TreeSelItemDlg.h"
 #include "ItemsMgr.h"

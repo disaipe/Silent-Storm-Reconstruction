@@ -9,7 +9,7 @@
 #include "../Main/Grid.h"
 #include "dbDefs.h"
 #include "ItemsMgr.h"
-#include "TreeSelItemdlg.h"
+#include "TreeSelItemDlg.h"
 #include "SectorCtrl.h"
 #include "TerrainExportDlg.h"
 #include "../Input/Bind.h"

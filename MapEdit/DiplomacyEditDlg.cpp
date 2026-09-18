@@ -1,7 +1,7 @@
 // DiplomacyEditDlg.cpp : implementation file
 //
 
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "MapEdit.h"
 #include "DiplomacyEditDlg.h"
 #include "TreeView.h"

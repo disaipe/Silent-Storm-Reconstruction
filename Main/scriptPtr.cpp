@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "A5Script.h"
 #include "scriptCommon.h"
 #include "../DBFormat/DataCamera.h"

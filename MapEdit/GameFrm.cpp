@@ -1,7 +1,7 @@
 // GameFrm.cpp : implementation of the CGameFrame class
 //
 
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "MapEdit.h"
 
 #include "GameFrm.h"

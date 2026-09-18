@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 #include "bmpfile.h"
-#include "../Misc/2Darray.h"
+#include "../Misc/2DArray.h"
 #include "../FileIO/Streams.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Reconstructed from release Game.exe (WriteBMP @ 0x004b9e90) via Ghidra decompilation against the

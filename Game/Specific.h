@@ -1,4 +1,4 @@
-#include "../Misc/geom.h"
-#include "../FileIO/basicChunk1.h"
+#include "../Misc/Geom.h"
+#include "../FileIO/BasicChunk1.h"
 #include "../ADOImport/BasicDB.h"
 

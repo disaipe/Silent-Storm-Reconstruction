@@ -1,7 +1,7 @@
 // ObjBrowserContainer.cpp : implementation file
 //
 
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "MapEdit.h"
 #include "ObjBrowserContainer.h"
 

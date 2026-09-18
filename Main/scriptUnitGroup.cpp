@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "StdAfx.h"
 #include "A5Script.h"
 #include "scriptPtr.h"
 #include "scriptCommon.h"
@@ -6,9 +6,9 @@
 #include "wUnitGroup.h"
 #include "wUnitServer.h"
 #include "aiRoute.h"
-#include "rpgUnitMission.h"
-#include "rpgUnit.h"
-#include "rpgGlobal.h"			// NRPG::CGlobalPlayer money accessors (Player*Money)
+#include "RPGUnitMission.h"
+#include "RPGUnit.h"
+#include "RPGGlobal.h"			// NRPG::CGlobalPlayer money accessors (Player*Money)
 #include "wUnitCommands.h"
 //
 #include "scriptUnitGroup.h"
