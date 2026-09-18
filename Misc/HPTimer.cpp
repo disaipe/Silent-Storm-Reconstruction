@@ -13,6 +13,7 @@ double NHPTimer::GetSeconds( const NHPTimer::STime &a )
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 static inline void GetCounter( int64 *pTime )
 {
+#ifdef _MSC_VER
 	__asm
 	{
 		rdtsc
@@ -20,6 +21,9 @@ static inline void GetCounter( int64 *pTime )
 		mov [esi], eax
 		mov [esi+4], edx
 	}
+#else
+	*pTime = (int64)__builtin_ia32_rdtsc();
+#endif
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 double NHPTimer::GetClockRate()
