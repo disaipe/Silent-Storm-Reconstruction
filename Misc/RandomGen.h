@@ -91,6 +91,16 @@ inline float SRand::GetFloat( float fpMin, float fpMax )
 	return fpMin + float( Get( 0xFFFF ) * ( ( fpMax - fpMin ) * (1/double(0xFFFF)) ) );
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// The engine's global generator is named `random`, which on Linux collides with
+// POSIX random(3) from <stdlib.h> ("redeclared as different kind of entity").
+// Rename it via a macro so all ~35 call sites keep reading `random.Get(...)`
+// and the Windows build is bit-for-bit unchanged. Defined here (after the class
+// definition, before the declaration) so it also covers every translation unit
+// that includes this header.
+#ifndef _WIN32
+#define random s2_random
+#endif
+////////////////////////////////////////////////////////////////////////////////////////////////////
 extern CRandomGenerator random;
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #endif

@@ -163,8 +163,8 @@ public:                                                                         
 	inline TPtrName() {}                                                                      \
 	inline TPtrName( T *_ptr ): CBase( _ptr ) {}                                              \
 	inline TPtrName( const TPtrName &a ): CBase( a ) {}                                       \
-	inline TPtrName& operator=( T *_ptr ) { Set( _ptr ); return *this; }                      \
-	inline TPtrName& operator=( const TPtrName &a ) { SetObject( a.Get() ); return *this; }   \
+	inline TPtrName& operator=( T *_ptr ) { this->Set( _ptr ); return *this; }                \
+	inline TPtrName& operator=( const TPtrName &a ) { this->SetObject( a.Get() ); return *this; } \
 	inline bool operator< ( const TPtrName &a ) const { return this->Get() < a.Get(); }       \
 	inline bool operator> ( const TPtrName &a ) const { return this->Get() > a.Get(); }       \
 	inline bool operator<=( const TPtrName &a ) const { return this->Get() <= a.Get(); }      \

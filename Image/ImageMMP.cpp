@@ -4,7 +4,7 @@
 namespace NImage
 {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-bool NImage::SaveImageAsMMP( CDataStream *pStream, CImageMMP *pImage )
+bool SaveImageAsMMP( CDataStream *pStream, CImageMMP *pImage )
 {
 	SMMPFileHeader sHeader;
 	sHeader.nSizeX = pImage->GetSizeX( 0 );

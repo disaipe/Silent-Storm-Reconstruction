@@ -262,7 +262,7 @@ private:
 			data.insert( data.begin(), CountChunks( 1 ), T1() );
 		}
 		int i = 1;
-		for ( std::list<T1,T2>::iterator k = data.begin(); k != data.end(); ++k, ++i )
+		for ( typename std::list<T1,T2>::iterator k = data.begin(); k != data.end(); ++k, ++i )
 			Add( 1, &(*k), i );
 		FinishChunk();
 	}
@@ -312,7 +312,7 @@ private:
 		else
 		{
 			int i = 1;
-			for ( std::unordered_map<T1,T2,T3,T4>::iterator pos = data.begin(); pos != data.end(); ++pos, ++i )
+			for ( typename std::unordered_map<T1,T2,T3,T4>::iterator pos = data.begin(); pos != data.end(); ++pos, ++i )
 			{
 				T1 idx = pos->first;
 				Add( 1, &idx, i );

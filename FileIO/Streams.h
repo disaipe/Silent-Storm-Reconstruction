@@ -86,14 +86,17 @@ public:
 	// стандартные операции ввода/вывода
 	void ReadString( std::string &res, int nMaxSize = -1 );
 	void WriteString( const std::string &res );
+	// NOTE: the std::string cases used to be explicit template specialisations
+	// written inside the class body -- an MSVC extension the standard forbids
+	// ("explicit specialization in non-namespace scope"). Plain non-template
+	// overloads are an exact behavioural match and portable: overload
+	// resolution prefers them over the template for std::string.
 	template<class T>
 		CDataStream& operator>>( T &res ) { Read( &res, sizeof(res) ); return *this; }
 	template<class T>
 		CDataStream& operator<<( const T &res ) { Write( &res, sizeof(res) ); return *this; }
-	template<>
-		CDataStream& operator>>( std::string &res ) { ReadString( res ); return *this; }
-	template<>
-		CDataStream& operator<<( const std::string &res ) { WriteString( res ); return *this; }
+	CDataStream& operator>>( std::string &res ) { ReadString( res ); return *this; }
+	CDataStream& operator<<( const std::string &res ) { WriteString( res ); return *this; }
 	// operations with whole streams
 	inline void ReadTo( CDataStream &dst, unsigned int nSize );
 	inline void WriteFrom( CDataStream &src );
@@ -252,14 +255,14 @@ public:
 	// get pointer to place to write to later (not later then this object will be destructed)
 	unsigned char* WriteDelayed( int nSize ) { unsigned char *pRes = pCurrent; pCurrent += nSize; CheckCurrentW(); return pRes; }
 	//
+	// see the CDataStream note above -- in-class explicit specialisations are an
+	// MSVC extension; non-template overloads behave identically and are portable.
 	template <class T>
 		inline void Write( const T &a ) { Write( &a, sizeof(a) ); }
 	template <class T>
 		inline void Read( T &a ) { Read( &a, sizeof(a) ); }
-	template<> 
-		inline void Write<std::string>( const std::string &a ) { WriteCString( a.c_str() ); }
-	template<> 
-		inline void Read<std::string>( std::string &a ) { ReadCString( a ); }
+	inline void Write( const std::string &a ) { WriteCString( a.c_str() ); }
+	inline void Read( std::string &a ) { ReadCString( a ); }
 	//
 	friend class CBitEmbedded;
 };
