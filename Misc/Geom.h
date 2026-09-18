@@ -27,7 +27,7 @@ public:
     };
   };
 public:
-  CVec2() {  }
+  CVec2() = default;
   CVec2( const float ax, const float ay ) : x(ax), y(ay) {  }
   // setup
   void Set( const float ax, const float ay ) { x = ax; y = ay; }
@@ -90,7 +90,7 @@ public:
     };
   };
 public:
-  CVec3() {  }
+  CVec3() = default;
   CVec3( const float ax, const float ay, const float az ) : x(ax), y(ay), z(az) {  }
   CVec3( const CVec2 &a, float _z ) : x(a.x), y(a.y), z(_z) {  }
   // setup
@@ -163,7 +163,7 @@ public:
     };
   };
 public:
-  CVec4() {}
+  CVec4() = default;
   CVec4( const float ax, const float ay, const float az, const float aw ) : x(ax), y(ay), z(az), w(aw) {}
 	CVec4( const CVec3 &a, float _w ): x(a.x), y(a.y), z(a.z), w(_w) {}
   // cross-vector assignment as homogeneous vector
@@ -225,26 +225,18 @@ inline bool Normalize( CVec4 *pVec ) { float fLeng = fabs2(*pVec); if ( fLeng !=
 struct SPlane
 {
 public:
-  union
-  {
-    struct 
-    {
-      CVec3 n;
-      float d;
-    };
-    struct 
-    {
-      CVec4 vec4;
-    };
-  };
+  CVec3 n;
+  float d;
 public:
   SPlane( const CVec3 &ptNormale, const float fDist ) : n( ptNormale ), d( fDist ) {  }
-  SPlane( const CVec4 &pt ) : vec4( pt ) {  }
+  SPlane( const CVec4 &pt ) : n( pt.x, pt.y, pt.z ), d( pt.w ) {  }
   SPlane() {  }
   // setup functions
   bool Set( const CVec3 &pt0, const CVec3 &pt1, const CVec3 &pt2 );
   bool Set( float x0, float y0, float z0, float x1, float y1, float z1, float x2, float y2, float z2 );
   void Set( const CVec3 &ptNormale, const float fDist ) { n = ptNormale; d = fDist; }
+  // view as a homogeneous 4D vector (n.x, n.y, n.z, d) вЂ” was formerly an aliased union member
+  const CVec4 AsVec4() const { return CVec4( n, d ); }
   // recalc 'd' coeff for a plane with the point 'pt'
   void RecalcDist( const CVec3 &pt ) { d = -( n * pt ); }
 	// distance functions
@@ -252,7 +244,7 @@ public:
 	bool IsPointOnPlane( const CVec3 &pt ) const { return n*pt == -d; }
 	bool IsPointOverPlane( const CVec3 &pt ) const { return n*pt > -d; }
 	bool IsPointUnderPlane( const CVec3 &pt ) const { return n*pt < -d; }
-  // протестировать, не лежит ли точка под плоскостью. вернуть 0x80000000 если это так или 0 в противном случае
+  // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ. пїЅпїЅпїЅпїЅпїЅпїЅпїЅ 0x80000000 пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅ 0 пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
   DWORD CheckPointUnderPlane( const CVec3 &pt ) const;
 };
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -282,20 +274,20 @@ public :
 			float zx, zy, zz, zw;
 			float wx, wy, wz, ww;
 		};
-		struct  
-		{
-			CVec4 x, y, z, w;
-		};
-		struct
-		{
-			CVec3 x3; float xw3;
-			CVec3 y3; float yw3;
-			CVec3 z3; float zw3;
-			CVec3 w3; float ww3;
-		};
 	};
 public :
-	// matrix-vector multiplication 
+	// row views (CVec3/CVec4 are not aggregate types, so they can't live in the
+	// anonymous union above вЂ” provide them as accessors instead)
+	const CVec4 RowXVec4() const { return CVec4( _11, _12, _13, _14 ); }
+	const CVec4 RowYVec4() const { return CVec4( _21, _22, _23, _24 ); }
+	const CVec4 RowZVec4() const { return CVec4( _31, _32, _33, _34 ); }
+	const CVec4 RowWVec4() const { return CVec4( _41, _42, _43, _44 ); }
+	const CVec3 RowXVec3() const { return CVec3( _11, _12, _13 ); }
+	const CVec3 RowYVec3() const { return CVec3( _21, _22, _23 ); }
+	const CVec3 RowZVec3() const { return CVec3( _31, _32, _33 ); }
+	const CVec3 RowWVec3() const { return CVec3( _41, _42, _43 ); }
+public :
+	// matrix-vector multiplication
 	SHMatrix() {};
 	void RotateVector( CVec3 *pResult, const CVec3 &pt ) const;
 	void RotateVectorTransposed( CVec3 *pResult, const CVec3 &pt ) const;
@@ -308,7 +300,7 @@ public :
 	const CVec3 GetTranslation() const { return CVec3( _14, _24, _34 ); }
 };
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// прямое и обратное преобразование вместе
+// пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 struct SFBTransform
 {
 	SHMatrix forward, backward;
@@ -318,26 +310,10 @@ struct SFBTransform
 class CQuat
 {
 private:
-  union
-  {
-    struct
-    {
-      float i, j, k, s;
-    };
-    struct
-    {
-      float x, y, z, w;
-    };
-    struct
-    {
-      CVec3 n;
-      float r;
-    };
-    struct
-    {
-      CVec4 vec4;
-    };
-  };
+  // was formerly a union aliasing (i,j,k,s) / (x,y,z,w) / (CVec3 n, float r) / CVec4 vec4 вЂ”
+  // CVec3/CVec4 are not aggregate types, so they can't live in an anonymous union member;
+  // none of those alternate views were ever used outside this class, so plain floats suffice
+  float x, y, z, w;
 public:
   CQuat( float fX, float fY, float fZ, float fW ) : x( fX ), y( fY ), z( fZ ), w( fW ) {}
   CQuat( float fAngle, const CVec3 &ptAxis, const bool bNormalizeAxis = false );
@@ -597,8 +573,8 @@ inline bool SPlane::Set( float x0, float y0, float z0, float x1, float y1, float
 	return true;
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// протестировать, не лежит ли точка под плоскостью. 
-// вернуть 0x80000000 если это так или 0 в противном случае
+// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ. 
+// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ 0x80000000 пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅ 0 пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 inline DWORD SPlane::CheckPointUnderPlane( const CVec3 &pt ) const
 {
   float fDist = n*pt + d;
@@ -903,6 +879,7 @@ inline const CVec3 CQuat::Rotate( const CVec3 &r ) const
 }
 inline void CQuat::Rotate( CVec3 *pRes, const CVec3 &vec ) const
 {
+	const CVec3 n( x, y, z );
 	*pRes = ( vec*(w*w - n*n) + (2.0f*w)*(n^vec) + (2.0f*(n*vec))*n );
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////

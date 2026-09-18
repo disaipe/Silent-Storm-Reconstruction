@@ -208,11 +208,11 @@ float CalcRadius2( const SBound &b, const SHMatrix &fwd )
 	ASSERT( b.ptHalfBox.y >= 0 );
 	ASSERT( b.ptHalfBox.z >= 0 );
 	float fSign;
-	CVec3 ptRes = fwd.x3 * b.ptHalfBox.x;
-	fSign = fwd.x3 * fwd.y3 < 0 ? -1 : 1;
-	ptRes += fwd.y3 * (b.ptHalfBox.y * fSign);
-	fSign = ptRes * fwd.z3 < 0 ? -1 : 1;
-	ptRes += fwd.z3 * (b.ptHalfBox.z * fSign);
+	CVec3 ptRes = fwd.RowXVec3() * b.ptHalfBox.x;
+	fSign = fwd.RowXVec3() * fwd.RowYVec3() < 0 ? -1 : 1;
+	ptRes += fwd.RowYVec3() * (b.ptHalfBox.y * fSign);
+	fSign = ptRes * fwd.RowZVec3() < 0 ? -1 : 1;
+	ptRes += fwd.RowZVec3() * (b.ptHalfBox.z * fSign);
 	return fabs2( ptRes );
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////

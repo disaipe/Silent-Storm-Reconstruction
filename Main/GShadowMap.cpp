@@ -82,14 +82,14 @@ static void Split( SPolyhedron *pRes, const SPlane &p )
 				s.vertices[k] = -s.vertices[k];
 		}
 		int iPrev = s.vertices.size() - 1;
-		float fPrevSide = p.vec4 * s.vertices[iPrev], fSide;
+		float fPrevSide = p.AsVec4() * s.vertices[iPrev], fSide;
 		CVec4 vEnter, vExit;
 		bool bWasIntersected = false;
 		for ( int i = 0; i < s.vertices.size(); iPrev = i, fPrevSide = fSide, ++i )
 		{
 			const CVec4 &vPrev = s.vertices[ iPrev ];
 			const CVec4 &v = s.vertices[ i ];
-			fSide = p.vec4 * v;
+			fSide = p.AsVec4() * v;
 			if ( fPrevSide < 0 )
 			{
 				if ( fSide < 0 )
@@ -152,7 +152,7 @@ static void Split( SPolyhedron *pRes, const SPlane &p )
 			if ( !bFound )
 				break;
 		}
-		onPlane.vPlane = -p.vec4;
+		onPlane.vPlane = -p.AsVec4();
 		pRes->facets.push_back( onPlane );
 	}
 }

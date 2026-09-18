@@ -877,8 +877,8 @@ static void ExecOps( NGfx::CRenderContext *pRC, const vector<CRenderCmdList::SOp
 				if ( NGfx::IsNVidiaNP2Bug() )
 					f *= 1000;
 				pRC->SetVSConst( 14, CVec4(0,0,1,0) );
-				pRC->SetVSConst( 16, GetNormalized( pRC->GetTransform().forward.x, 0.1f ) );
-				pRC->SetVSConst( 17, GetNormalized( pRC->GetTransform().forward.y, 0.1f ) );
+				pRC->SetVSConst( 16, GetNormalized( pRC->GetTransform().forward.RowXVec4(), 0.1f ) );
+				pRC->SetVSConst( 17, GetNormalized( pRC->GetTransform().forward.RowYVec4(), 0.1f ) );
 			}
 			break;
 		case RO_EXPLOSION_DECAL:
