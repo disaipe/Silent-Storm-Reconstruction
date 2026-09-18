@@ -6,7 +6,7 @@
 #endif // _MSC_VER > 1000
 
 class CItemsMgr;
-enum EChapterSectorType;
+enum EChapterSectorType : int;
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // CChapterSectorDlg dialog
 class CChapterSectorDlg : public CDialog

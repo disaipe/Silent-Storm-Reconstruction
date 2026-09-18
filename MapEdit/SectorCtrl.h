@@ -4,7 +4,7 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-enum EChapterSectorType;
+enum EChapterSectorType : int;
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 class CSectorCtrl: public CObjectBase
 {

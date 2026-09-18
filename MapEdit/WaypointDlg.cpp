@@ -19,8 +19,7 @@ static char THIS_FILE[] = __FILE__;
 
 extern CBasicShare<int, NAI::CWaypointLoader> shareWaypoints;
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-enum EParam
-{
+enum EParam : int{
 	P_CMDTYPE = 0,
 	P_TIME,
 	P_POSE,

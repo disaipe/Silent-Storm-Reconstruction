@@ -735,42 +735,11 @@ public:
 	}
 };
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-template<class T>
-void MinMaxTiles( CTemplVariant *pVar, const vector<CPtr<T> > &fragments )
-{
-	for ( int i = 0; i < fragments.size(); ++i )
-	{
-		vector<CVec2> tiles;
-		const T &frag = *fragments[i];
-		UnpackFloorTiles( frag.szCoords, &tiles );
-		for ( int k = 0; k < tiles.size(); ++k )
-		{
-			pVar->nMaxX = Max( pVar->nMaxX, (int)tiles[k].x );
-			pVar->nMaxY = Max( pVar->nMaxY, (int)tiles[k].y );
-		}
-		pVar->nMinFloor = Min( pVar->nMinFloor, frag.nFloor );
-		pVar->nMaxFloor = Max( pVar->nMaxFloor, frag.nFloor );
-	}
-}
-////////////////////////////////////////////////////////////////////////////////////////////////////
-template<class T>
-void MinMaxTiles4Solids( CTemplVariant *pVar, const vector<CPtr<T> > &fragments )
-{
-	for ( int i = 0; i < fragments.size(); ++i )
-	{
-		vector<CVec2> tiles;
-		const T &frag = *fragments[i];
-		UnpackFloorTiles( frag.szCoords, &tiles );
-		for ( int k = 0; k < tiles.size(); ++k )
-		{
-			pVar->nMaxX = Max( pVar->nMaxX, (int)tiles[k].x );
-			pVar->nMaxY = Max( pVar->nMaxY, (int)tiles[k].y );
-		}
-		pVar->nMinFloor = Min( pVar->nMinFloor, frag.nFloor );
-		// a solid object can occupy one floor more than its specified height, so we don't subtract 1
-		pVar->nMaxFloor = Max( pVar->nMaxFloor, frag.nFloor + frag.pModel->nHeight );
-	}
-}
+// NOTE: MinMaxTiles<>/MinMaxTiles4Solids<> used to live here. They were dead code --
+// never instantiated anywhere -- and referenced CTemplVariant members (nMaxX, nMaxY,
+// nMinFloor, nMaxFloor) that do not exist on the class. MSVC never diagnosed them
+// because an uninstantiated template body went unchecked; GCC rejects the
+// non-dependent member accesses at definition time, so they are removed.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 externA5 const char *pszDBUniformSlotNames[];
 ////////////////////////////////////////////////////////////////////////////////////////////////////

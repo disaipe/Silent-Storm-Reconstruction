@@ -8,7 +8,7 @@
 //
 
 #define REG_MATERIALS "Materials"
-enum EMaterialSet;
+enum EMaterialSet : int;
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // CMaterialEditCtrl window
 class CMaterialEditCtrl : public CEdit

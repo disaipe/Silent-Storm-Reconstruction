@@ -8,11 +8,11 @@
 
 namespace NDb
 {
-	enum ESlot;
-	enum ESkillType;
-	enum EItemSubType;
-	enum EShootMode;
-	enum EWeaponType;
+	enum ESlot : int;
+	enum ESkillType : int;
+	enum EItemSubType : int;
+	enum EShootMode : int;
+	enum EWeaponType : int;
 	class CRPGItem;
 	class CRPGAmmo;
 	class CRPGClip;
@@ -164,8 +164,7 @@ public:
 	virtual NDb::CRPGWeapon* GetDBWeapon() const = 0;
 };
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-enum EGrenadeMode
-{
+enum EGrenadeMode : int{
 	GM_THROW,
 	GM_SETTRAP
 };

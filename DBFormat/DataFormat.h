@@ -21,7 +21,7 @@
 template<class T> inline bool PushItem( vector<CPtr<T> > *pItems, T *p )
 {
 	ASSERT( pItems );
-	vector<CPtr<T> >::const_iterator i = find( pItems->begin(), pItems->end(), p );
+	typename vector<CPtr<T> >::const_iterator i = find( pItems->begin(), pItems->end(), p );
 	if ( i == pItems->end() )
 	{
 		pItems->push_back( p );

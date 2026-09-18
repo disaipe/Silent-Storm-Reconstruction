@@ -188,8 +188,7 @@ public:
 
 protected:
 	enum { N_ANY_VALUE = -1 };
-	enum ESlot
-	{
+	enum ESlot : int{
 		SLOT_R1C1	= 0,
 		SLOT_R1C2	= 1,
 		SLOT_R1C3	= 2,

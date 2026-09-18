@@ -5,7 +5,7 @@
 #endif // _MSC_VER > 1000
 
 const float SELECTION_ACCURACY = 0.45f; // (в тайлах) также определяет размер кружка юнита
-enum EEditMode;
+enum EEditMode : int;
 
 class ITemplateView
 {

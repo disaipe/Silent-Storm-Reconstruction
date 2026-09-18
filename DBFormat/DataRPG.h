@@ -8,7 +8,7 @@
 #include "DataConst.h"
 namespace NAI
 {
-	enum EHitLocation;
+	enum EHitLocation : int;
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NDb
@@ -46,8 +46,7 @@ const int N_HUMAN_BODY_ARMOR = 1;
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // SKILLS common set of RPG skills 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-enum ESkillType
-{
+enum ESkillType : int{
 	// weapons skills
 	ST_MELEE = 0,
 	ST_SHOOTING,
@@ -171,8 +170,7 @@ struct SUniformItem
 	ZEND int operator&( CStructureSaver &f ) { f.Add(2,&pUniform); f.Add(3,&pModelActive); f.Add(4,&pModelInactive); return 0; }
 };
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-enum EItemSubType
-{
+enum EItemSubType : int{
 	SUBTYPE_NONE = 0,
 	SUBTYPE_HEAVY,
 	SUBTYPE_PISTOL,
@@ -192,8 +190,7 @@ enum EItemSubType
 	N_SUBTYPES
 };
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-enum ECameraType
-{
+enum ECameraType : int{
 	CAMERA_NORMAL = 0,
 	CAMERA_SLOT,
 	CAMERA_RELOADBUTTON,
@@ -337,8 +334,7 @@ public:
 // MACHETE records, dev WT_RLAUNCHER==7 matched retail MACHINE_GUN records, etc. Values now match
 // retail 1:1 (PDB: MACHETE=6, MACHINE_GUN=7, RLAUNCHER=8, MINE_DETECTOR=9, PLAZMAGUN=10,
 // PK_PLAZMAGUN=11, BOSS_PLAZMAGUN=12, TERROR_SHOOTER=13, TERROR_SPECIAL_GUN=14).
-enum EWeaponType
-{
+enum EWeaponType : int{
 	WT_DEFAULT,
 	WT_PISTOL,
 	WT_RIFLE,
@@ -356,8 +352,7 @@ enum EWeaponType
 	WT_TERROR_SPECIAL_GUN,
 };
 inline bool IsMeleeWeapon( EWeaponType type ) { return type == WT_DEFAULT || type == WT_KNIFE || type == WT_KATANA; }
-enum EShootMode
-{
+enum EShootMode : int{
 	SM_Snap = 0,
 	SM_Aimed,
 	SM_Careful,
@@ -432,8 +427,7 @@ public:
 	virtual void Import();
 };
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-enum EItemPlace
-{
+enum EItemPlace : int{
 	BELT_L1 = 0,
 	BELT_R1,
 	BELT_M1,
@@ -684,8 +678,7 @@ class CRPGPers: public CDBRecord
 {
 	OBJECT_BASIC_METHODS(CRPGPers);
 public:
-	enum ECameraType
-	{
+	enum ECameraType : int{
 		CAMERA_FACEGEN,
 		CAMERA_PORTRAIT,
 		CAMERA_MAXVALUE
@@ -740,8 +733,7 @@ public:
 	virtual void Import();
 };
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-enum ECriticalLocation
-{
+enum ECriticalLocation : int{
 	CL_HEAD = 0,
 	CL_TORSO,
 	CL_ARMS,
@@ -750,8 +742,7 @@ enum ECriticalLocation
 	N_CL
 };
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-enum ECritical
-{
+enum ECritical : int{
 	C_DEATH = 0,
 	C_AP_REDUCTION,
 	C_BLIND,

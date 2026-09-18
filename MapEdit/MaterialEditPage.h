@@ -6,7 +6,7 @@
 #endif // _MSC_VER > 1000
 // MaterialEditPage.h : header file
 //
-enum EMaterialSet;
+enum EMaterialSet : int;
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // CMaterialEditPage dialog
 class CMaterialEditPage : public CDialog

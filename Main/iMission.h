@@ -18,7 +18,7 @@ const int N_FOV = 35;
 
 namespace NDb
 {
-	enum EDiplomacyState;
+	enum EDiplomacyState : int;
 	class CChapterMap;		// IMission::GetChapterMap (retail mission vtbl+0x14c) -- see below
 }
 class CChapterInfo;			// IMission::GetChapterInfo (retail mission vtbl+0x150) -- see below

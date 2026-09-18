@@ -14,8 +14,7 @@ class CTMaterial;
 class CTSound;
 class CRPGArmor;
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-enum EHMBlendType
-{
+enum EHMBlendType : int{
 	BT_NORMAL,
 	BT_ADD,
 	BT_SUBTRACT

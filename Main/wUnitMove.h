@@ -10,14 +10,14 @@ namespace NAI
 {
 	class CPath;
 	struct SPathPlace;
-	enum EFindPathParams;
+	enum EFindPathParams : int;
 }
 namespace NWorld
 {
 class CCommandExecute;
 class CUnitServer;
 class CPathConflictsRemover;
-enum ENeedActiveItem;
+enum ENeedActiveItem : int;
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 class IExecMove
 {

@@ -10,9 +10,9 @@ namespace NAI
 {
 	class IAIMap;
 	class IPathNetwork;
-	enum EHitLocation;
-	enum ETileHitLocation;
-	enum EDirection;
+	enum EHitLocation : int;
+	enum ETileHitLocation : int;
+	enum EDirection : int;
 	struct SPathPlace;
 	struct SPosition;
 	struct SUnitPosition;

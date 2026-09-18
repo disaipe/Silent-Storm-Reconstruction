@@ -11,8 +11,7 @@ namespace NBuilding
 	struct SLayerGroup;
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-enum EMapObjType
-{
+enum EMapObjType : int{
 	MO_TEMPLATE,
 	MO_UNIT,
 	MO_OBJECT,
@@ -21,8 +20,7 @@ enum EMapObjType
 	MO_EMPTY
 };
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-enum EFloorType
-{
+enum EFloorType : int{
 	FT_FLOOR = 0, // не мен€ть пор€док объ€влений
 	FT_FLOOR_INTERMEDIATE,
 	FT_SOLID_, // в .Net объ€вилс€ свой FT_SOLID

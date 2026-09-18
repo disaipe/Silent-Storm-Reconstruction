@@ -20,7 +20,7 @@ class CRPGItem;
 class CSoundEffect;
 class CRPGChestLayout;
 class CTRPGChest;
-enum ESoundType;
+enum ESoundType : int;
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 class CPlacableObject: public CDBRecord
 {

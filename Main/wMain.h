@@ -47,7 +47,7 @@ namespace NRPG
 	struct SAttackRayInfo;
 	class IUnitMission;
 	class IClipItem;
-	enum EAction;
+	enum EAction : int;
 	class CUnit;
 	class CGlobalDiplomacy;
 }
@@ -64,7 +64,7 @@ namespace NDb
 	class CScript;
 	class CDBCamera;
 	class CRPGArmor;
-	enum EDiplomacyState;
+	enum EDiplomacyState : int;
 }
 namespace NScript
 {
@@ -95,13 +95,13 @@ class CTerrain;
 struct SInterfaceAck;
 class IPassageObject;
 class CCameraTracker;
-enum EInterfaceEvent;
-enum ESkipMode;
+enum EInterfaceEvent : int;
+enum ESkipMode : int;
 class CUnitGroup;
 class IMine;
 class CMineTracker;
 struct SPerkMineModifiers;   // explosive-perk damage modifiers (wExplosionPerks.h); AddGrenadeExplosion takes them by ptr
-enum EInterfaceEventType;
+enum EInterfaceEventType : int;
 //
 //class CEventOnNewPlayerFastTurnOrTime;
 ////////////////////////////////////////////////////////////////////////////////////////////////////

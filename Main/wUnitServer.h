@@ -18,8 +18,8 @@ namespace NDb
 {
 	class CAISound;
 	struct SAISound;
-	enum ECritical;
-	enum EDiplomacyState;
+	enum ECritical : int;
+	enum EDiplomacyState : int;
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NWorld

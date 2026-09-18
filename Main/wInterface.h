@@ -21,7 +21,7 @@ namespace NRPG
 {
 	struct SStoreItem;
 	struct SMapItem;
-	enum EStoreFilter;
+	enum EStoreFilter : int;
 	class CGlobalGame;
 	class CGlobalPlayer;
 	struct SUnitInfo;
@@ -41,7 +41,7 @@ namespace NDb
 	class CPanzerklein;
 	class CRPGGrenade;       // IExplosionMaster::AddExplosion (ordinary grenade)
 	class CRPGEngGrenade;    // IExplosionMaster::AddExplosion (engineer grenade)
-	enum EDiplomacyState;
+	enum EDiplomacyState : int;
 }
 namespace NWorld
 {
@@ -50,9 +50,9 @@ namespace NWorld
 	class CGlobalAck;
 	class CPocket;               // wPocket.h -- IWorld::GetPocket (retail vtbl+0xd8 @0x376f60)
 	class IHeightLayers;         // wHeightLayers.h -- IWorld::GetHeightLayers (retail vtbl+0x90 @0x376f00)
-	enum ETBSEvent;
+	enum ETBSEvent : int;
 	class CUnitServer;
-	enum EUnitCommandResult;
+	enum EUnitCommandResult : int;
 	class CCmd;
 	struct SItem;
 	struct SPerkMineModifiers;   // wExplosionPerks.h (IExplosionMaster::AddExplosion)
@@ -66,7 +66,7 @@ namespace NAI
 	struct SPathPlace;
 	struct SPosition;
 	struct SUnitPosition;
-	enum EPose;
+	enum EPose : int;
 }
 namespace NScenario
 {
@@ -107,15 +107,13 @@ class CCmdEndOfTurn: public CCommand
 	OBJECT_BASIC_METHODS(CCmdEndOfTurn);
 };
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-enum EInterfaceActionType
-{
+enum EInterfaceActionType : int{
 	IAT_CAMERA = 0,
 	IAT_DIALOG,
 	N_INTERFACE_ACTION_TYPE
 };
 //
-enum EInterfaceEvent
-{
+enum EInterfaceEvent : int{
 	IE_ACTION_STARTED = 0,
 	IE_ACTION_FINISHED,
 	N_INTERFACE_EVENTS

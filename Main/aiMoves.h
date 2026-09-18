@@ -5,14 +5,14 @@
 #endif // _MSC_VER > 1000
 namespace NRPG
 {
-enum EAction;
+enum EAction : int;
 }
 namespace NAI
 {
 struct SMove;
 struct SPathPlace;
 class IPathNetwork;
-enum ETransitionType;
+enum ETransitionType : int;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 ETransitionType GetTransitionType( const IPathNetwork *pNet, const SPathPlace &src, const SPathPlace &dst );

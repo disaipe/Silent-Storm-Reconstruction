@@ -21,7 +21,7 @@ class CTilesLayer;
 class CHeightsLayer;
 class CAlphaLayer;
 class CCellarLayer;
-enum EFloorType;
+enum EFloorType : int;
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 class CChildView;
 class CDropTarget: public COleDropTarget

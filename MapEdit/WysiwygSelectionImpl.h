@@ -29,8 +29,7 @@ class CSelection: public ISelection
 {
 	OBJECT_NOCOPY_METHODS(CSelection);
 
-	enum EAction
-	{
+	enum EAction : int{
 		A_MOVE,
 		A_MOVE_Z,
 		A_ROTATE,

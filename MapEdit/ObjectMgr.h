@@ -8,7 +8,7 @@
 #include "PropMapTypedef.h"
 #include "Variant.h"
 
-enum EBrushType;
+enum EBrushType : int;
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 class COnSetValue: public CObjectBase
 {

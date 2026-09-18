@@ -12,8 +12,7 @@ namespace NAI
 	class IAIMap;
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-enum EBrushType 
-{ 
+enum EBrushType : int{ 
 	BT_GEOMETRY = 0x1, 
 	BT_SUBTEMPLATE = 0x2,
 	BT_TEXSPOT  = 0x4, 

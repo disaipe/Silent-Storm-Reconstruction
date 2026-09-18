@@ -5,7 +5,7 @@
 
 namespace NDb
 {
-	enum EShootMode;
+	enum EShootMode : int;
 }
 
 namespace NRPG
@@ -29,7 +29,7 @@ namespace NWorld
 namespace NAI
 {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-enum EHitLocation;
+enum EHitLocation : int;
 class IAIUnit;
 class CAIFireArmsWeapon;
 class CAIFireArmsWeaponClip;

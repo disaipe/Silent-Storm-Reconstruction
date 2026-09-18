@@ -16,18 +16,18 @@ namespace NDb
 	class CRPGArmor;
 	class CTSound;
 	class CAISound;
-	enum ECritical;
-	enum ESlot;
+	enum ECritical : int;
+	enum ESlot : int;
 	class CPanzerklein;
 }
 
 namespace NAI
 {
-	enum EHitLocation;
+	enum EHitLocation : int;
 }
 namespace NRPG
 {
-	enum EAction;
+	enum EAction : int;
 	//enum ECriticalAction;
 	class IUnitMission;
 	class IInventoryInfo;   // NWorld::IsActiveItemToShow arg

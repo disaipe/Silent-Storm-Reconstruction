@@ -35,8 +35,7 @@ enum EPassable
 	AIP_DOOR         = 4,
 };
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-enum ETransitionType
-{
+enum ETransitionType : int{
 	TT_NO_WAY,
 	TT_SAME,
 	TT_MOVE,
@@ -81,8 +80,7 @@ enum EMoveType
 	N_MOVE_TYPES
 };
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-enum EFindPathParams
-{
+enum EFindPathParams : int{
 	PF_DEFAULT = 0,
 	PF_USE_DIR = 1,
 	PF_USE_POSE = 2,
@@ -196,12 +194,10 @@ enum EPose	// DO NOT REORDER! This is tied to AP calculation!
 	RUN			// running
 };
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-enum EDirection
-{
+enum EDirection : int{
 	RIGHT= 0, UPRIGHT, UP, UPLEFT, LEFT, DOWNLEFT, DOWN, DOWNRIGHT, NONE
 };
-enum EHitLocation
-{
+enum EHitLocation : int{
 	HL_ANY = -1,
 	HL_BODY = 0,
 	HL_HEAD,
@@ -211,8 +207,7 @@ enum EHitLocation
 	HL_LLEG,
 	N_HL
 };
-enum ETileHitLocation
-{
+enum ETileHitLocation : int{
 	THL_LOWER = 0,
 	THL_MIDDLE,
 	THL_UPPER
@@ -248,28 +243,16 @@ EBlowHeight GetBlowHeight( const SUnitPosition &attackerPos, const CVec3 &ptTarg
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 struct SMove
 {
-	union
-	{
-		struct 
-		{
-			SPathPlace dest;
-			EMoveType type;
-		};
-		struct 
-		{
-			SPathPlace first;
-			EMoveType second;
-		};
-	};
+	// NOTE: dest/type used to be aliased by a second anonymous struct naming the
+	// same two fields first/second. SPathPlace has a non-trivial default
+	// constructor, which the standard forbids inside an anonymous union (MSVC
+	// allowed it), and the first/second spellings were never used anywhere --
+	// so the union is gone and the fields are plain members. The hand-written
+	// operator= (which copied both views of the same storage) is redundant too:
+	// the implicit one does exactly the same thing.
+	SPathPlace dest;
+	EMoveType type;
 	SMove() {};
-	SMove &SMove::operator=(const SMove& src)
-	{
-		this->dest = src.dest;
-		this->type = src.type;
-		this->first = src.first;
-		this->second = src.second;
-		return *this;
-	}
 };
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 struct SShowLink

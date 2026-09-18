@@ -2,7 +2,7 @@
 #define __FLOORLAYER_H__
 
 class CPlacement;
-enum EFloorType;
+enum EFloorType : int;
 #include "Floor.h"
 
 #define DEF_FLOOR_COLOR		RGB( 200, 200, 200 )

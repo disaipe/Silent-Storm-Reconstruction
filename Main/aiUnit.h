@@ -15,7 +15,7 @@ namespace NDb
 	class CRPGWeapon;
 	class IUnitMission;
 	class CUnit;
-	enum EShootMode;   // MS-extension fwd decl (as NAI::EHitLocation below) -- DataRPG.h defines it
+	enum EShootMode : int;   // MS-extension fwd decl (as NAI::EHitLocation below) -- DataRPG.h defines it
 }
 
 namespace NWorld
@@ -35,12 +35,12 @@ class CTask;
 class IAILogic;   // phase-7 supersede: the unit holds the command-driven IAILogic (was the dev CAILogic:CAIJob)
 class CAIReaction; // the unit's reflex layer (release): chooses the logic each think (release vtbl 0x64 SetReaction)
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-enum EHitLocation;
+enum EHitLocation : int;
 struct SPathPlace;
 struct SPosition;
 struct SUnitPosition;
 struct SAIUnitState;   // per-unit threat state (release IAIUnit vtbl 0x74 GetAIUnitState)
-enum EAIManager;
+enum EAIManager : int;
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // IAIUnit
 ////////////////////////////////////////////////////////////////////////////////////////////////////

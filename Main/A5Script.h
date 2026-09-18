@@ -27,7 +27,7 @@ namespace NWorld
 	class CWorld;
 	class IWorld;
 	class CUICmd;
-	enum EInterfaceActionType;
+	enum EInterfaceActionType : int;
 }
 //
 namespace NGame

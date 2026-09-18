@@ -127,8 +127,7 @@ public:
 	virtual bool GetInfo( SSelectedInfo *pInfo );
 };
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-enum ESpotType
-{
+enum ESpotType : int{
 	ST_WALL,
 	ST_TERRAIN,
 };
