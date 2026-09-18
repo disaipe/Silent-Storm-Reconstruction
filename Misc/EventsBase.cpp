@@ -14,19 +14,21 @@ static struct SExecutionTracker
 } tracker;
 //
 typedef vector<IEventRegister*> CCallInfoHash;
-static unordered_map< int, CCallInfoHash > *pEventHandlers = 0;
+// key = the type_info's address, reused as a per-type identity. int held it fine when
+// pointers were 4 bytes (Win32); truncates on 64-bit Linux, so widen to intptr_t there.
+static unordered_map< intptr_t, CCallInfoHash > *pEventHandlers = 0;
 static int nEventHandlersCount = 0;
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-inline unordered_map< int, CCallInfoHash > &GetEventHandlers()
+inline unordered_map< intptr_t, CCallInfoHash > &GetEventHandlers()
 {
 	if ( pEventHandlers == 0 )
-		pEventHandlers = new unordered_map< int, CCallInfoHash >();
+		pEventHandlers = new unordered_map< intptr_t, CCallInfoHash >();
 	return *pEventHandlers;
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 void ThrowEventInner( const type_info &eventID, const void *pStuff )
 {
-	int nEventID = (int)&eventID;
+	intptr_t nEventID = (intptr_t)&eventID;
 	CCallInfoHash &handlers = GetEventHandlers()[ nEventID ];
 	for ( CCallInfoHash::iterator i = handlers.begin(); i != handlers.end(); ++i )
 		(*i)->Call( pStuff );
@@ -34,14 +36,14 @@ void ThrowEventInner( const type_info &eventID, const void *pStuff )
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 void RegisterEventHandler( IEventRegister *pReg, const type_info &eventID )
 {
-	int nEventID = (int)&eventID;
+	intptr_t nEventID = (intptr_t)&eventID;
 	GetEventHandlers()[ nEventID ].push_back( pReg );
 	++nEventHandlersCount;
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 void UnregisterEventHandler( IEventRegister *pReg, const type_info &eventID )
 {
-	int nEventID = (int)&eventID;
+	intptr_t nEventID = (intptr_t)&eventID;
 	vector<IEventRegister*> &handlers = GetEventHandlers()[ nEventID ];
 	vector<IEventRegister*>::iterator i = find( handlers.begin(), handlers.end(), pReg );
 	if ( i != handlers.end() )

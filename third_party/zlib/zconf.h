@@ -189,10 +189,16 @@
 //#endif
 
 //#if defined (__BEOS__)
-#  if defined (ZLIB_DLL)
-#    define ZEXTERN extern __declspec(dllexport)
+#  if defined (_WIN32)
+#    if defined (ZLIB_DLL)
+#      define ZEXTERN extern __declspec(dllexport)
+#    else
+#      define ZEXTERN extern __declspec(dllimport)
+#    endif
 #  else
-#    define ZEXTERN extern __declspec(dllimport)
+     /* non-Windows: no DLL import/export decoration -- __declspec isn't a keyword
+        outside MSVC, and this build links everything statically there anyway. */
+#    define ZEXTERN extern
 #  endif
 //#endif
 
@@ -200,7 +206,11 @@
 #  define ZEXPORT
 #endif
 #ifndef ZEXPORTVA
-#  define ZEXPORTVA __cdecl
+#  if defined (_WIN32)
+#    define ZEXPORTVA __cdecl
+#  else
+#    define ZEXPORTVA
+#  endif
 #endif
 #ifndef ZEXTERN
 #  define ZEXTERN extern

@@ -23,7 +23,10 @@
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
+#include <cerrno>
 #include <mutex>
+#include <unistd.h>
+#include <sys/mman.h>
 
 // ----------------------------------------------------------------------------
 //  MSVC-only keywords, neutralised on GCC/Clang.
@@ -126,5 +129,43 @@ BOOL CloseHandle( HANDLE hObject );
 
 inline LONG InterlockedIncrement( volatile LONG *p ) { return __sync_add_and_fetch( p, 1 ); }
 inline LONG InterlockedDecrement( volatile LONG *p ) { return __sync_sub_and_fetch( p, 1 ); }
+
+// ----------------------------------------------------------------------------
+//  High-resolution timer (Misc/HPTimer.cpp's calibration window) -- the engine
+//  only ever treats _LARGE_INTEGER as an opaque 64-bit counter, so a plain
+//  int64 typedef keeps HPTimer.cpp's "(_LARGE_INTEGER*)&int64var" casts working
+//  unmodified. Backed by CLOCK_MONOTONIC at nanosecond resolution.
+// ----------------------------------------------------------------------------
+typedef int64_t _LARGE_INTEGER;
+inline void QueryPerformanceCounter( _LARGE_INTEGER *p )
+{
+	struct timespec ts;
+	clock_gettime( CLOCK_MONOTONIC, &ts );
+	*p = (int64_t)ts.tv_sec * 1000000000ll + ts.tv_nsec;
+}
+inline void QueryPerformanceFrequency( _LARGE_INTEGER *p ) { *p = 1000000000ll; }
+
+// ----------------------------------------------------------------------------
+//  IsBadReadPtr -- best-effort "is this pointer readable" probe (used only to
+//  skip releasing an already-freed object during save/load teardown -- see
+//  Misc/Basic2.cpp's UafCheck). msync() fails ENOMEM on an unmapped page
+//  without risking a real fault, which is the same "probe, don't crash"
+//  contract the Win32 call has.
+// ----------------------------------------------------------------------------
+inline bool IsBadReadPtr( const void *ptr, size_t size )
+{
+	if ( !ptr || size == 0 )
+		return ptr == 0;
+	long nPageSize = sysconf( _SC_PAGESIZE );
+	uintptr_t start = (uintptr_t)ptr & ~(uintptr_t)( nPageSize - 1 );
+	uintptr_t end = ( (uintptr_t)ptr + size + nPageSize - 1 ) & ~(uintptr_t)( nPageSize - 1 );
+	for ( uintptr_t p = start; p < end; p += nPageSize )
+	{
+		errno = 0;
+		if ( msync( (void *)p, 1, MS_ASYNC ) == -1 && errno == ENOMEM )
+			return true;
+	}
+	return false;
+}
 
 #endif // __PLATFORMCOMPAT_H__

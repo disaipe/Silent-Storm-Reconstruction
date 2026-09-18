@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 #include "RandomGen.h"
-#include "../FileIO/basicChunk1.h"
+#include "../FileIO/BasicChunk1.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 SRandomSeed::SRandomSeed() : nSeed( GetTickCount() )
@@ -57,7 +57,7 @@ CRandomGenerator random;
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 const LPCSTR PSZ_MASK_TO_FIND_FILES = "C:\\*.*";
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-#define ind(mm,x)  (*(unsigned int *)(( unsigned _int8 *)(mm) + ((x) & ((RANDSIZ-1)<<2))))
+#define ind(mm,x)  (*(unsigned int *)(( unsigned char *)(mm) + ((x) & ((RANDSIZ-1)<<2))))
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #define rngstep(mix,a,b,mm,m,m2,r,x) \
 { \
@@ -144,6 +144,7 @@ void CRandomGenerator::Init()
 // --------------------------- FillRandRsl() ---------------------------------------------------------------
 const int N_FROM_START = 1024;
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+#ifdef _MSC_VER
 BOOL CRandomGenerator::RecFindFile( std::string &szFoundName, const char *pszBaseMask, int nToFind, int* pnTotFinded )
 {
 	WIN32_FIND_DATA ff;
@@ -222,4 +223,25 @@ void CRandomGenerator::FillRandRsl()
 			randrsl[i] ^= rand();
 	}
 }
+#else
+// Portable entropy source for randrsl[RANDSIZ]: the original scans a random file on
+// disk (C:\*.*) and reads bytes from it -- there is no equivalent "random Windows
+// drive" concept to port, and /dev/urandom is a strictly better entropy source anyway.
+void CRandomGenerator::FillRandRsl()
+{
+	FILE *pF = fopen( "/dev/urandom", "rb" );
+	bool bOk = pF && fread( randrsl, sizeof( randrsl ), 1, pF ) == 1;
+	if ( pF )
+		fclose( pF );
+	srand( GetTickCount() );
+	for ( int i = 0; i < RANDSIZ; i++ )
+		randrsl[i] ^= rand();
+	if ( !bOk )
+	{
+		// /dev/urandom unavailable -- fall back to something non-zero rather than hang.
+		for ( int i = 0; i < RANDSIZ; i++ )
+			randrsl[i] ^= (unsigned int)( i * 2654435761u + (unsigned int)GetTickCount() );
+	}
+}
+#endif
 ////////////////////////////////////////////////////////////////////////////////////////////////////

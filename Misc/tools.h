@@ -41,12 +41,16 @@ const float FP_EPSILON2 = 1e-24f;
 #define FP_ONE_BITS 0x3F800000
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // standard is long long but msvc does not support this name
+#ifdef _MSC_VER
 typedef __int64 int64;
+#else
+typedef long long int64;
+#endif
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 template <class T, class TElem>
 inline bool IsInSet( const T &c, const TElem &e ) { return find( c.begin(), c.end(), e ) != c.end(); }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// форматированный вывод ч/з OutputDebugString
+// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ/пїЅ OutputDebugString
 void __cdecl DebugTrace( const char *pszFormat, ... );
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 template<class T, class TIn>
@@ -64,7 +68,7 @@ inline T* SafeCast( TIn *p, T *pMSVC6Suck = 0 )
 #endif
 };*/
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// трюки с битами
+// пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Return the next power of 2 higher than the input
 // If the input is already a power of 2, the output will be the same as the input.
@@ -83,7 +87,7 @@ inline int GetNextPow2( DWORD n )
 }
 inline int GetNextPow2( int n ) { return GetNextPow2( DWORD(n) ); }
 
-// получить старший включенный бит
+// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ
 inline int GetMSB( DWORD n )
 {
   int k = 0;
@@ -115,7 +119,7 @@ inline int GetMSB( BYTE n )
 }
 inline int GetMSB( char n ) { return GetMSB( BYTE(n) ); }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// получить младший включенный бит
+// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ
 inline int GetLSB( DWORD n )
 {
   int k = 0;
@@ -147,7 +151,7 @@ inline int GetLSB( BYTE n )
 }
 inline int GetLSB( char n ) { return GetLSB( BYTE(n) ); }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// подсчёт колличества ненулевых бит в числе
+// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ
 // 0x49249249ul // = 0100_1001_0010_0100_1001_0010_0100_1001
 // 0x381c0e07ul // = 0011_1000_0001_1100_0000_1110_0000_0111
 inline int GetNumBits( DWORD v )
@@ -165,7 +169,7 @@ inline int GetNumBits( BYTE v )
 }
 inline int GetNumBits( char v ) { return GetNumBits( BYTE(v) ); }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// обнуление памяти по типу переменной
+// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 template <class TYPE>
 inline void Zero( TYPE &val )
 {
@@ -173,7 +177,7 @@ inline void Zero( TYPE &val )
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // ************************************************************************************************************************ //
-// побитовое приведение одного типа к другому
+// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 // ************************************************************************************************************************ //
 template <class TYPE_OUT, class TYPE_IN>
 inline TYPE_OUT bit_cast( const TYPE_IN &val, TYPE_OUT *pMSVC6suck = 0 )
@@ -194,7 +198,7 @@ inline TYPE triple( const TYPE x )
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // ************************************************************************************************************************ //
-// работа со знаком числа
+// пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
 // ************************************************************************************************************************ //
 // signum function
 template <class TYPE>
@@ -212,6 +216,7 @@ inline TYPE Sign( const TYPE x )
 template <>
 inline int Sign<int>( const int nVal )
 {
+#ifdef _MSC_VER
 	int nRes;
 	_asm
 	{
@@ -224,10 +229,14 @@ inline int Sign<int>( const int nVal )
 		mov nRes, eax
 	}
 	return nRes;
+#else
+	return (nVal > 0) - (nVal < 0);
+#endif
 }
 template <>
 inline short int Sign<short int>( const short int nVal )
 {
+#ifdef _MSC_VER
 	short int nRes;
 	_asm
 	{
@@ -240,6 +249,9 @@ inline short int Sign<short int>( const short int nVal )
 		mov nRes, ax
 	}
 	return nRes;
+#else
+	return (nVal > 0) - (nVal < 0);
+#endif
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // radian <=> degree conversion functions
@@ -266,9 +278,10 @@ inline float SignumNormalizeAngleInRadian( const float angle )
 	return static_cast<float>( fmod( angle + PI, 2.0*PI ) + ( angle < -PI ? PI : -PI ) );
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// обнуление участка памяти, состоящего из DWORD'ов
+// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ DWORD'пїЅпїЅ
 inline void MemSetDWord( void *lpData, const DWORD value, const int nCount )
 {
+#ifdef _MSC_VER
 	_asm
 	{
 		mov ecx, nCount
@@ -276,22 +289,31 @@ inline void MemSetDWord( void *lpData, const DWORD value, const int nCount )
 		mov eax, value
 		rep stosd
 	}
+#else
+	DWORD *p = static_cast<DWORD *>( lpData );
+	for ( int i = 0; i < nCount; ++i )
+		p[i] = value;
+#endif
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// ** float-to-int преобразование с текущим состоянием процессора
+// ** float-to-int пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 // very fast float-to-int conversion. uses current FPU rounding state
 int __forceinline Float2Int( const float fpVar )
 {
+#ifdef _MSC_VER
 	int nRet;
-	__asm 
+	__asm
 	{
 		fld dword ptr fpVar
 		fistp nRet
 	}
 	return nRet;
+#else
+	return (int)lrintf( fpVar );   // respects the current FPU rounding mode, same as fistp
+#endif
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// ** всевозможные бастрые функции типа 'x' @ 'y' ? 'val1' : 'val2'
+// ** пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ 'x' @ 'y' ? 'val1' : 'val2'
 // very fast comparison: 'x' < 'y' ? val1 : val2
 /*inline float select_lt( const float x, const float y, const float val1, const float val2 )
 {
@@ -547,6 +569,7 @@ inline const TYPE Max( const TYPE val1, const TYPE val2 )
 template<>
 inline const float Min<float>( const float a, const float b )
 {
+#ifdef _MSC_VER
 	float fpRet;
 	_asm
 	{
@@ -565,11 +588,15 @@ inline const float Min<float>( const float a, const float b )
 		mov			[fpRet], eax
 	}
 	return fpRet;
+#else
+	return a < b ? a : b;
+#endif
 }
 // returns minimum of two float values
 template<>
 inline const float Max<float>( const float a, const float b )
 {
+#ifdef _MSC_VER
 	float fpRet;
 	_asm
 	{
@@ -588,6 +615,9 @@ inline const float Max<float>( const float a, const float b )
 		mov			[fpRet], eax
 	}
 	return fpRet;
+#else
+	return a > b ? a : b;
+#endif
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 template <class TYPE>
@@ -596,7 +626,7 @@ const TYPE Clamp( const TYPE &tVal, const TYPE &tMin, const TYPE &tMax )
   return Max( tMin, Min(tVal, tMax) );
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// получение модуля от разных величин
+// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 inline float fabs2( const float x, const float y, const float z, const float w )
 {
 	return ( x*x + y*y + z*z + w*w );
@@ -765,6 +795,11 @@ inline void Copy32Bytes( void* fpDst, const void* fpSrc )
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 const DWORD CPUID_MMX_FEATURE_PRESENT = 0x00800000;
 const DWORD CPUID_SSE_FEATURE_PRESENT = 0x02000000;
+// Not called anywhere in the codebase (verified) -- kept for parity with the retail
+// tools.h. The non-MSVC path uses the portable GCC/Clang cpuid intrinsic instead of
+// hand-rolled asm (no need to probe for the CPUID instruction's availability the way
+// the original does -- every x86 CPU GCC/Clang target has it).
+#ifdef _MSC_VER
 #define GET_CPUID __asm _emit 0x0f __asm _emit 0xa2
 inline DWORD GetCPUID()
 {
@@ -792,5 +827,15 @@ inline DWORD GetCPUID()
 	return dwRes;
 }
 #undef GET_CPUID
+#else
+#include <cpuid.h>
+inline DWORD GetCPUID()
+{
+	unsigned eax, ebx, ecx, edx;
+	if ( !__get_cpuid( 1, &eax, &ebx, &ecx, &edx ) )
+		return 0;
+	return (DWORD)edx;
+}
+#endif
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #endif // __TOOLS_H__
