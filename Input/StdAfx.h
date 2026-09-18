@@ -11,7 +11,11 @@
 #endif // _MSC_VER > 1000
 
 #define WIN32_LEAN_AND_MEAN		// Exclude rarely-used stuff from Windows headers
+#ifdef _WIN32
 #include <vcruntime_typeinfo.h>
+#else
+#include <typeinfo>
+#endif
 
 /* // simplified windows.h :) 
 typedef unsigned long DWORD;
@@ -28,7 +32,11 @@ extern "C" __declspec(dllimport) void __stdcall  OutputDebugStringA( const char 
 extern "C" __declspec(dllimport) DWORD __stdcall  GetTickCount();
 */
 #define _WIN32_WINNT 0x400
+#ifdef _WIN32
 #include <windows.h>
+#else
+#include "../Misc/PlatformCompat.h"
+#endif
 //#include <objbase.h>
 //#include <assert.h>
 #ifdef _DEBUG
@@ -48,8 +56,8 @@ extern "C" __declspec(dllimport) DWORD __stdcall  GetTickCount();
 #include <vector>
 #include <crtdbg.h>
 #include <unordered_map>
-#include "..\Misc\basic2.h"
-#include "..\Misc\tools.h"
+#include "../Misc/basic2.h"
+#include "../Misc/tools.h"
 
 using namespace std;
 #include "Specific.h"
