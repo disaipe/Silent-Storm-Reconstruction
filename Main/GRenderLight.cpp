@@ -9,9 +9,9 @@
 #include "GRenderFactor.h"
 #include "GRenderExecute.h"
 #include "GShadowMap.h"
-#include "..\Misc\StrProc.h"
-#include "..\MiscDll\Commands.h"
-#include "..\MiscDll\LogStream.h"
+#include "../Misc/StrProc.h"
+#include "../MiscDll/Commands.h"
+#include "../MiscDll/LogStream.h"
 
 static bool bStencilShadows = false;
 static bool bBlurSun = true;

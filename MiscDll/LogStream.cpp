@@ -1,7 +1,7 @@
 #include "StdAfx.h"
 #include "Commands.h"
 #include "LogStream.h"
-#include "..\FileIO\BasicChunk1.h"   // START_REGISTER / FINISH_REGISTER (ui_messages)
+#include "../FileIO/BasicChunk1.h"   // START_REGISTER / FINISH_REGISTER (ui_messages)
 #include <fstream>
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 int nID = 0;

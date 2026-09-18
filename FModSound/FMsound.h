@@ -5,7 +5,7 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "..\Misc\Geom.h"
+#include "../Misc/Geom.h"
 
 struct FSOUND_SAMPLE;
 namespace NFMSound

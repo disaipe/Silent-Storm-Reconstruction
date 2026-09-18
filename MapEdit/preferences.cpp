@@ -5,10 +5,10 @@
 #include "mapedit.h"
 #include "preferences.h"
 #include "Export.h"
-#include "..\FileIO\BasicChunk1.h"
-#include "..\Main\iMain.h"
-#include "..\Main\gResource.h"
-#include "..\Main\iMapEditor.h"
+#include "../FileIO/BasicChunk1.h"
+#include "../Main/iMain.h"
+#include "../Main/gResource.h"
+#include "../Main/iMapEditor.h"
 #include "MEUserSettings.h"
 #include "MEParams.h"
 #include "GameView.h"
@@ -16,7 +16,7 @@
 #include "TreeSelItemdlg.h"
 #include "ItemsMgr.h"
 #include "UserSettingsSetup.h"
-#include "..\Input\Bind.h"
+#include "../Input/Bind.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

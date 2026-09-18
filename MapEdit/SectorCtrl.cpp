@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 #include "SectorCtrl.h"
-#include "..\Main\ChapterInfo.h"
+#include "../Main/ChapterInfo.h"
 
 const float REGION_SELECTION_ACCURACY = 0.2f;
 const float REGION_SELECTION_ACCURACY2 = sqr( REGION_SELECTION_ACCURACY );

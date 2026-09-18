@@ -4,7 +4,7 @@
 #include "Sync.h"
 #include "RWSound.h"
 #include "Sound.h"
-#include "..\DBFormat\DataSound.h"
+#include "../DBFormat/DataSound.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NRender
 {

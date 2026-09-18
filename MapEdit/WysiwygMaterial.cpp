@@ -2,15 +2,15 @@
 #include "IWysiwyg.h"
 #include "WysiwygMaterial.h"
 #include "WysiwygFragmentSel.h"
-#include "..\DBFormat\DataMap.h"
-#include "..\DBFormat\DataFormat.h"
-#include "..\Main\DiscretePos.h"
-#include "..\Main\BuildingInfo.h"
+#include "../DBFormat/DataMap.h"
+#include "../DBFormat/DataFormat.h"
+#include "../Main/DiscretePos.h"
+#include "../Main/BuildingInfo.h"
 #include "wEditor.h"
 #include "MEUserSettings.h"
-#include "..\Misc\BasicShare.h"
+#include "../Misc/BasicShare.h"
 #include "WysiwygUndo.h"
-#include "..\MapEdit\UserSettingsSetup.h"
+#include "../MapEdit/UserSettingsSetup.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NGScene

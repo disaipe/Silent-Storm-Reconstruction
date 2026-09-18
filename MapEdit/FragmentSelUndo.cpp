@@ -1,8 +1,8 @@
 #include "StdAfx.h"
-#include "..\Main\BuildingInfo.h"
+#include "../Main/BuildingInfo.h"
 #include "FragmentSelUndo.h"
-#include "..\Misc\BasicShare.h"
-#include "..\DBFormat\DataMap.h"
+#include "../Misc/BasicShare.h"
+#include "../DBFormat/DataMap.h"
 #include "MESerialize.h"
 #include "weInterface.h"
 namespace NGScene

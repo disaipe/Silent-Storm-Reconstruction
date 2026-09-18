@@ -1,7 +1,7 @@
 #include "StdAfx.h"
 #include "DG.h"
 #include "GGeometry.h"
-#include "..\Misc\BasicShare.h"
+#include "../Misc/BasicShare.h"
 #include "Grid.h"
 #include "GScene.h"
 #include "GObjectInfo.h"

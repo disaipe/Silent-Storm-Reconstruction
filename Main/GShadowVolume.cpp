@@ -6,7 +6,7 @@
 #include "DiscretePos.h"
 #include "GCombiner.h"
 #include "GShadowVolume.h"
-#include "..\Misc\2DArray.h"
+#include "../Misc/2DArray.h"
 #include "Render.h"
 //#include "GMaterial.h"
 //#include "GScene.h"

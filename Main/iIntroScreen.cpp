@@ -10,11 +10,11 @@
 #include "iMission.h"          // NGame::IMission
 #include "iMainMenu.h"         // sibling module (CICMainMenu) -- the "exec mainmenu" target
 #include "iIntroScreen.h"      // NGame::PlayVideoSequence (external entry point for PlayVideo)
-#include "..\Input\Bind.h"     // NInput::CBind / SEvent / SetSection
-#include "..\MiscDll\Commands.h"   // NGlobal::ProcessCommand / RegisterCmd / RegisterVar / VarBoolHandler / CmdHandler / CValue
-#include "..\MiscDll\LogStream.h"  // csSystem / endl
-#include "..\Misc\StrProc.h"   // NStr::TrimLeft/TrimRight / ToUnicode / ToAscii / SplitString
-#include "..\FileIO\Streams.h" // CFileStream / CMemoryStream
+#include "../Input/Bind.h"     // NInput::CBind / SEvent / SetSection
+#include "../MiscDll/Commands.h"   // NGlobal::ProcessCommand / RegisterCmd / RegisterVar / VarBoolHandler / CmdHandler / CValue
+#include "../MiscDll/LogStream.h"  // csSystem / endl
+#include "../Misc/StrProc.h"   // NStr::TrimLeft/TrimRight / ToUnicode / ToAscii / SplitString
+#include "../FileIO/Streams.h" // CFileStream / CMemoryStream
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //  iIntroScreen  --  the .seq sequence player driving the boot intro

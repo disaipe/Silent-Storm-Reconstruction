@@ -1,7 +1,7 @@
 #include "StdAfx.h"
 #include "SoundFormat.h"
-#include "..\FModSound\FMSound.h"
-#include "..\DBFormat\DataSound.h"
+#include "../FModSound/FMSound.h"
+#include "../DBFormat/DataSound.h"
 
 namespace NSound
 {

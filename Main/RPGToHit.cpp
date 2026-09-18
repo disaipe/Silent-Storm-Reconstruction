@@ -3,7 +3,7 @@
 #include "aiUnit.h"
 #include "aiPosition.h"
 
-#include "..\DBFormat\DataRPG.h"
+#include "../DBFormat/DataRPG.h"
 
 #include "RPGGame.h"
 #include "RPGUnit.h"
@@ -12,7 +12,7 @@
 #include "RPGItemInfo.h"
 #include "RPGUnitMission.h"
 
-#include "..\MiscDll\LogStream.h"
+#include "../MiscDll/LogStream.h"
 
 #include "math.h"
 
@@ -21,7 +21,7 @@
 #include "rpgGlobal.h"   // CGlobalGame::pDifficulty -- the called-shots gate (bHeadshotShouldKill)
 #include "wMain.h"       // NWorld::CWorld::GetAIMap -- SelectTargetHLs @0x2b49e0
 #include "aiMap.h"       // NAI::IAIMap::GetAccessibleUnitHL / GetHull -- SelectTargetHLs @0x2b49e0
-#include "..\Misc\RandomGen.h"   // SRand -- the SelectTargetHLs HL_ANY roll @0x2b4a7b
+#include "../Misc/RandomGen.h"   // SRand -- the SelectTargetHLs HL_ANY roll @0x2b4a7b
 //
 #include "RPGToHit.h"
 //

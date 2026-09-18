@@ -1,8 +1,8 @@
 #include "stdafx.h"
 //
-#include "..\DBFormat\DataAck.h"
-#include "..\DBFormat\DataRPG.h"
-#include "..\DBFormat\DataFormat.h"
+#include "../DBFormat/DataAck.h"
+#include "../DBFormat/DataRPG.h"
+#include "../DBFormat/DataFormat.h"
 #include "time.h"
 #include "wAckBase.h"
 #include "wDumbUnit.h"
@@ -11,7 +11,7 @@
 #include "rpgUnit.h"
 #include "rpgUnitMission.h"
 #include "RPGItemInfo.h"	// item interfaces for GetRatingDifference (grenade/melee/weapon)
-#include "..\Misc\EventsBase.h"
+#include "../Misc/EventsBase.h"
 #include "eventUnit.h"
 //
 #include "wAck.h"

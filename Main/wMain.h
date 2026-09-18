@@ -7,17 +7,17 @@
 #include "wInterface.h"
 #include "wTurnBased.h"
 #include "wDebris.h"
-#include "..\DBFormat\DataSound.h"
+#include "../DBFormat/DataSound.h"
 #include "wMisc.h"
 #include "TerrainInfo.h"
 #include "aiPosition.h"
-#include "..\Misc\EventsBase.h"
+#include "../Misc/EventsBase.h"
 #include "wVision.h"
 #include "eventPlayer.h"
 #include "wUnitCommands.h"   // complete NWorld::SItem for CPlayer::sHandItem (release save-format, by-value)
 #include "wPocket.h"         // NWorld::CPocket complete -- CWorld::pPocket (save tag 42, retail @0x376f60 GetPocket)
 #include "wHeightLayers.h"   // NWorld::IHeightLayers complete -- CWorld::pHeightLayers (save tag 44, @0x376f00)
-#include "..\DBFormat\DataLight.h"   // NDb::CTAmbientLight complete (pDefaultLight's CDBPtr saveload uses typeid;
+#include "../DBFormat/DataLight.h"   // NDb::CTAmbientLight complete (pDefaultLight's CDBPtr saveload uses typeid;
                                      // GetDefaultLight @0x3620a0 resolves the template through CTAmbientLight::GetLight)
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 struct SMapUnit;

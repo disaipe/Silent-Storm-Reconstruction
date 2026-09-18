@@ -1,10 +1,10 @@
 #include "StdAfx.h"
 #include "TerrainProp.h"
-#include "..\Main\TerrainInfo.h"
-#include "..\Main\METerrain.h"
+#include "../Main/TerrainInfo.h"
+#include "../Main/METerrain.h"
 #include "MESerialize.h"
-#include "..\Main\Grid.h"
-#include "..\Misc\BasicShare.h"
+#include "../Main/Grid.h"
+#include "../Misc/BasicShare.h"
 #include "CtrlObjectInspector.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 extern CBasicShare<int, CMETerrainLoader> shareTerrains;

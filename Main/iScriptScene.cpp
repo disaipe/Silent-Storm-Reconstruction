@@ -17,11 +17,11 @@
 #include "UIEvents.h"          // EVENT_TEMPLATELOADCOMPLETE
 #include "iDesktopWindow.h"    // NUI::CDesktopWindow (CScriptSceneUI base) + GetUIWindow<>
 #include "Camera.h"            // ICamera::SCameraPos
-#include "..\Input\Bind.h"     // NInput::CBind / SEvent / SetSection
-#include "..\MiscDll\Commands.h"   // NGlobal::RegisterCmd / REGISTER_CMD
-#include "..\MiscDll\LogStream.h"  // csSystem / endl
-#include "..\DBFormat\DataCamera.h"    // NDb::GetDBCamera / CDBCamera
-#include "..\DBFormat\DataFormat.h"    // NDb::GetUIContainer / CUIContainer
+#include "../Input/Bind.h"     // NInput::CBind / SEvent / SetSection
+#include "../MiscDll/Commands.h"   // NGlobal::RegisterCmd / REGISTER_CMD
+#include "../MiscDll/LogStream.h"  // csSystem / endl
+#include "../DBFormat/DataCamera.h"    // NDb::GetDBCamera / CDBCamera
+#include "../DBFormat/DataFormat.h"    // NDb::GetUIContainer / CUIContainer
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //  iScriptScene  --  the engine's "scripted scene" (cut-scene style menu rendered over the live

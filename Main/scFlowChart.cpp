@@ -1,11 +1,11 @@
 #include "StdAfx.h"
 //
-#include "..\MiscDll\Commands.h"
-#include "..\Misc\RandomGen.h"
-#include "..\Misc\StrProc.h"
-#include "..\MiscDll\LogStream.h"
+#include "../MiscDll/Commands.h"
+#include "../Misc/RandomGen.h"
+#include "../Misc/StrProc.h"
+#include "../MiscDll/LogStream.h"
 //
-#include "..\DBFormat\DataScenario.h"
+#include "../DBFormat/DataScenario.h"
 //
 #include "scFlowChartItems.h"
 #include "scFlowChart.h"

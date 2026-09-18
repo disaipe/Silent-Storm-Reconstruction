@@ -1,7 +1,7 @@
 #include "StdAfx.h"
 #include "aiObjectLoader.h"
 #include "MemObject.h"
-#include "..\Misc\BasicShare.h"
+#include "../Misc/BasicShare.h"
 #include "aiObject.h"
 #include "GFileSkin.h"
 #include "BSPTree.h"

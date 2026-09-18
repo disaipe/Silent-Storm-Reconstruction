@@ -2,7 +2,7 @@
 #include "GParticleInfo.h"
 #include "GPointLightGlow.h"
 #include "GScene.h"
-#include "..\Misc\RandomGen.h"
+#include "../Misc/RandomGen.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NGScene
 {

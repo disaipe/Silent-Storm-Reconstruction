@@ -2,7 +2,7 @@
 //
 #include "RPGGlobal.h"
 //
-#include "..\Misc\StrProc.h"
+#include "../Misc/StrProc.h"
 //
 #include "scScenarioTracker.h"
 #include "scCommands.h"

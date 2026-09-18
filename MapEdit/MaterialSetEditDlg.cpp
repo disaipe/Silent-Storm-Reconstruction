@@ -10,7 +10,7 @@
 #include "ItemsMgr.h"
 #include "MEUserSettings.h"
 #include "UserSettingsSetup.h"
-#include "..\Misc\StrProc.h"
+#include "../Misc/StrProc.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

@@ -4,9 +4,9 @@
 #include "FontFormat.h"
 #include "GFont.h"
 #include "GLocale.h"
-#include "..\Misc\StrProc.h"
-#include "..\DBFormat\DataFormat.h"
-#include "..\DBFormat\DataInterface.h"
+#include "../Misc/StrProc.h"
+#include "../DBFormat/DataFormat.h"
+#include "../DBFormat/DataInterface.h"
 ///
 #include "GSceneUtils.h"
 #include "Transform.h"

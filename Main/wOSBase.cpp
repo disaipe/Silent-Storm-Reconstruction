@@ -1,12 +1,12 @@
 #include "StdAfx.h"
 
 #include "wOSBase.h"
-#include "..\DBFormat\DataMap.h"
-#include "..\DBFormat\DataFormat.h"
-#include "..\DBFormat\DataAnimation.h"
-#include "..\DBFormat\DataGeometry.h"
-#include "..\DBFormat\DataSound.h"
-#include "..\DBFormat\DataRPG.h"
+#include "../DBFormat/DataMap.h"
+#include "../DBFormat/DataFormat.h"
+#include "../DBFormat/DataAnimation.h"
+#include "../DBFormat/DataGeometry.h"
+#include "../DBFormat/DataSound.h"
+#include "../DBFormat/DataRPG.h"
 #include "RPGObject.h"
 #include "Transform.h"
 #include "aiStability.h"
@@ -16,7 +16,7 @@
 #include "GAnimation.h"
 #include "Grid.h"
 #include "GSceneUtils.h"
-#include "..\MiscDll\LogStream.h"
+#include "../MiscDll/LogStream.h"
 
 namespace NWorld
 {

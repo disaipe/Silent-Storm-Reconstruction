@@ -1,7 +1,7 @@
 #include "StdAfx.h"
 #include "SubTemplateUndo.h"
-#include "..\DBFormat\DataMap.h"
-#include "..\MapEdit\RectsDBCmd.h"
+#include "../DBFormat/DataMap.h"
+#include "../MapEdit/RectsDBCmd.h"
 #include "weInterface.h"
 #include "iWysiwyg.h"
 

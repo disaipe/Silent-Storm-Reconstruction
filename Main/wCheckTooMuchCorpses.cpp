@@ -1,7 +1,7 @@
 #include "StdAfx.h"
 #include "wUnitServer.h"
 #include "aiPosition.h"
-#include "..\Misc\2Darray.h"
+#include "../Misc/2Darray.h"
 
 // =====================================================================================
 // wCheckTooMuchCorpses -- the corpse-density failsafe ("Too much corpses (%d) detected,

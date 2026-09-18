@@ -2,14 +2,14 @@
 #include "Gfx.h"
 #include "GSceneUtils.h"
 #include "G2DView.h"
-#include "..\Input\Bind.h"
-#include "..\DBFormat\DataFormat.h"
-#include "..\DBFormat\DataInterface.h"
+#include "../Input/Bind.h"
+#include "../DBFormat/DataFormat.h"
+#include "../DBFormat/DataInterface.h"
 #include "Interface.h"
 #include "UIWrap.h"
 #include "UIML.h"     // BUG 8: NUI::IML / CreateML -- retail draws the cursor caption through the CML engine (outline + pt-size)
-#include "..\MiscDll\Commands.h"      // REGISTER_VAR_EX (ui_hwcursor)
-#include "..\FileIO\BasicChunk1.h"    // START_REGISTER / FINISH_REGISTER
+#include "../MiscDll/Commands.h"      // REGISTER_VAR_EX (ui_hwcursor)
+#include "../FileIO/BasicChunk1.h"    // START_REGISTER / FINISH_REGISTER
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NGfx
 {

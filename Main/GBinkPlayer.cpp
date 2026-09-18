@@ -4,9 +4,9 @@
 #include "GfxBuffers.h"     // NGfx::CTexture, MakeTexture, I2DBufferLock, ETextureUsage, EWrap, EAccess
 #include "GPixelFormat.h"   // NGfx::SPixel8888 (::ID)
 #include "GBinkPlayer.h"
-#include "..\MiscDll\Commands.h"   // NGlobal::GetVar
-#include "..\FileIO\Streams.h"     // CFileStream (from-memory open path)
-#include "..\FModSound\FMSound.h"  // NFMSound::GetSoundAPI (Bink->DirectSound handoff)
+#include "../MiscDll/Commands.h"   // NGlobal::GetVar
+#include "../FileIO/Streams.h"     // CFileStream (from-memory open path)
+#include "../FModSound/FMSound.h"  // NFMSound::GetSoundAPI (Bink->DirectSound handoff)
 #include <bink.h>
 #pragma comment( lib, "binkw32.lib" )
 ////////////////////////////////////////////////////////////////////////////////////////////////////

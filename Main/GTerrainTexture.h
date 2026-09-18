@@ -7,8 +7,8 @@
 #include "DG.h"
 #include "Transform.h"
 #include "TerrainInfo.h"
-#include "..\Misc\RandomGen.h"
-#include "..\Misc\HPTimer.h"
+#include "../Misc/RandomGen.h"
+#include "../Misc/HPTimer.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NGfx
 {

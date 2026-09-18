@@ -1,8 +1,8 @@
 #include "stdafx.h"
 //
-#include "..\DBFormat\DataPerk.h"
-#include "..\MiscDll\LogStream.h"
-#include "..\Misc\RandomGen.h"		// SRand (TakeRandomPerks)
+#include "../DBFormat/DataPerk.h"
+#include "../MiscDll/LogStream.h"
+#include "../Misc/RandomGen.h"		// SRand (TakeRandomPerks)
 #include "rpgPerk.h"
 //
 #include <fstream>

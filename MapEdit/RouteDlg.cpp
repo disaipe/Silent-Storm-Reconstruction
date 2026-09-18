@@ -7,9 +7,9 @@
 #include "MapEdit.h"
 #include "dbDefs.h"
 #include "TreeView.h"
-#include "..\Main\aiWaypoint.h"
+#include "../Main/aiWaypoint.h"
 #include "iWysiwyg.h"
-#include "..\Misc\BasicShare.h"
+#include "../Misc/BasicShare.h"
 #include "MESerialize.h"
 #include "ObjectMgr.h"
 

@@ -4,8 +4,8 @@
 #include "TreeSelItemDlg.h"
 #include "dbDefs.h"
 #include "ItemsMgr.h"
-#include "..\Input\Bind.h"
-#include "..\Main\iMain.h"
+#include "../Input/Bind.h"
+#include "../Main/iMain.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 CBaseLayer::CBaseLayer( int nLayerID, int nLayerInd, CString szName, int nBrushesTreeID ) 

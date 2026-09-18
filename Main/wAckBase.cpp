@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "wAckBase.h"
-#include "..\Misc\RandomGen.h"
-#include "..\DBFormat\DataAck.h"
-#include "..\DBFormat\DataMap.h"	// NDb::EDiplomacyState / DS_ENEMY (CAckBase::IsEnemy gate)
+#include "../Misc/RandomGen.h"
+#include "../DBFormat/DataAck.h"
+#include "../DBFormat/DataMap.h"	// NDb::EDiplomacyState / DS_ENEMY (CAckBase::IsEnemy gate)
 #include "wInterface.h"
 #include "wUnitServer.h"
 #include "wAck.h"

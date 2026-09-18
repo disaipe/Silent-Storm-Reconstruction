@@ -1,8 +1,8 @@
 #include "StdAfx.h"
 #include "UnitUndo.h"
-#include "..\DBFormat\DataMap.h"
-#include "..\DBFormat\DataRPG.h"
-#include "..\MapEdit\UnitDB.h"
+#include "../DBFormat/DataMap.h"
+#include "../DBFormat/DataRPG.h"
+#include "../MapEdit/UnitDB.h"
 #include "weInterface.h"
 #include "iWysiwyg.h"
 

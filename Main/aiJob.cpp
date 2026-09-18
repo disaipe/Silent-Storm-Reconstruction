@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "..\Misc\HPTimer.h"
+#include "../Misc/HPTimer.h"
 #include "aiJob.h"
 //
 namespace NAI

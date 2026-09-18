@@ -11,7 +11,7 @@
 #include "MemObject.h"
 #include "Transform.h"
 #include "Grid.h"
-#include "..\Misc\BasicShare.h"
+#include "../Misc/BasicShare.h"
 #include "BuildingInfo.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NGScene

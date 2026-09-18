@@ -7,7 +7,7 @@
 #include "LayerList.h"
 #include "iWysiwyg.h"
 #include "Placement.h"
-#include "..\Input\Bind.h"
+#include "../Input/Bind.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

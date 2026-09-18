@@ -2,12 +2,12 @@
 #include "Gfx.h"
 #include "iMain.h"
 #include "G2DView.h"
-#include "..\MiscDll\Commands.h"
-#include "..\MiscDll\LogStream.h"			// csSystem (the "Added N XP points for hint" log)
-#include "..\Input\Bind.h"
-#include "..\DBFormat\DataFormat.h"
-#include "..\DBFormat\DataInterface.h"
-#include "..\DBFormat\DataMisc.h"			// NDb::CUIHint (nSequenceID / pTitle / pString)
+#include "../MiscDll/Commands.h"
+#include "../MiscDll/LogStream.h"			// csSystem (the "Added N XP points for hint" log)
+#include "../Input/Bind.h"
+#include "../DBFormat/DataFormat.h"
+#include "../DBFormat/DataInterface.h"
+#include "../DBFormat/DataMisc.h"			// NDb::CUIHint (nSequenceID / pTitle / pString)
 #include "Interface.h"
 #include "iCommonUI.h"
 #include "iMission.h"

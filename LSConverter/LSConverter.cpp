@@ -1,8 +1,8 @@
 #include "stdafx.h"
-#include "..\Misc\Geom.h"
-#include "..\FileIO\BasicChunk1.h"
-#include "..\Image\ImageOperation.h"
-#include "..\Image\ImageTGA.h"
+#include "../Misc/Geom.h"
+#include "../FileIO/BasicChunk1.h"
+#include "../Image/ImageOperation.h"
+#include "../Image/ImageTGA.h"
 #include <LifeStudioHeadAPIGDP.h>
 #include <LifeStudioHeadAPI.h>
 #include <LifeStudioHeadAPIInit.h>

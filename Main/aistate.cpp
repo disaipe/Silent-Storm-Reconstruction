@@ -10,8 +10,8 @@
 #include "wUnitServer.h"
 #include "wMain.h"           // NWorld::CWorld::GetDiplomacyState
 //
-#include "..\DBFormat\DataRPG.h"   // NDb::EShootMode
-#include "..\DBFormat\DataMap.h"   // NDb::DS_ENEMY (EDiplomacyState)
+#include "../DBFormat/DataRPG.h"   // NDb::EShootMode
+#include "../DBFormat/DataMap.h"   // NDb::DS_ENEMY (EDiplomacyState)
 //
 #include "aiState.h"
 //

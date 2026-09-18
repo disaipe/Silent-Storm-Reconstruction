@@ -1,8 +1,8 @@
 #include "StdAfx.h"
 #include "mapedit.h"
 #include "ScenarioView.h"
-#include "..\Main\scFlowChart.h"
-#include "..\DBFormat\DataScenario.h"
+#include "../Main/scFlowChart.h"
+#include "../DBFormat/DataScenario.h"
 #include <foundation\image\mfc\secjpeg.h>
 #include "dbDefs.h"
 #include "ItemsMgr.h"

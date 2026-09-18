@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "MapEdit.h"
 #include "PiecesEditDlg.h"
-#include "..\DBFormat\DataGeometry.h"
+#include "../DBFormat/DataGeometry.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // CPiecesEditDlg dialog

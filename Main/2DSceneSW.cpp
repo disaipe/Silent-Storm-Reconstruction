@@ -3,8 +3,8 @@
 #include "2DSceneSW.h"
 #include "SWTexture.h"
 #include "Render.h"
-#include "..\Misc\BasicShare.h"
-#include "..\DBFormat\DataFormat.h"
+#include "../Misc/BasicShare.h"
+#include "../DBFormat/DataFormat.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NGScene
 {

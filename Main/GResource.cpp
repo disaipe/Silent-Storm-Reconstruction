@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 #include "GResource.h"
-#include "..\Misc\Win32Helper.h"
+#include "../Misc/Win32Helper.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NGScene
 {

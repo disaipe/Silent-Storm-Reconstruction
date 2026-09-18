@@ -1,7 +1,7 @@
 #ifndef __SCENARIOTRACKER_H_
 #define __SCENARIOTRACKER_H_
 //
-#include "..\MiscDll\Commands.h"
+#include "../MiscDll/Commands.h"
 #include "../DBFormat/DataFormat.h"
 #include "../DBFormat/DataScenario.h"
 #include "../DBFormat/DataRPG.h"

@@ -16,7 +16,7 @@
 #include "wMain.h"            // NWorld::CWorld: GetGame / GetPathNetwork
 #include "RPGGame.h"          // NRPG::IGame::CheckPositionVisibility
 #include "RPGUnit.h"          // NRPG::CUnit::GetSightFOV (@0x2ba6c0) for the retail sight cone
-#include "..\DBFormat\DataRPG.h" // NDb::SM_Snipe
+#include "../DBFormat/DataRPG.h" // NDb::SM_Snipe
 //
 #include "aiActions.h"
 //

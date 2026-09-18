@@ -1,8 +1,8 @@
 #include "StdAfx.h"
 #include <D3D9.h>
-#include "..\Misc\HPTimer.h"
-#include "..\Misc\2DArray.h"
-#include "..\MiscDll\Commands.h"
+#include "../Misc/HPTimer.h"
+#include "../Misc/2DArray.h"
+#include "../MiscDll/Commands.h"
 #include "Gfx.h"
 #include "GfxInternal.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////

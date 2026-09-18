@@ -6,7 +6,7 @@
 
 #include "WysiwygSelection.h"
 #include "WysiwygClipboard.h"
-#include "..\Misc\HPTimer.h"
+#include "../Misc/HPTimer.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NWorld
 {

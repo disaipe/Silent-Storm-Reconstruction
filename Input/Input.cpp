@@ -1,12 +1,12 @@
 #include "StdAfx.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #include <dinput.h>
-#include "..\Misc\basic2.h"
-#include "..\FileIO\Streams.h"
-#include "..\Input\Input.h"
-#include "..\Misc\Win32Helper.h"
-#include "..\Misc\StrProc.h"
-#include "..\Misc\Tools.h"
+#include "../Misc/basic2.h"
+#include "../FileIO/Streams.h"
+#include "../Input/Input.h"
+#include "../Misc/Win32Helper.h"
+#include "../Misc/StrProc.h"
+#include "../Misc/Tools.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 extern "C" WINBASEAPI BOOL WINAPI IsDebuggerPresent(void);
 ////////////////////////////////////////////////////////////////////////////////////////////////////

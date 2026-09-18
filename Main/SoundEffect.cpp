@@ -1,11 +1,11 @@
 #include "StdAfx.h"
 #include "DG.h"
 #include "Time.h"
-#include "..\DBFormat\DataSound.h"
-#include "..\FModSound\FMSound.h"
+#include "../DBFormat/DataSound.h"
+#include "../FModSound/FMSound.h"
 #include "SoundEffect.h"
 #include "SoundFormat.h"
-#include "..\Misc\BasicShare.h"
+#include "../Misc/BasicShare.h"
 
 namespace NSound
 {

@@ -6,7 +6,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #include "Gfx.h"
 #include "iMain.h"
-#include "..\Misc\2DArray.h"
+#include "../Misc/2DArray.h"
 namespace NDb
 {
 	class CUITexture;

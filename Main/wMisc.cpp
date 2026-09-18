@@ -3,7 +3,7 @@
 #include "Transform.h"
 #include "GSceneUtils.h"
 #include "wMain.h"
-#include "..\DBFormat\DataSound.h"
+#include "../DBFormat/DataSound.h"
 namespace NWorld
 {
 ////////////////////////////////////////////////////////////////////////////////////////////////////

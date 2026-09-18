@@ -1,8 +1,8 @@
 #include "StdAfx.h"
 #include "Commands.h"
-#include "..\Misc\StrProc.h"
+#include "../Misc/StrProc.h"
 #include "LogStream.h"
-#include "..\FileIO\BasicChunk1.h"
+#include "../FileIO/BasicChunk1.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NGlobal
 {

@@ -6,9 +6,9 @@
 #include "SWTexture.h"
 #include "GSceneUtils.h"
 #include "ScreenShot.h"
-#include "..\Misc\2DArray.h"
-#include "..\DBFormat\DataFormat.h"
-#include "..\Misc\BasicShare.h"
+#include "../Misc/2DArray.h"
+#include "../DBFormat/DataFormat.h"
+#include "../Misc/BasicShare.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NGScene
 {

@@ -2,12 +2,12 @@
 #include "Gfx.h"
 #include "iMain.h"
 #include "G2DView.h"
-#include "..\MiscDll\Commands.h"
-#include "..\Input\Bind.h"
-#include "..\DBFormat\DataFormat.h"
-#include "..\DBFormat\DataInterface.h"
-#include "..\DBFormat\DataRPG.h"		// NDb::CSide (release-new pMedalPaperContainer, save tag 14)
-#include "..\DBFormat\DataMisc.h"		// NDb::CMedal (pName)
+#include "../MiscDll/Commands.h"
+#include "../Input/Bind.h"
+#include "../DBFormat/DataFormat.h"
+#include "../DBFormat/DataInterface.h"
+#include "../DBFormat/DataRPG.h"		// NDb::CSide (release-new pMedalPaperContainer, save tag 14)
+#include "../DBFormat/DataMisc.h"		// NDb::CMedal (pName)
 #include "Interface.h"
 #include "iCommonUI.h"
 #include "iMission.h"

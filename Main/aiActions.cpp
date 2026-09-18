@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 //
-#include "..\DBFormat\DataRPG.h"
+#include "../DBFormat/DataRPG.h"
 #include "aiPosition.h"
 #include "aiUnit.h"
 #include "aiState.h"

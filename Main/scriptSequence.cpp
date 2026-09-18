@@ -5,10 +5,10 @@
 #include "wInterface.h"
 #include "wUICommands.h"
 #include "wUnitServer.h"
-#include "..\DBFormat\DataCamera.h"
-#include "..\DBFormat\DataSound.h"		// NDb::GetSound (PlaySound)
-#include "..\DBFormat\DataFormat.h"		// NDb::GetTEffect (PlayEffect)
-#include "..\DBFormat\DataLight.h"		// NDb::GetTAmbientLight (SetupAmbientLight)
+#include "../DBFormat/DataCamera.h"
+#include "../DBFormat/DataSound.h"		// NDb::GetSound (PlaySound)
+#include "../DBFormat/DataFormat.h"		// NDb::GetTEffect (PlayEffect)
+#include "../DBFormat/DataLight.h"		// NDb::GetTAmbientLight (SetupAmbientLight)
 #include "scriptPtr.h"
 #include "scriptPosition.h"				// NScript::CLUAObjectPosition (Play3DSound/PlayEffect)
 #include "rpgCheatConstants.h"
@@ -16,7 +16,7 @@
 #include "rpgUnit.h"
 #include "rpgGlobal.h"					// NRPG::CGlobalGame::hintsSet (ShowHint dedup)
 #include "wAnimation.h"
-#include "..\MiscDll\LogStream.h"
+#include "../MiscDll/LogStream.h"
 #include "aiCommander.h"
 #include "aiUnit.h"				// IAIUnit::De/ActivateCurrentControl (sequence route suspend/resume)
 #include "aiMap.h"						// NAI::IAIMap::Sync (SlowSyncAIMap)

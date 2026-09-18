@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "..\FileIO\FilesPackage.h"
+#include "../FileIO/FilesPackage.h"
 #include <iostream>
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 bool UpdateFilesPackage( CDataStream *pErr, const char *pszFileName, const char *pszDir );

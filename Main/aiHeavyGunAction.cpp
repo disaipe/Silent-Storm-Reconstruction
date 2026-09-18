@@ -17,7 +17,7 @@
 #include "wUnitCommands.h"     // NWorld::UCR_OK / UCR_NEED_RELOAD
 #include "rpgUnitMission.h"    // NRPG::IUnitMission::GetActionAP + NRPG::AC_APPROACH_CANNON
 #include "RPGItem.h"           // NRPG::IWeaponItem::SetShootMode / HasAmmo
-#include "..\DBFormat\DataRPG.h" // NDb::EShootMode
+#include "../DBFormat/DataRPG.h" // NDb::EShootMode
 //
 #include "aiActions.h"
 //

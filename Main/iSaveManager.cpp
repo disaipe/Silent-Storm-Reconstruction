@@ -1,9 +1,9 @@
 #include "StdAfx.h"
 #include "iMain.h"
-#include "..\Misc\StrProc.h"
-#include "..\MiscDll\LogStream.h"
-#include "..\MiscDll\Commands.h"
-#include "..\FileIO\Streams.h"
+#include "../Misc/StrProc.h"
+#include "../MiscDll/LogStream.h"
+#include "../MiscDll/Commands.h"
+#include "../FileIO/Streams.h"
 #include "Interface.h"     // NUI umbrella -- GetDBString (IsValidCustomName's reserved-name lookups)
 #include "iSaveManager.h"
 #include <io.h>

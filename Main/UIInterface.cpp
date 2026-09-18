@@ -5,16 +5,16 @@
 #include "RectLayout.h"
 #include "GView.h"
 #include "G2DView.h"
-#include "..\Input\Bind.h"
-#include "..\DBFormat\DataFormat.h"
-#include "..\DBFormat\DataInterface.h"
+#include "../Input/Bind.h"
+#include "../DBFormat/DataFormat.h"
+#include "../DBFormat/DataInterface.h"
 #include "Interface.h"
 #include "Sound.h"   // NSound::CreateSoundScene (retail CInterface own-scene fallback @0x31dbd0)
 #include "UIWrap.h"
 #include "UIBaseCtrls.h"
 #include "UICommCtrls.h"
 #include "Console.h"
-#include "..\MiscDll\Commands.h"   // REGISTER_CMD ("wirbelwind" console unlock)
+#include "../MiscDll/Commands.h"   // REGISTER_CMD ("wirbelwind" console unlock)
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NUI
 {

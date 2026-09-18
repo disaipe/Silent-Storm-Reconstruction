@@ -12,10 +12,10 @@
 #include "wUnitMove.h"
 #include "wUnitAttack.h"
 #include "wUnitExec.h"
-#include "..\DBFormat\DataAI.h"
-#include "..\DBFormat\DataRPG.h"
-#include "..\DBFormat\DataFormat.h"
-#include "..\Misc\RandomGen.h"
+#include "../DBFormat/DataAI.h"
+#include "../DBFormat/DataRPG.h"
+#include "../DBFormat/DataFormat.h"
+#include "../Misc/RandomGen.h"
 #include "RPGUnit.h"
 #include "aiPath.h"
 #include "aiMap.h"                // NAI::IAIMap::GetObjectBound (mine-LOS probe pull-back)
@@ -23,16 +23,16 @@
 #include "scriptCallLUA.h"		// NScript::luaCallFunction (OnClickUsable)
 #include "RPGGlobal.h"
 #include "RPGDiplomacy.h"
-#include "..\MiscDll\LogStream.h"
+#include "../MiscDll/LogStream.h"
 #include "rpgCheatConstants.h"
 #include "rpgCritical.h"
 #include "wUnitCommands.h"
-#include "..\Misc\EventsBase.h"   // NGlobal::ThrowEvent
+#include "../Misc/EventsBase.h"   // NGlobal::ThrowEvent
 #include "eventUnit.h"            // NWorld::CEventOnSeeNewEnemy / CEventOnUnitDiedOrLoseConsciousness (AI events)
-#include "..\DBFormat\DataDifficulty.h"
-#include "..\DBFormat\DataMap.h"
+#include "../DBFormat/DataDifficulty.h"
+#include "../DBFormat/DataMap.h"
 #include "eventPlayer.h"
-#include "..\DBFormat\DataAck.h"
+#include "../DBFormat/DataAck.h"
 #include "RPGVision.h"
 #include "aiCommander.h"
 #include "aiMisc.h"               // NAI::IsAIPlayer (retail IsAIUnit @0x3c0340 probe)

@@ -2,8 +2,8 @@
 #include <D3D9.h>
 #include "Gfx.h"
 #include "GfxBuffers.h"
-#include "..\MiscDll\Commands.h"
-#include "..\MiscDll\LogStream.h"
+#include "../MiscDll/Commands.h"
+#include "../MiscDll/LogStream.h"
 
 //#include "GfxUtils.h"
 //#include "GfxRender.h"

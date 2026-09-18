@@ -1,10 +1,10 @@
 #include "StdAfx.h"
-#include "..\DBFormat\DataAnimation.h"
-#include "..\DBFormat\DataGeometry.h"
-#include "..\Misc\RandomGen.h"
-#include "..\Misc\BasicShare.h"
-#include "..\MiscDll\LogStream.h"
-#include "..\MiscDll\Commands.h"   // NGlobal::GetVar (d_idle_animation, retail @0x4deac0)
+#include "../DBFormat/DataAnimation.h"
+#include "../DBFormat/DataGeometry.h"
+#include "../Misc/RandomGen.h"
+#include "../Misc/BasicShare.h"
+#include "../MiscDll/LogStream.h"
+#include "../MiscDll/Commands.h"   // NGlobal::GetVar (d_idle_animation, retail @0x4deac0)
 #include "GSceneUtils.h"
 #include "GAnimFormat.h"
 #include "GAnimParticles.h"

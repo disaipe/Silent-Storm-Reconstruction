@@ -7,7 +7,7 @@
 #include "DG.h"
 #include "GResource.h"
 #include "GPixelFormat.h"
-#include "..\Misc\2DArray.h"
+#include "../Misc/2DArray.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NGfx
 {

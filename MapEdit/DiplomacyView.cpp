@@ -2,9 +2,9 @@
 #include "mapedit.h"
 #include "DiplomacyView.h"
 #include "ItemsMgr.h"
-#include "..\Misc\StrProc.h"
-#include "..\Main\RPGDiplomacy.h"
-#include "..\DBFormat\DataMap.h"
+#include "../Misc/StrProc.h"
+#include "../Main/RPGDiplomacy.h"
+#include "../DBFormat/DataMap.h"
 #include "dbDefs.h"
 
 #ifdef _DEBUG

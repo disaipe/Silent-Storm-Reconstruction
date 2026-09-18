@@ -8,7 +8,7 @@
 #include "wInterface.h"
 #include "aiDoorCollider.h"
 #include "phCollider.h"
-#include "..\MiscDll\LogStream.h"
+#include "../MiscDll/LogStream.h"
 namespace NAI
 {
 //

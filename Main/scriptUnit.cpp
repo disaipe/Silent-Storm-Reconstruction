@@ -12,11 +12,11 @@
 #include "rpgUnitMission.h"
 #include "rpgCritical.h"
 #include "rpgGame.h"
-#include "..\DBFormat\DataRPG.h"
-#include "..\DBFormat\DataFormat.h"		// NDb::CTRndModel::CreateModel (UnitHoldItem)
-#include "..\DBFormat\DataMap.h"			// NDb::EDiplomacyState / DS_ENEMY (KillEmAll diplomacy gate)
-#include "..\Misc\RandomGen.h"			// SRand (UnitHoldItem)
-#include "..\MiscDll\LogStream.h"
+#include "../DBFormat/DataRPG.h"
+#include "../DBFormat/DataFormat.h"		// NDb::CTRndModel::CreateModel (UnitHoldItem)
+#include "../DBFormat/DataMap.h"			// NDb::EDiplomacyState / DS_ENEMY (KillEmAll diplomacy gate)
+#include "../Misc/RandomGen.h"			// SRand (UnitHoldItem)
+#include "../MiscDll/LogStream.h"
 #include "wAckBase.h"
 #include "wUnitGroup.h"
 #include "aiRoute.h"

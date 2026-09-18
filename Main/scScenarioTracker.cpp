@@ -9,13 +9,13 @@
 #include "RPGItemInfo.h"
 #include "RPGGlobal.h"
 //
-#include "..\DBFormat\DataFormat.h"
-#include "..\DBFormat\DataScenario.h"
-#include "..\DBFormat\DataConst.h"
-#include "..\DBFormat\DataRPG.h"
-#include "..\DBFormat\DataMap.h"
+#include "../DBFormat/DataFormat.h"
+#include "../DBFormat/DataScenario.h"
+#include "../DBFormat/DataConst.h"
+#include "../DBFormat/DataRPG.h"
+#include "../DBFormat/DataMap.h"
 //
-#include "..\MiscDll\LogStream.h"
+#include "../MiscDll/LogStream.h"
 //
 #include "scFlowChart.h"
 #include "scFlowChartItems.h"

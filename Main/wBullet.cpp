@@ -6,17 +6,17 @@
 #include "wMain.h"
 #include "GAnimation.h"
 #include "GAnimParticles.h"
-#include "..\Misc\StrProc.h"
-#include "..\DBFormat\DataFormat.h"
-#include "..\DBFormat\DataGeometry.h"
-#include "..\DBFormat\DataRPG.h"
+#include "../Misc/StrProc.h"
+#include "../DBFormat/DataFormat.h"
+#include "../DBFormat/DataGeometry.h"
+#include "../DBFormat/DataRPG.h"
 #include "aiMap.h"
 #include "wUnitServer.h"
 #include "RPGUnitMission.h"
 #include "wAckBase.h"
 #include "wDecal.h"
 #include "wExplosionPerks.h"
-#include "..\Misc\EventsBase.h"   // NGlobal::ThrowEvent
+#include "../Misc/EventsBase.h"   // NGlobal::ThrowEvent
 #include "eventUnit.h"            // NWorld::CEventOnBullet (AI bullet-perception event)
 
 namespace NWorld

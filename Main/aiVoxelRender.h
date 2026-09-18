@@ -3,7 +3,7 @@
 //
 #include "Transform.h"
 #include "Render.h"
-#include "..\Misc\2DArray.h"
+#include "../Misc/2DArray.h"
 //
 namespace NDb
 {

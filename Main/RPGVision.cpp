@@ -4,12 +4,12 @@
 #include "DG.h"
 #include "wTSFlags.h"
 #include "aiVoxelRender.h"
-#include "..\DBFormat\DataRPG.h"
+#include "../DBFormat/DataRPG.h"
 #include "aiMap.h"
 #include "grid.h"
 #include "TerrainInfo.h"
-#include "..\Misc\2darray.h"
-#include "..\Misc\HPTimer.h"
+#include "../Misc/2darray.h"
+#include "../Misc/HPTimer.h"
 
 const int N_HALFSIZE = 64;
 

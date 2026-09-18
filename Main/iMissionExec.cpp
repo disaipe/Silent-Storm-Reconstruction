@@ -7,8 +7,8 @@
 #include "iMissionExec.h"
 #include "iTeamMngMenu.h"
 #include "scFlowChartItems.h"
-#include "..\MiscDll\Commands.h"
-#include "..\MiscDll\LogStream.h"     // csSystem ("[tutorcam]" camera-move evidence trace)
+#include "../MiscDll/Commands.h"
+#include "../MiscDll/LogStream.h"     // csSystem ("[tutorcam]" camera-move evidence trace)
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NGame
 {

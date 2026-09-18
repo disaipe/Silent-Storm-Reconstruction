@@ -1,10 +1,10 @@
 #include "StdAfx.h"
 #include "WysiwygLadderSel.h"
-#include "..\Main\Grid.h"
-#include "..\MapEdit\UserSettingsSetup.h"
+#include "../Main/Grid.h"
+#include "../MapEdit/UserSettingsSetup.h"
 #include "iWysiwyg.h"
 #include "WysiwygClipboard.h"
-#include "..\Main\aiGrid.h"
+#include "../Main/aiGrid.h"
 /////////////////////////////////////////////////////////////////////////////////////
 namespace NWysiwyg
 {

@@ -13,7 +13,7 @@ const int N_FOV = 35;
 #include "Camera.h"
 #include "Interface.h"
 #include "wInterface.h"
-#include "..\Misc\RandomGen.h"
+#include "../Misc/RandomGen.h"
 #include "wUnitCommands.h"
 
 namespace NDb

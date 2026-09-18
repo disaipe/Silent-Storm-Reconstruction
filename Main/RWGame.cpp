@@ -11,17 +11,17 @@
 #include "GAnimFormat.h"
 #include "GAnimation.h"
 #include "GAnimPath.h"
-#include "..\Misc\BasicShare.h"
+#include "../Misc/BasicShare.h"
 #include "TerrainInfo.h"
 #include "GTerrain.h"
-#include "..\DBFormat\DataFormat.h"
-#include "..\DBFormat\DataRPG.h"
-#include "..\DBFormat\DataAnimation.h"
-#include "..\DBFormat\DataLight.h"	// CAmbientLightReal (SyncWeather sun/rain reference lights)
+#include "../DBFormat/DataFormat.h"
+#include "../DBFormat/DataRPG.h"
+#include "../DBFormat/DataAnimation.h"
+#include "../DBFormat/DataLight.h"	// CAmbientLightReal (SyncWeather sun/rain reference lights)
 #include "GMatShare.h"
 #include "InventoryUnit.h"
-#include "..\MiscDll\Commands.h"      // REGISTER_VAR_EX (v1.2 game_selectionmode / game_showweathereffect)
-#include "..\FileIO\BasicChunk1.h"    // START_REGISTER / FINISH_REGISTER
+#include "../MiscDll/Commands.h"      // REGISTER_VAR_EX (v1.2 game_selectionmode / game_showweathereffect)
+#include "../FileIO/BasicChunk1.h"    // START_REGISTER / FINISH_REGISTER
 ///
 #include "GPostProcessors.h"
 #include "GGrass.h"

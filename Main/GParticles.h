@@ -12,7 +12,7 @@
 // void* overload, which is declaration-only -- an unresolved CastToObjectBaseImpl at link time.
 #include "GParticleInfo.h"
 
-#include "..\Misc\2DArray.h"
+#include "../Misc/2DArray.h"
 namespace NDb
 {
 	class CGrass;

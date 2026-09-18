@@ -10,9 +10,9 @@
 #include "RPGUnitMission.h"
 #include "aiVoxelRender.h"
 #include "wTSFlags.h"
-#include "..\Misc\HPTimer.h"
+#include "../Misc/HPTimer.h"
 #include "wDecal.h"
-#include "..\Misc\EventsBase.h"   // NGlobal::ThrowEvent
+#include "../Misc/EventsBase.h"   // NGlobal::ThrowEvent
 #include "eventUnit.h"            // NWorld::CEventOnGrenadeExplosion (AI grenade-perception event)
 #include "wTerrain.h"             // CTerrain::DrawExplosion (blast grass scorch)
 #include "wMisc.h"                // CreateDGrassEvent

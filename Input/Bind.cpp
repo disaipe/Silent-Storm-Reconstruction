@@ -1,16 +1,16 @@
 #include "StdAfx.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #include <dinput.h>
-#include "..\Misc\basic2.h"
-#include "..\Misc\StrProc.h"
-#include "..\MiscDll\Commands.h"
-#include "..\MiscDll\LogStream.h"
-#include "..\Misc\Win32Helper.h"
-#include "..\FileIO\Streams.h"
-#include "..\FileIO\BasicChunk1.h"
-#include "..\Input\Input.h"
-#include "..\Input\Bind.h"
-#include "..\Input\BindInternal.h"
+#include "../Misc/basic2.h"
+#include "../Misc/StrProc.h"
+#include "../MiscDll/Commands.h"
+#include "../MiscDll/LogStream.h"
+#include "../Misc/Win32Helper.h"
+#include "../FileIO/Streams.h"
+#include "../FileIO/BasicChunk1.h"
+#include "../Input/Input.h"
+#include "../Input/Bind.h"
+#include "../Input/BindInternal.h"
 using namespace NStr;
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NInput

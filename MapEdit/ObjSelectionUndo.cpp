@@ -1,9 +1,9 @@
 #include "StdAfx.h"
 #include "ObjSelectionUndo.h"
-#include "..\DBFormat\DataMap.h"
-#include "..\DBFormat\DataFormat.h"
-#include "..\DBFormat\DataObject.h"
-#include "..\MapEdit\FinDBCmd.h"
+#include "../DBFormat/DataMap.h"
+#include "../DBFormat/DataFormat.h"
+#include "../DBFormat/DataObject.h"
+#include "../MapEdit/FinDBCmd.h"
 #include "weInterface.h"
 #include "iWysiwyg.h"
 

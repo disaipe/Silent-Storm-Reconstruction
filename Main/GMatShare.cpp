@@ -1,12 +1,12 @@
 #include "StdAfx.h"
 #include "GMatShare.h"
 #include "GMaterial.h"
-#include "..\DBFormat\DataFormat.h"
-#include "..\Misc\BasicShare.h"
+#include "../DBFormat/DataFormat.h"
+#include "../Misc/BasicShare.h"
 #include "GTexture.h"
 #include "GSceneUtils.h"
 
-#include "..\Misc\RandomGen.h"
+#include "../Misc/RandomGen.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NGScene
 {

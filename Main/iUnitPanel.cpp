@@ -8,12 +8,12 @@
 #include "RPGItemInfo.h"
 #include "RPGUnitInfo.h"
 #include "RWGame.h"
-#include "..\Misc\StrProc.h"
-#include "..\DBFormat\DataRPG.h"
-#include "..\DBFormat\DataSound.h"
-#include "..\DBFormat\DataFormat.h"
-#include "..\DBFormat\DataInterface.h"
-#include "..\DBFormat\DataCamera.h"    // NDb::GetDBCamera -- the HUD face camera (release @0x254cc0: record 0x13a1)
+#include "../Misc/StrProc.h"
+#include "../DBFormat/DataRPG.h"
+#include "../DBFormat/DataSound.h"
+#include "../DBFormat/DataFormat.h"
+#include "../DBFormat/DataInterface.h"
+#include "../DBFormat/DataCamera.h"    // NDb::GetDBCamera -- the HUD face camera (release @0x254cc0: record 0x13a1)
 #include "Sound.h"
 #include "iMission.h"
 #include "Interface.h"

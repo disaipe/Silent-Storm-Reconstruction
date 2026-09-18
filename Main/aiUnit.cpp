@@ -24,9 +24,9 @@
 #include "RPGUnit.h"
 #include "rpgCheatConstants.h"
 
-#include "..\DBFormat\DataRPG.h"
-#include "..\DBFormat\DataMap.h"
-#include "..\DBFormat\DataDifficulty.h"   // NDb::CDBDifficulty::nHideProbability (ctor hide-prob seed)
+#include "../DBFormat/DataRPG.h"
+#include "../DBFormat/DataMap.h"
+#include "../DBFormat/DataDifficulty.h"   // NDb::CDBDifficulty::nHideProbability (ctor hide-prob seed)
 
 #include "RPGGlobal.h"                     // NRPG::CGlobalGame::pDifficulty (ctor hide-prob seed)
 #include "wMain.h"

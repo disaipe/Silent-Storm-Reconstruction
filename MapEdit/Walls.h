@@ -1,8 +1,8 @@
 #ifndef __WALLS_H__
 #define __WALLS_H__
 
-#include "..\Misc\Geom.h"
-#include "..\Main\BuildingInfo.h"
+#include "../Misc/Geom.h"
+#include "../Main/BuildingInfo.h"
 #include <map>
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

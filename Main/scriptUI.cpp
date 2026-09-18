@@ -45,12 +45,12 @@
 #include "G2DView.h"
 #include "GSceneUtils.h"
 #include "RectLayout.h"
-#include "..\Misc\StrProc.h"			// NStr::ToAscii
-#include "..\Input\Bind.h"
-#include "..\DBFormat\DataFormat.h"		// NDb::GetUITexture
-#include "..\DBFormat\DataInterface.h"
+#include "../Misc/StrProc.h"			// NStr::ToAscii
+#include "../Input/Bind.h"
+#include "../DBFormat/DataFormat.h"		// NDb::GetUITexture
+#include "../DBFormat/DataInterface.h"
 #include "Interface.h"					// NUI::SPoint/SRect + NUI::CWindow/CText/CImage/CModel/CButton/CInterface, NUI::GetDBString
-#include "..\MiscDll\LogStream.h"		// csScript, CC_RED, endl
+#include "../MiscDll/LogStream.h"		// csScript, CC_RED, endl
 //
 #include "A5Script.h"					// NScript::CScript, GetScript, Script (lua stack)
 #include "scriptCommon.h"				// luaPrepareData, BEGIN_SCRIPT_COMMAND, SLuaParams

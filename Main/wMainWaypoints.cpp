@@ -4,8 +4,8 @@ namespace NWorld { class CWorld; }          // aiRoute.h's CAIRoute(NWorld::CWor
 #include "mapBuild.h"
 #include "aiPosition.h"
 #include "aiRoute.h"
-#include "..\Misc\StrProc.h"          // NStr::ToLower
-#include "..\MiscDll\LogStream.h"     // csSystem / CC_RED / endl
+#include "../Misc/StrProc.h"          // NStr::ToLower
+#include "../MiscDll/LogStream.h"     // csSystem / CC_RED / endl
 //
 #include "wMainWaypoints.h"
 //

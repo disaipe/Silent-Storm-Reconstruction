@@ -4,11 +4,11 @@
 #include "RPGUnitInfo.h"
 #include "RPGUnit.h"	// NRPG::CUnit::pHeadInfo (retail cap-vs-hair gate @0x21db20)
 #include "LSHead.h"
-#include "..\DBFormat\DataRPG.h"
-#include "..\DBFormat\DataFormat.h"
+#include "../DBFormat/DataRPG.h"
+#include "../DBFormat/DataFormat.h"
 //#include "GAnimation.h"
 #include "InventoryUnit.h"
-#include "..\Misc\RandomGen.h"
+#include "../Misc/RandomGen.h"
 //#include "wInterface.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NWorld

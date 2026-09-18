@@ -2,12 +2,12 @@
 #include "Sound.h"
 #include "SoundFormat.h"
 #include "Transform.h"
-#include "..\DBFormat\DataSound.h"
-#include "..\FModSound\FMSound.h"
-#include "..\Misc\BasicShare.h"
-#include "..\Misc\RandomGen.h"
-#include "..\MiscDll\Commands.h"
-#include "..\MiscDll\LogStream.h"
+#include "../DBFormat/DataSound.h"
+#include "../FModSound/FMSound.h"
+#include "../Misc/BasicShare.h"
+#include "../Misc/RandomGen.h"
+#include "../MiscDll/Commands.h"
+#include "../MiscDll/LogStream.h"
 #include "SoundEffect.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NSound

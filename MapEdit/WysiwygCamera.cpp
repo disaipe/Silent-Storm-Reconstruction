@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 #include "WysiwygCamera.h"
-#include "..\DBFormat\DataCamera.h"
+#include "../DBFormat/DataCamera.h"
 #include "iWysiwyg.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NWysiwyg

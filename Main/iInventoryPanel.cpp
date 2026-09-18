@@ -9,11 +9,11 @@
 #include "RPGItemInfo.h"
 #include "RPGUnitInfo.h"
 #include "RWGame.h"
-#include "..\DBFormat\DataRPG.h"
-#include "..\DBFormat\DataCamera.h"   // NDb::GetDBCamera -- retail CUnitModelShow::Set @0x1edfe0 uses DataCamera 1
-#include "..\DBFormat\DataSound.h"
-#include "..\DBFormat\DataFormat.h"
-#include "..\DBFormat\DataInterface.h"
+#include "../DBFormat/DataRPG.h"
+#include "../DBFormat/DataCamera.h"   // NDb::GetDBCamera -- retail CUnitModelShow::Set @0x1edfe0 uses DataCamera 1
+#include "../DBFormat/DataSound.h"
+#include "../DBFormat/DataFormat.h"
+#include "../DBFormat/DataInterface.h"
 #include "Sound.h"
 #include "iMission.h"
 #include "Interface.h"

@@ -10,15 +10,15 @@
 #include "RPGItemInfo.h"
 #include "RPGItem.h"   // GetGrenadeRec* which-record accessors
 #include "RPGItemSet.h"             // CClipItem (drag-compat yellow) -- CSlot::Draw @0x1c34d0 tint pass
-#include "..\DBFormat\DataMisc.h"   // NDb::CRPGPicklock (the can't-use red predicate)
-#include "..\DBFormat\DataPerk.h"   // NDb::CDBPerk (tool/picklock pNeededPerk id)
+#include "../DBFormat/DataMisc.h"   // NDb::CRPGPicklock (the can't-use red predicate)
+#include "../DBFormat/DataPerk.h"   // NDb::CDBPerk (tool/picklock pNeededPerk id)
 #include "RPGUnitInfo.h"
-#include "..\Misc\StrProc.h"
-#include "..\DBFormat\DataFormat.h"
-#include "..\DBFormat\DataLight.h"
-#include "..\DBFormat\DataRPG.h"
-#include "..\DBFormat\DataCamera.h"
-#include "..\DBFormat\DataInterface.h"
+#include "../Misc/StrProc.h"
+#include "../DBFormat/DataFormat.h"
+#include "../DBFormat/DataLight.h"
+#include "../DBFormat/DataRPG.h"
+#include "../DBFormat/DataCamera.h"
+#include "../DBFormat/DataInterface.h"
 #include "Interface.h"
 #include "UIWrap.h"
 #include "iMission.h"

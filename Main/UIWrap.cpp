@@ -10,10 +10,10 @@
 #include "UIWrap.h"
 #include "UIML.h"
 #include "DiscretePos.h"
-#include "..\Misc\StrProc.h"
-#include "..\DBFormat\DataLight.h"
-#include "..\DBFormat\DataFormat.h"
-#include "..\DBFormat\DataInterface.h"
+#include "../Misc/StrProc.h"
+#include "../DBFormat/DataLight.h"
+#include "../DBFormat/DataFormat.h"
+#include "../DBFormat/DataInterface.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NUI
 {

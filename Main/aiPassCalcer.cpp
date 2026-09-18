@@ -11,7 +11,7 @@
 #include "aiPMConst.h"
 #include "wInterface.h"
 #include "aiDoorCollider.h"
-#include "..\MiscDll\LogStream.h"
+#include "../MiscDll/LogStream.h"
 namespace NAI
 {
 

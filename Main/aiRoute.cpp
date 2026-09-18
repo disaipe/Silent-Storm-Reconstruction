@@ -8,7 +8,7 @@
 #include "aiCommander.h"
 #include "aiUnit.h"
 #include "aiRouteLogic.h"   // NAI::CreateAIRouteLogic / CreateAIRoamingLogic (the per-unit route logic)
-#include "..\DBFormat\DataMap.h"
+#include "../DBFormat/DataMap.h"
 #include "wUnitCommands.h"
 #include "wUnitGroup.h"
 #include "wUnitServer.h"

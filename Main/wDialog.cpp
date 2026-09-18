@@ -1,7 +1,7 @@
 #include "stdafx.h"
 //
-#include "..\DBFormat\DataAck.h"
-#include "..\DBFormat\DataRPG.h"
+#include "../DBFormat/DataAck.h"
+#include "../DBFormat/DataRPG.h"
 #include "rpgUnit.h"
 #include "rpgGlobal.h"
 #include "rpgGame.h"

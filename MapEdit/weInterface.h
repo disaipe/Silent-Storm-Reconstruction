@@ -4,8 +4,8 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "..\Main\wInterface.h"
-#include "..\Main\wInterfaceVisitors.h"
+#include "../Main/wInterface.h"
+#include "../Main/wInterfaceVisitors.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NDb
 {

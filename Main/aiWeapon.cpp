@@ -1,6 +1,6 @@
 #include "stdafx.h"
 //
-#include "..\DBFormat\DataRPG.h"
+#include "../DBFormat/DataRPG.h"
 //
 #include "aiWeapon.h"
 #include "aiUnit.h"

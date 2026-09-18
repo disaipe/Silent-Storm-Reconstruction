@@ -1,8 +1,8 @@
 #include "stdafx.h"
 
-#include "..\Image\image.h"
-#include "..\Image\imageTGA.h"
-#include "..\Misc\StrProc.h"
+#include "../Image/image.h"
+#include "../Image/imageTGA.h"
+#include "../Misc/StrProc.h"
 #include "FontFormat.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 const int N_LEADING_PIXELS = 2;

@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 #include "RandomGen.h"
-#include "..\FileIO\basicChunk1.h"
+#include "../FileIO/basicChunk1.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 SRandomSeed::SRandomSeed() : nSeed( GetTickCount() )

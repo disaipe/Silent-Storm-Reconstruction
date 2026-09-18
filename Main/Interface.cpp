@@ -3,16 +3,16 @@
 #include "RectLayout.h"
 #include "GView.h"
 #include "G2DView.h"
-#include "..\Input\Bind.h"
+#include "../Input/Bind.h"
 #include "Interface.h"
 #include "UIBaseCtrls.h"
 #include "UICommCtrls.h"
 #include "Console.h"
 #include "Cursor.h"
 #include "Transform.h"
-#include "..\Misc\StrProc.h"
-#include "..\DBFormat\DataFormat.h"
-#include "..\DBFormat\DataInterface.h"
+#include "../Misc/StrProc.h"
+#include "../DBFormat/DataFormat.h"
+#include "../DBFormat/DataInterface.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NUI
 {

@@ -3,9 +3,9 @@
 #include "RPGItemSet.h"
 #include "aiPosition.h"
 #include "RPGAttackMech.h"
-#include "..\DBFormat\DataRPG.h"
-#include "..\DBFormat\DataMisc.h"   // NDb::CRPGPicklock (CPicklockItem ctor + the CreateItem cascade)
-#include "..\DBFormat\DataPerk.h"
+#include "../DBFormat/DataRPG.h"
+#include "../DBFormat/DataMisc.h"   // NDb::CRPGPicklock (CPicklockItem ctor + the CreateItem cascade)
+#include "../DBFormat/DataPerk.h"
 #include "rpgUnit.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NRPG

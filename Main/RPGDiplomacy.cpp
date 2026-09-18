@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 //
-#include "..\DBFormat\DataMap.h"
+#include "../DBFormat/DataMap.h"
 //
 #include "RPGUnitMission.h"
 #include "RPGDiplomacy.h"

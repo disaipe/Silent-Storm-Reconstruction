@@ -2,13 +2,13 @@
 #include "RPGGame.h"
 #include "aiMap.h"
 #include "aiRender.h"
-#include "..\Misc\RandomGen.h"
+#include "../Misc/RandomGen.h"
 #include "wTSFlags.h"
 #include "wInterface.h"
 #include "RPGUnitMission.h"
-#include "..\DBFormat\DataRPG.h"
-#include "..\DBFormat\DataMap.h"   // NDb::EDiplomacyState / DS_ALLY -- friendly-fire ally check in cover penetration
-#include "..\MiscDll\LogStream.h"
+#include "../DBFormat/DataRPG.h"
+#include "../DBFormat/DataMap.h"   // NDb::EDiplomacyState / DS_ALLY -- friendly-fire ally check in cover penetration
+#include "../MiscDll/LogStream.h"
 #include "aiGrid.h"
 #include "RPGVision.h"
 #include "rpgCheatConstants.h"

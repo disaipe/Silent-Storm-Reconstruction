@@ -5,11 +5,11 @@
 #include "GLocale.h"
 #include "GFont.h"
 #include "GTexture.h"
-#include "..\Misc\BasicShare.h"
-#include "..\DBFormat\DataFormat.h"
-#include "..\DBFormat\DataMap.h"
-#include "..\Misc\StrProc.h"
-#include "..\MiscDll\LogStream.h"   // csSystem (font-load diagnostics)
+#include "../Misc/BasicShare.h"
+#include "../DBFormat/DataFormat.h"
+#include "../DBFormat/DataMap.h"
+#include "../Misc/StrProc.h"
+#include "../MiscDll/LogStream.h"   // csSystem (font-load diagnostics)
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NGScene
 {

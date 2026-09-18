@@ -13,13 +13,13 @@
 #include "iMain.h"
 #include "iRenderWorld.h"
 #include "iCommonUI.h"
-#include "..\Misc\StrProc.h"
-#include "..\MiscDll\Commands.h"
-#include "..\DBFormat\DataMap.h"
-#include "..\DBFormat\DataRPG.h"
-#include "..\DBFormat\DataLight.h"
-#include "..\DBFormat\DataSound.h"
-#include "..\DBFormat\DataFormat.h"
+#include "../Misc/StrProc.h"
+#include "../MiscDll/Commands.h"
+#include "../DBFormat/DataMap.h"
+#include "../DBFormat/DataRPG.h"
+#include "../DBFormat/DataLight.h"
+#include "../DBFormat/DataSound.h"
+#include "../DBFormat/DataFormat.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NGame
 {

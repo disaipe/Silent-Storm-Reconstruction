@@ -2,11 +2,11 @@
 #include "MapEdit.h"
 #include "dbDefs.h"
 #include "WaypointDB.h"
-#include "..\Main\aiWaypoint.h"
+#include "../Main/aiWaypoint.h"
 #include "MESerialize.h"
-#include "..\Main\Grid.h"
+#include "../Main/Grid.h"
 #include "MEUserSettings.h"
-#include "..\Misc\BasicShare.h"
+#include "../Misc/BasicShare.h"
 #include "ItemsMgr.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 extern CBasicShare<int, NAI::CWaypointLoader> shareWaypoints;

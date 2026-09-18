@@ -7,12 +7,12 @@
 #include "RPGGame.h"        // NRPG::IGame::GetMaxCriticalSeverity (combat critical clamp)
 #include "Grid.h"
 #include "A5Script.h"
-#include "..\DBFormat\DataRPG.h"
-#include "..\DBFormat\DataFormat.h"
-#include "..\DBFormat\DataAI.h"
-#include "..\Misc\RandomGen.h"
-#include "..\Misc\StrProc.h"
-#include "..\MiscDll\LogStream.h"
+#include "../DBFormat/DataRPG.h"
+#include "../DBFormat/DataFormat.h"
+#include "../DBFormat/DataAI.h"
+#include "../Misc/RandomGen.h"
+#include "../Misc/StrProc.h"
+#include "../MiscDll/LogStream.h"
 #include "aiPosition.h"
 #include "RPGCritical.h"
 #include "RPGToHit.h"
@@ -21,8 +21,8 @@
 #include "RPGDiplomacy.h"
 #include "rpgCheatConstants.h"
 #include "rpgPerkConstants.h"
-#include "..\DBFormat\DataRpgConstants.h"
-#include "..\DBFormat\DataMisc.h"   // NDb::CRPGAP (GetActionAP RPGAP-table costs) + CRPGPicklock (AC_PICK_LOCK nAPToUse)
+#include "../DBFormat/DataRpgConstants.h"
+#include "../DBFormat/DataMisc.h"   // NDb::CRPGAP (GetActionAP RPGAP-table costs) + CRPGPicklock (AC_PICK_LOCK nAPToUse)
 
 #include "RPGUnitMission.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////

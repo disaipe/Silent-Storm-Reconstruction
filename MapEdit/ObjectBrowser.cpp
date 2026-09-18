@@ -2,7 +2,7 @@
 #include "MapEdit.h"
 #include "ObjectBrowser.h"
 #include "ItemsMgr.h"
-#include "..\Misc\StrProc.h"
+#include "../Misc/StrProc.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 struct SProperty
 {

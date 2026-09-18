@@ -6,7 +6,7 @@
 #include "RPGAttackMech.h"
 #include "RPGUnit.h"          // NRPG::CUnit::pDefaultWeapon (FetchInventoryItems @0x55f90)
 //
-#include "..\DBFormat\DataRPG.h"
+#include "../DBFormat/DataRPG.h"
 //
 #include "aiUnit.h"
 #include "aiWeapon.h"
@@ -15,7 +15,7 @@
 //
 #include "wUnitServer.h"
 #include "wDebris.h"          // NWorld::CDFrozenItem (loot scorers)
-#include "..\MiscDll\LogStream.h"
+#include "../MiscDll/LogStream.h"
 //
 namespace NAI
 {

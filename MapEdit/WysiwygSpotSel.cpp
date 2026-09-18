@@ -1,14 +1,14 @@
 #include "StdAfx.h"
-#include "..\Main\Camera.h"
+#include "../Main/Camera.h"
 #include "IWysiwyg.h"
-#include "..\Main\wInterface.h"
+#include "../Main/wInterface.h"
 #include "WysiwygSPotSel.h"
-#include "..\Main\GView.h"
-#include "..\Main\Transform.h"
-#include "..\Main\Grid.h"
+#include "../Main/GView.h"
+#include "../Main/Transform.h"
+#include "../Main/Grid.h"
 #include "wEditor.h"
-#include "..\MapEdit\UserSettingsSetup.h"
-#include "..\Main\BuildingGrid.h"
+#include "../MapEdit/UserSettingsSetup.h"
+#include "../Main/BuildingGrid.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NWysiwyg
 {

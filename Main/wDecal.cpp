@@ -1,8 +1,8 @@
 #include "StdAfx.h"
 #include "wDecal.h"
 #include "wMain.h"
-#include "..\Misc\RandomGen.h"
-#include "..\DBFormat\DataFormat.h"
+#include "../Misc/RandomGen.h"
+#include "../DBFormat/DataFormat.h"
 namespace NWorld
 {
 ////////////////////////////////////////////////////////////////////////////////////////////////////

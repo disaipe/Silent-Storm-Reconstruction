@@ -2,7 +2,7 @@
 #include "GInit.h"
 #include "Gfx.h"
 #include "GfxRender.h"
-#include "..\MiscDll\Commands.h"
+#include "../MiscDll/Commands.h"
 
 namespace NGScene
 {

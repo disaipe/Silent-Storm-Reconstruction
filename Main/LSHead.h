@@ -6,8 +6,8 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #include "Time.h"
 #include "GResource.h"
-#include "..\Misc\RandomGen.h"
-#include "..\DBFormat\DataFaceGen.h"   // NDb::CRace complete type (CHeadInfo::pBodyColor CDBPtr factory)
+#include "../Misc/RandomGen.h"
+#include "../DBFormat/DataFaceGen.h"   // NDb::CRace complete type (CHeadInfo::pBodyColor CDBPtr factory)
 #include <LifeStudioHeadAPI.h>
 #include <LifeStudioHeadAPIMMTS.h>
 #include <LifeStudioHeadAPITransform.h>   // LifeStudioHeadAPI::ITransformer (CHeadTransformInfo value)

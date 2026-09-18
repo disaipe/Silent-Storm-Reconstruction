@@ -4,8 +4,8 @@
 #include "DataRPGTmp.h"
 #include "DataAnimation.h"
 #include "DataTerrain.h"
-#include "..\Main\Grid.h"
-#include "..\Misc\StrProc.h"
+#include "../Main/Grid.h"
+#include "../Misc/StrProc.h"
 #include <limits>
 #include "DataScenario.h"
 #include "DataSound.h"

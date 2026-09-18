@@ -24,7 +24,7 @@
 #include "DataChest.h"
 #include "DataPhys.h"
 
-#include "..\Misc\StrProc.h"
+#include "../Misc/StrProc.h"
 
 const int N_DEF_BUMP_ID = 606;
 static void ErrOut( const string &str, int nID )

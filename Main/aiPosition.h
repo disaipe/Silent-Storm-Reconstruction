@@ -4,7 +4,7 @@
 #pragma once
 #endif // _MSC_VER > 1000
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-#include "..\Misc\2Darray.h"
+#include "../Misc/2Darray.h"
 namespace NAI
 {
 class CPathNetwork;

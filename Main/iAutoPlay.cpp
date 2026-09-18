@@ -22,17 +22,17 @@
 #include "RPGMerc.h"
 #include "RPGUnitInfo.h"
 #include "RPGItemInfo.h"
-#include "..\MiscDll\Commands.h"		// NGlobal::Register* / CValue / GetVar
-#include "..\MiscDll\LogStream.h"
-#include "..\Misc\StrProc.h"
-#include "..\Misc\BasicShare.h"
-#include "..\Input\Bind.h"				// NInput::SEvent / NInput::CT_TIME
-#include "..\DBFormat\DataFormat.h"
-#include "..\DBFormat\DataMap.h"
-#include "..\DBFormat\DataRPG.h"
-#include "..\DBFormat\DataSound.h"
-#include "..\DBFormat\DataLight.h"
-#include "..\DBFormat\DataInterface.h"
+#include "../MiscDll/Commands.h"		// NGlobal::Register* / CValue / GetVar
+#include "../MiscDll/LogStream.h"
+#include "../Misc/StrProc.h"
+#include "../Misc/BasicShare.h"
+#include "../Input/Bind.h"				// NInput::SEvent / NInput::CT_TIME
+#include "../DBFormat/DataFormat.h"
+#include "../DBFormat/DataMap.h"
+#include "../DBFormat/DataRPG.h"
+#include "../DBFormat/DataSound.h"
+#include "../DBFormat/DataLight.h"
+#include "../DBFormat/DataInterface.h"
 #include "iMain.h"
 #include "iSaveManager.h"
 #include "Interface.h"					// NUI::CInterface / NUI::ICursor / ICursor::Create

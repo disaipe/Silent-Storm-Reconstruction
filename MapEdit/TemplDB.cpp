@@ -4,7 +4,7 @@
 #include "ItemsMgr.h"
 #include "TreeVDialogs.h"
 #include "TemplMgr.h"
-#include "..\DBFormat\DataMap.h"
+#include "../DBFormat/DataMap.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 int AddNewTemplate( int nHintWidth, int nHintHeight )
 {

@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "A5Script.h"
 #include "scriptCommon.h"
-#include "..\DBFormat\DataCamera.h"
-#include "..\DBFormat\DataAck.h"
+#include "../DBFormat/DataCamera.h"
+#include "../DBFormat/DataAck.h"
 //
 #include "scriptPtr.h"
 //

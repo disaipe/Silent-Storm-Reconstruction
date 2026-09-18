@@ -1,11 +1,11 @@
 #include "StdAfx.h"
 #include "Camera.h"
-#include "..\Misc\Geom.h"
+#include "../Misc/Geom.h"
 #include "Transform.h"
-#include "..\Input\Bind.h"
-#include "..\Misc\StrProc.h"
-#include "..\MiscDll\Commands.h"      // NGlobal::GetVar / RegisterCmd / CValue (BUG 4 camera sensitivity)
-#include "..\FileIO\BasicChunk1.h"    // START_REGISTER / FINISH_REGISTER
+#include "../Input/Bind.h"
+#include "../Misc/StrProc.h"
+#include "../MiscDll/Commands.h"      // NGlobal::GetVar / RegisterCmd / CValue (BUG 4 camera sensitivity)
+#include "../FileIO/BasicChunk1.h"    // START_REGISTER / FINISH_REGISTER
 #include "wInterface.h"               // NWorld::IWorld::GetAIMap (the framing raycast world handle)
 #include "wHeightLayers.h"            // NWorld::IHeightLayers / SHLayer (the per-floor height fields the terrain leg samples)
 #include "Interpolate.h"              // GetBilinear<float,TLinearInterpolate> -- the layer sampler (release @0xcfb40)
@@ -14,7 +14,7 @@
 #include "Interface.h"                // NUI::CInterface via the UI umbrella (CFPCamera pUI -- serialized CPtr member)
 #include "aiMap.h"                    // NAI::IAIMap::Trace / CFloorsSet / SInterval (occlusion ray -- CanSeeOneRay)
 #include "wTSFlags.h"                 // NWorld::TS_VISION (the vision trace-set flag)
-#include "..\Misc\RandomGen.h"        // SRand (the framing's rod fan-sweep roll)
+#include "../Misc/RandomGen.h"        // SRand (the framing's rod fan-sweep roll)
 #include "RPGGlobal.h"                // NRPG::CGlobalGame::nSloMoTimes (the slo-mo repeat-offender tax)
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // BUG 4 -- camera sensitivity / invert config consumer. Retail UpdateCameraFromConfig @0xcd180 pushes the

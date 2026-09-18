@@ -25,11 +25,11 @@
 //
 #include "aiCommander.h"
 //
-#include "..\MiscDll\Commands.h"
-#include "..\MiscDll\LogStream.h"
-#include "..\DBFormat\DataRPG.h"
-#include "..\DBFormat\DataConst.h"
-#include "..\DBFormat\DataMap.h"
+#include "../MiscDll/Commands.h"
+#include "../MiscDll/LogStream.h"
+#include "../DBFormat/DataRPG.h"
+#include "../DBFormat/DataConst.h"
+#include "../DBFormat/DataMap.h"
 #include "aiWeapon.h"
 #include "aiInventory.h"
 //

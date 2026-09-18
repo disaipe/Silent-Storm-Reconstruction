@@ -6,14 +6,14 @@
 #include "wTerrain.h"
 #include "PolyUtils.h"
 #include "Transform.h"
-#include "..\DBFormat\DataFormat.h"
-#include "..\DBFormat\DataMap.h"
+#include "../DBFormat/DataFormat.h"
+#include "../DBFormat/DataMap.h"
 #include "GSceneUtils.h"
 #include "GGrass.h"
 #include "GGeometry.h"
 #include "TerrainInfo.h"
 #include "MapBuild.h"
-#include "..\Misc\RandomGen.h"
+#include "../Misc/RandomGen.h"
 #include "wTSFlags.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NTerrain

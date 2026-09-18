@@ -1,8 +1,8 @@
 #include "StdAfx.h"
 //
-#include "..\DBFormat\DataScenario.h"
-#include "..\DBFormat\DataMap.h"
-#include "..\DBFormat\DataFormat.h"
+#include "../DBFormat/DataScenario.h"
+#include "../DBFormat/DataMap.h"
+#include "../DBFormat/DataFormat.h"
 //
 #include "MapBuild.h"
 //

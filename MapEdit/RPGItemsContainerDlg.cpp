@@ -5,7 +5,7 @@
 #include "MapEdit.h"
 #include "RPGItemsContainerDlg.h"
 #include "dbDefs.h"
-#include "..\DBFormat\DataRPGTmp.h"
+#include "../DBFormat/DataRPGTmp.h"
 
 namespace NDb
 {

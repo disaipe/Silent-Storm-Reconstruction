@@ -3,7 +3,7 @@
 //#include <string.h>
 #include <fstream>
 #include "Optimizer.h"
-#include "..\FileIO\streams.h"
+#include "../FileIO/streams.h"
 #include <d3dx9.h>
 
 static char* GetNextLine( char *p, int *pnLines )

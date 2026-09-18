@@ -19,11 +19,11 @@
 #include "UICommCtrls.h"       // NUI::CVideoPlayer (the final-credits .bik)
 #include "iDesktopWindow.h"    // NUI::CDesktopWindow (CCreditsUI base)
 #include "Camera.h"            // ICamera::SCameraPos
-#include "..\Input\Bind.h"     // NInput::CBind / SEvent / SetSection
-#include "..\MiscDll\Commands.h"   // NGlobal::RegisterCmd
-#include "..\MiscDll\LogStream.h"  // csSystem / endl
-#include "..\DBFormat\DataCamera.h"    // NDb::GetDBCamera / CDBCamera
-#include "..\DBFormat\DataFormat.h"    // NDb::GetUIContainer / CUIContainer
+#include "../Input/Bind.h"     // NInput::CBind / SEvent / SetSection
+#include "../MiscDll/Commands.h"   // NGlobal::RegisterCmd
+#include "../MiscDll/LogStream.h"  // csSystem / endl
+#include "../DBFormat/DataCamera.h"    // NDb::GetDBCamera / CDBCamera
+#include "../DBFormat/DataFormat.h"    // NDb::GetUIContainer / CUIContainer
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //  iCreditsScreen  --  the credits roll.  Reconstructed from the release module

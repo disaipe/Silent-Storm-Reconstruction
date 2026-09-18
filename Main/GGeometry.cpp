@@ -1,8 +1,8 @@
 #include "StdAfx.h"
 #include "GGeometry.h"
 #include "Bound.h"
-#include "..\Misc\StrProc.h"
-#include "..\MiscDll\Commands.h"
+#include "../Misc/StrProc.h"
+#include "../MiscDll/Commands.h"
 #include "GGeometryUtil.h"
 
 namespace NGfx

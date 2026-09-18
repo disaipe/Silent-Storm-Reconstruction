@@ -1,7 +1,7 @@
 #include "StdAfx.h"
 #include "PropMap.h"
 #include "UIView.h"
-#include "..\DBFormat\DataInterface.h"
+#include "../DBFormat/DataInterface.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 void CUIView::OnUiButton() 

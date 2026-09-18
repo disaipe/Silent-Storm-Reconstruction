@@ -3,16 +3,16 @@
 #include "G2DView.h"
 #include "wInterface.h"
 #include "RPGUnitInfo.h"
-#include "..\DBFormat\DataFormat.h"
-#include "..\DBFormat\DataInterface.h"
-#include "..\DBFormat\DataMap.h"		// NDb::EDiplomacyState / DS_ENEMY for the ally/enemy turn split
+#include "../DBFormat/DataFormat.h"
+#include "../DBFormat/DataInterface.h"
+#include "../DBFormat/DataMap.h"		// NDb::EDiplomacyState / DS_ENEMY for the ally/enemy turn split
 #include "Sound.h"
 #include "iMission.h"
 #include "Interface.h"
 #include "iCommonUI.h"
 #include "scFlowChartItems.h"	// NScenario::CScenarioZone -- the objectives-button gate (retail @0x24d670)
 #include "iTopPanel.h"
-#include "..\Misc\StrProc.h"
+#include "../Misc/StrProc.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NUI
 {

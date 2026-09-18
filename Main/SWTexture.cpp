@@ -2,7 +2,7 @@
 #include "GPixelFormat.h"
 #include "mmpFormat.h"
 #include "SWTexture.h"
-#include "..\Misc\StrProc.h"
+#include "../Misc/StrProc.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NGScene
 {

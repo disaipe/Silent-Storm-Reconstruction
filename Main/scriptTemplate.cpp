@@ -1,7 +1,7 @@
 #include "stdafx.h"
 //
 #include "wMain.h"
-#include "..\MiscDll\LogStream.h"
+#include "../MiscDll/LogStream.h"
 #include "aiRoute.h"
 //
 #include "A5Script.h"

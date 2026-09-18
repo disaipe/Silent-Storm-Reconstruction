@@ -7,9 +7,9 @@
 #include "RPGItemSet.h" // CRAP
 #include "wUnitAttack.h"
 #include "wObject.h"
-#include "..\DBFormat\DataRPG.h"
-#include "..\misc\RandomGen.h"
-#include "..\MiscDll\LogStream.h"
+#include "../DBFormat/DataRPG.h"
+#include "../misc/RandomGen.h"
+#include "../MiscDll/LogStream.h"
 #include "wAckBase.h"
 #include "RPGCritical.h"
 #include "time.h"

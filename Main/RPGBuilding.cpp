@@ -2,7 +2,7 @@
 #include "RPGGame.h"
 #include "RPGAttackMech.h"
 #include "BuildingGrid.h"
-#include "..\MiscDll\LogStream.h"
+#include "../MiscDll/LogStream.h"
 namespace NRPG
 {
 ////////////////////////////////////////////////////////////////////////////////////////////////////

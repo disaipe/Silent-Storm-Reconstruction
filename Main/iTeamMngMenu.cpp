@@ -3,12 +3,12 @@
 #include "iMain.h"
 #include "GView.h"
 #include "G2DView.h"
-#include "..\Misc\StrProc.h"
-#include "..\MiscDll\Commands.h"
-#include "..\Input\Bind.h"
-#include "..\DBFormat\DataRPG.h"
-#include "..\DBFormat\DataFormat.h"
-#include "..\DBFormat\DataInterface.h"
+#include "../Misc/StrProc.h"
+#include "../MiscDll/Commands.h"
+#include "../Input/Bind.h"
+#include "../DBFormat/DataRPG.h"
+#include "../DBFormat/DataFormat.h"
+#include "../DBFormat/DataInterface.h"
 #include "RPGMerc.h"
 #include "RPGUnit.h"
 #include "RPGUnitInfo.h"
@@ -16,8 +16,8 @@
 #include "RPGItemInfo.h"
 #include "RPGItem.h"
 #include "RPGPerk.h"					// NRPG::CPerk/CPerksTree (CUnitPerksPanel rows)
-#include "..\DBFormat\DataPerk.h"		// NDb::CDBPerk (perk row icon/tooltip)
-#include "..\DBFormat\DataMisc.h"		// NDb::CMedal (CUnitMedalsPanel rows)
+#include "../DBFormat/DataPerk.h"		// NDb::CDBPerk (perk row icon/tooltip)
+#include "../DBFormat/DataMisc.h"		// NDb::CMedal (CUnitMedalsPanel rows)
 #include "Interface.h"
 #include "GSceneUtils.h"	// NGScene::CCFBTransform (UIWrap.h dependency)
 #include "UIWrap.h"			// NUI::CImageDraw -- the recruit-card placeholder background

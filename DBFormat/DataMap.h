@@ -4,8 +4,8 @@
 #pragma once
 #endif // _MSC_VER > 1000
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-#include "..\ADOImport\BasicDB.h"
-#include "..\Misc\Geom.h"
+#include "../ADOImport/BasicDB.h"
+#include "../Misc/Geom.h"
 #include "DataConst.h"
 #include "DataRPG.h"
 #include "DataFormat.h"

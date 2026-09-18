@@ -4,11 +4,11 @@
 #include "wMain.h"
 #include "wOSBase.h"
 #include "wObject.h"
-#include "..\DBFormat\DataAI.h"
-#include "..\DBFormat\DataRPG.h"    // NDb::CRPGKey (HasKey @0x3bcfb0 key-number match)
-#include "..\DBFormat\DataMisc.h"   // NDb::CRPGPicklock (the pick attempt @0x3bdb70)
-#include "..\Misc\RandomGen.h"      // SRand (the tick-seeded local pick roll)
-#include "..\MiscDll\LogStream.h"   // csSystem pick-attempt log lines (retail verbatim)
+#include "../DBFormat/DataAI.h"
+#include "../DBFormat/DataRPG.h"    // NDb::CRPGKey (HasKey @0x3bcfb0 key-number match)
+#include "../DBFormat/DataMisc.h"   // NDb::CRPGPicklock (the pick attempt @0x3bdb70)
+#include "../Misc/RandomGen.h"      // SRand (the tick-seeded local pick roll)
+#include "../MiscDll/LogStream.h"   // csSystem pick-attempt log lines (retail verbatim)
 #include "RPGUnitInfo.h"
 #include "RPGUnitMission.h"         // NRPG::IUnitMission (GetInventory/GetSkillValue/HasPerk)
 #include "RPGItemSet.h"             // NRPG::CPicklockItem (WorkingPicklock @0x3bcd60)

@@ -11,7 +11,7 @@ const char BUILDING_DIR[] = "Buildings\\";
 const int MIN_FLOOR = -10;
 const int MAX_FLOOR = 10;
 
-#include "..\Main\BuildingInfo.h"
+#include "../Main/BuildingInfo.h"
 void MakeBuildingInfo( const CPlacement *pPl, NBuilding::CBuildInfo *pInfo );
 inline bool operator==( const NBuilding::SBuildFragment &a, const NBuilding::SBuildFragment &b )
 {

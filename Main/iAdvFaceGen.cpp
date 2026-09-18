@@ -5,15 +5,15 @@
 #include "GSceneUtils.h"
 #include "iMain.h"
 #include "G2DView.h"
-#include "..\Misc\StrProc.h"
-#include "..\MiscDll\Commands.h"
-#include "..\Input\Bind.h"
-#include "..\DBFormat\DataRPG.h"
-#include "..\DBFormat\DataDifficulty.h"
-#include "..\DBFormat\DataFormat.h"
-#include "..\DBFormat\DataInterface.h"
-#include "..\DBFormat\DataAck.h"        // NDb::CDBAck / CDBAckInfo (voice-preview ack lookup)
-#include "..\ADOImport\BasicDB.h"       // NDatabase::GetTable / CDBIterator
+#include "../Misc/StrProc.h"
+#include "../MiscDll/Commands.h"
+#include "../Input/Bind.h"
+#include "../DBFormat/DataRPG.h"
+#include "../DBFormat/DataDifficulty.h"
+#include "../DBFormat/DataFormat.h"
+#include "../DBFormat/DataInterface.h"
+#include "../DBFormat/DataAck.h"        // NDb::CDBAck / CDBAckInfo (voice-preview ack lookup)
+#include "../ADOImport/BasicDB.h"       // NDatabase::GetTable / CDBIterator
 #include "wInterface.h"
 #include "Sound.h"
 #include "RPGUnit.h"
@@ -28,7 +28,7 @@
 #include "iAdvFaceGen.h"
 #include "iRenderWorld.h"
 #include "iGlobalMap.h"
-#include "..\DBFormat\DataCamera.h"
+#include "../DBFormat/DataCamera.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NUI
 {

@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 #include "wUICommands.h"
-#include "..\DBFormat\DataSound.h"		// complete NDb::CSound for CUICmdPlaySound's CDBPtr saveload factory
+#include "../DBFormat/DataSound.h"		// complete NDb::CSound for CUICmdPlaySound's CDBPtr saveload factory
 //
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NWorld

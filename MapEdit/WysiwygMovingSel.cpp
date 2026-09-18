@@ -1,7 +1,7 @@
 #include "StdAfx.h"
 #include "WysiwygMovingSel.h"
 #include "MEUserSettings.h"
-#include "..\Main\Grid.h"
+#include "../Main/Grid.h"
 /////////////////////////////////////////////////////////////////////////////////////
 namespace NWysiwyg
 {

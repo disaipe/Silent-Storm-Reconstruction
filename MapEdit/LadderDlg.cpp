@@ -4,8 +4,8 @@
 #include "stdafx.h"
 #include "MapEdit.h"
 #include "LadderDlg.h"
-#include "..\Main\BuildingInfo.h"
-#include "..\Input\Bind.h"
+#include "../Main/BuildingInfo.h"
+#include "../Input/Bind.h"
 
 
 // CLadderDlg dialog

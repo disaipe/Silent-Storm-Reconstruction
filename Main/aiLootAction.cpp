@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 //
-#include "..\DBFormat\DataRPG.h" // NDb::EShootMode (aiInventory.h decls reference it)
+#include "../DBFormat/DataRPG.h" // NDb::EShootMode (aiInventory.h decls reference it)
 #include "aiUnit.h"
 #include "aiInventory.h"      // NAI::CAIInventory: IsItemNecessary / GetMostNecessaryItem
 #include "aiWeapon.h"         // NAI::CAIFireArmsWeapon (the IAIInventoryItem to drop)

@@ -11,12 +11,12 @@
 #include "iCommonUI.h"
 #include "iDesktopWindow.h"
 #include "iSpecialView.h"
-#include "..\Misc\BasicShare.h"
-#include "..\DBFormat\DataRPG.h"
-#include "..\DBFormat\DataMap.h"
-#include "..\DBFormat\DataFormat.h"
-#include "..\DBFormat\DataScenario.h"
-#include "..\DBFormat\DataInterface.h"
+#include "../Misc/BasicShare.h"
+#include "../DBFormat/DataRPG.h"
+#include "../DBFormat/DataMap.h"
+#include "../DBFormat/DataFormat.h"
+#include "../DBFormat/DataScenario.h"
+#include "../DBFormat/DataInterface.h"
 #include "scScenarioTracker.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 extern CBasicShare<int, CChapterInfoLoader> shareChapterInfo;

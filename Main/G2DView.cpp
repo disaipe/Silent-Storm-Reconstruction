@@ -7,9 +7,9 @@
 #include "GTexture.h"
 #include "GMemFormat.h"
 #include "GMemBuilder.h"
-#include "..\Misc\BasicShare.h"
-#include "..\DBFormat\DataFormat.h"
-#include "..\DBFormat\DataMap.h"
+#include "../Misc/BasicShare.h"
+#include "../DBFormat/DataFormat.h"
+#include "../DBFormat/DataMap.h"
 #include "2DScene.h"
 #include "G2DView.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////

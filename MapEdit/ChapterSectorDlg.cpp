@@ -7,7 +7,7 @@
 #include "TreeSelItemDlg.h"
 #include "ItemsMgr.h"
 #include "dbDefs.h"
-#include "..\Main\ChapterInfo.h"
+#include "../Main/ChapterInfo.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

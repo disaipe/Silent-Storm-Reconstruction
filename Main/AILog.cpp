@@ -15,8 +15,8 @@
 #include "RPGItem.h"
 #include "RPGItemSet.h"
 
-#include "..\DBFormat\DataConst.h"
-#include "..\DBFormat\DataRPG.h"
+#include "../DBFormat/DataConst.h"
+#include "../DBFormat/DataRPG.h"
 
 namespace NAI
 {

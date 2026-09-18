@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 #include "iLoading.h"
-#include "..\DBFormat\DataFormat.h"   // NDb::GetUITexture / NDb::GetUIContainer
+#include "../DBFormat/DataFormat.h"   // NDb::GetUITexture / NDb::GetUIContainer
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Reconstructed release module iLoading.obj:
 //   NUI::CLoadingUI (a CWindow splash/progress window) + the NGame loading-screen lifecycle free fns

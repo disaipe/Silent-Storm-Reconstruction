@@ -42,12 +42,12 @@
 #include <algorithm>
 using namespace std;
 
-#include "..\misc\basic2.h"
-#include "..\misc\Tools.h"
-#include "..\FileIO\basicChunk1.h"
-#include "..\ADOImport\BasicDB.h"
-#include "..\misc\Geom.h"
-#include "..\misc\2DArray.h"
+#include "../misc/basic2.h"
+#include "../misc/Tools.h"
+#include "../FileIO/basicChunk1.h"
+#include "../ADOImport/BasicDB.h"
+#include "../misc/Geom.h"
+#include "../misc/2DArray.h"
 
 #define for if(false); else for
 //#define ASSERT( a ) if ( !(a) ) __debugbreak();

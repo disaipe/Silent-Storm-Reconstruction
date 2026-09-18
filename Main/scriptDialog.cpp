@@ -5,7 +5,7 @@
 #include "wMain.h"
 #include "wDialog.h"
 #include "wUICommands.h"		// NWorld::CUICmdPlayDialog (DialogPlay returns its wait id)
-#include "..\DBFormat\DataAck.h"
+#include "../DBFormat/DataAck.h"
 //
 #include "scriptDialog.h"
 //

@@ -16,8 +16,8 @@
 #include "GRenderCore.h"
 #include "GRenderLight.h"
 #include "GCombiner.h"
-#include "..\Misc\HPTimer.h"
-#include "..\Misc\2DArray.h"
+#include "../Misc/HPTimer.h"
+#include "../Misc/2DArray.h"
 #include "GfxUtils.h"
 #include "GRenderFactor.h"
 #include "GParticleInfo.h"
@@ -26,10 +26,10 @@
 #include "GShadowMap.h" // CRAP
 #include "GDecal.h"
 #include "GDecalGeometry.h"
-#include "..\Misc\RandomGen.h"
+#include "../Misc/RandomGen.h"
 
-#include "..\MiscDll\Commands.h" // for lm command
-#include "..\MiscDll\LogStream.h"
+#include "../MiscDll/Commands.h" // for lm command
+#include "../MiscDll/LogStream.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 const float F_SELECTION_STEP = 0.03f;
 const int N_SKIP_IGNORED_TEST = -1;

@@ -2,7 +2,7 @@
 #include "GGeometryUtil.h"
 
 /*#include <d3dx8.h>
-#include "..\Misc\Win32Helper.h"
+#include "../Misc/Win32Helper.h"
 namespace NGfx
 {
 	externA5 NWin32Helper::com_ptr<IDirect3DDevice8> pDevice;

@@ -6,9 +6,9 @@
 #include "aiRender.h"
 #include "wTSFlags.h"
 #include "GParticleInfo.h"
-#include "..\Misc\randomGen.h"
-#include "..\DBFormat\DataTerrain.h"
-#include "..\DBFormat\DataFormat.h"
+#include "../Misc/randomGen.h"
+#include "../DBFormat/DataTerrain.h"
+#include "../DBFormat/DataFormat.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NGScene
 {

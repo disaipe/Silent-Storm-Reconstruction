@@ -1,7 +1,7 @@
 #include "StdAfx.h"
-#include "..\ADOImport\BasicDB.h"
-#include "..\Misc\BasicFactory.h"
-#include "..\FileIO\BasicChunk1.h"
+#include "../ADOImport/BasicDB.h"
+#include "../Misc/BasicFactory.h"
+#include "../FileIO/BasicChunk1.h"
 #include <strstream>
 
 #import "C:\Program Files (x86)\Common Files\System\ADO\msado15.dll" no_namespace rename("EOF", "EndOfFile")

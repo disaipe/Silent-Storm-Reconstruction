@@ -5,14 +5,14 @@
 #include "wInterface.h"
 #include "wMisc.h"			// NWorld::GetDMeshUnit -- clue ("ear") markers over heard-not-seen units
 #include "RPGItemInfo.h"
-#include "..\Misc\StrProc.h"
-#include "..\Input\Bind.h"
-#include "..\MiscDll\Commands.h"	// NGlobal::GetVar -- the "ui_showhints" gate of the hint-icon pass (retail @0x2130c0)
-#include "..\DBFormat\DataFormat.h"
-#include "..\DBFormat\DataAck.h"
-#include "..\DBFormat\DataInterface.h"
-#include "..\DBFormat\DataRPG.h"
-#include "..\DBFormat\DataMap.h"
+#include "../Misc/StrProc.h"
+#include "../Input/Bind.h"
+#include "../MiscDll/Commands.h"	// NGlobal::GetVar -- the "ui_showhints" gate of the hint-icon pass (retail @0x2130c0)
+#include "../DBFormat/DataFormat.h"
+#include "../DBFormat/DataAck.h"
+#include "../DBFormat/DataInterface.h"
+#include "../DBFormat/DataRPG.h"
+#include "../DBFormat/DataMap.h"
 #include "Sound.h"
 #include "RWGame.h"			// NRender::IRenderGame::GetHeadController (the shared portrait heads controller)
 #include "LSController.h"	// NLSHead::CHeadsController::PlaySequence -- drives the HUD portrait's mouth/gesture

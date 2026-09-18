@@ -2,13 +2,13 @@
 #include "LSHead.h"
 #include "GResource.h"
 #include "GGeometry.h"
-#include "..\Misc\BasicShare.h"
-#include "..\DBFormat\DataFormat.h"
+#include "../Misc/BasicShare.h"
+#include "../DBFormat/DataFormat.h"
 #include "GfxBuffers.h"      // NGfx::MakeTexture / CTextureLock / CTexture (face-texture bake upload)
 #include "GPixelFormat.h"    // NGfx::SPixel8888
 #include "SWTexture.h"       // NGScene::CSWTextureData (source texture-layer pixels)
 #include "2DSceneSW.h"       // NGScene::GetSWTex
-#include "..\ADOImport\BasicDB.h"   // NDatabase::GetTable / CDBTable / CDBIterator (FaceGen hair/glasses bars)
+#include "../ADOImport/BasicDB.h"   // NDatabase::GetTable / CDBTable / CDBIterator (FaceGen hair/glasses bars)
 #include "ModManager.h"      // v1.2 @0x6602e0: CModManager::GetBaseVersion keys the idle-table rebuild
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

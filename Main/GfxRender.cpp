@@ -6,8 +6,8 @@
 #include "Gfx.h"
 #include "GfxShaders.h"
 #include "GfxShadersDescr.h"
-#include "..\MiscDll\Commands.h"      // REGISTER_VAR_EX (gfx_maxlag / gfx_register_resolution)
-#include "..\FileIO\BasicChunk1.h"    // START_REGISTER / FINISH_REGISTER
+#include "../MiscDll/Commands.h"      // REGISTER_VAR_EX (gfx_maxlag / gfx_register_resolution)
+#include "../FileIO/BasicChunk1.h"    // START_REGISTER / FINISH_REGISTER
 
 namespace NGfx
 {

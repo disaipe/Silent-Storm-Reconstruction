@@ -1,7 +1,7 @@
 #include "StdAfx.h"
 #include "RPGMerc.h"
 #include "A5Script.h"
-#include "..\Misc\RandomGen.h"
+#include "../Misc/RandomGen.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NRPG
 {

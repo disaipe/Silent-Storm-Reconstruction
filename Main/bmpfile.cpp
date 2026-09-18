@@ -1,7 +1,7 @@
 #include "StdAfx.h"
 #include "bmpfile.h"
-#include "..\Misc\2Darray.h"
-#include "..\FileIO\Streams.h"
+#include "../Misc/2Darray.h"
+#include "../FileIO/Streams.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Reconstructed from release Game.exe (WriteBMP @ 0x004b9e90) via Ghidra decompilation against the
 // matched PDB. Writes a standard uncompressed 32-bit BMP. NGfx::SPixel8888 is laid out b,g,r,a in

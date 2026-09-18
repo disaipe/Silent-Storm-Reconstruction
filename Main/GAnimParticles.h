@@ -5,7 +5,7 @@
 #endif // _MSC_VER > 1000
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #include "GAnimBase.h"
-#include "..\DBFormat\DataPhys.h"   // complete NDb::CDBPhysParams for CASphereSet::pPhys (CDBPtr needs full type)
+#include "../DBFormat/DataPhys.h"   // complete NDb::CDBPhysParams for CASphereSet::pPhys (CDBPtr needs full type)
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NAI
 {

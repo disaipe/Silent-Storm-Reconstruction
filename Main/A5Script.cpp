@@ -1,13 +1,13 @@
 #include "StdAfx.h"
-#include "..\Misc\StrProc.h"
-#include "..\MiscDll\LogStream.h"
-#include "..\DBFormat\DataRPG.h"
+#include "../Misc/StrProc.h"
+#include "../MiscDll/LogStream.h"
+#include "../DBFormat/DataRPG.h"
 #include "rpgGlobal.h"
 #include "scScenarioTracker.h"
 #include "wMain.h"
 #include "wUICommands.h"
 #include "wInterface.h"
-#include "..\Script\lua.h"
+#include "../Script/lua.h"
 #include "A5Script.h"
 #include "scriptUI.h"		// NScript::RegisterScriptUITagMethods (window.x gettable/settable tag methods)
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -240,7 +240,7 @@ static void PrintScriptState( const string &szID, const vector<wstring> &szParam
 	else
 		csSystem << pScr->GetObjectAsText( strParam.c_str() );
 }
-#include "..\Misc\RandomGen.h"
+#include "../Misc/RandomGen.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 static void TestRnd( const string &szID, const vector<wstring> &szParams, void *pContext )
 {

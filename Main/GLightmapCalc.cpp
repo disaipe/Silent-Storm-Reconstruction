@@ -2,7 +2,7 @@
 #include "GfxBuffers.h"
 #include "GLightmapCalc.h"
 #include "GGeometry.h"
-#include "..\Misc\RandomGen.h"
+#include "../Misc/RandomGen.h"
 #include "GRenderExecute.h"
 #include "GShadowMap.h"
 #include "GfxUtils.h"
@@ -11,8 +11,8 @@
 #include "GMaterial.h"
 #include "GScene.h"
 #include "Gfx.h"
-#include "..\MiscDll\Commands.h"      // REGISTER_VAR (gfx_cl_use_bump*)
-#include "..\FileIO\BasicChunk1.h"    // START_REGISTER / FINISH_REGISTER
+#include "../MiscDll/Commands.h"      // REGISTER_VAR (gfx_cl_use_bump*)
+#include "../FileIO/BasicChunk1.h"    // START_REGISTER / FINISH_REGISTER
 
 // number of sky directions used for dynamic lightmaps
 const int N_SKY_DIRECTIONS = 12;

@@ -6,13 +6,13 @@
 #include "GTerrainTexture.h"
 #include "GSceneUtils.h"
 #include "Grid.h"
-#include "..\Misc\RandomGen.h"
-#include "..\DBFormat\DataTerrain.h"
-#include "..\DBFormat\DataFormat.h"
+#include "../Misc/RandomGen.h"
+#include "../DBFormat/DataTerrain.h"
+#include "../DBFormat/DataFormat.h"
 #include "GGrass.h"
-#include "..\Misc\HPTimer.h"
-#include "..\MiscDll\Commands.h"      // REGISTER_VAR_EX (gfx_terrain_565)
-#include "..\FileIO\BasicChunk1.h"    // START_REGISTER / FINISH_REGISTER
+#include "../Misc/HPTimer.h"
+#include "../MiscDll/Commands.h"      // REGISTER_VAR_EX (gfx_terrain_565)
+#include "../FileIO/BasicChunk1.h"    // START_REGISTER / FINISH_REGISTER
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NGScene
 {

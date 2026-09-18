@@ -1,7 +1,7 @@
 #include "StdAfx.h"
 #include "WysiwygSphereHMap.h"
-#include "..\Main\Grid.h"
-#include "..\Main\METerrain.h"
+#include "../Main/Grid.h"
+#include "../Main/METerrain.h"
 #include "TerrainUndo.h"
 
 namespace NWysiwyg

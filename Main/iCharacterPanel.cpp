@@ -5,16 +5,16 @@
 #include "RPGUnitInfo.h"
 #include "RPGUnit.h"        // NRPG::CUnit complete type (GetRPGUnit()->GetName() for the fullname header)
 #include "RPGPerk.h"
-#include "..\DBFormat\DataRPG.h"
-#include "..\DBFormat\DataFormat.h"
-#include "..\DBFormat\DataInterface.h"
+#include "../DBFormat/DataRPG.h"
+#include "../DBFormat/DataFormat.h"
+#include "../DBFormat/DataInterface.h"
 #include "Sound.h"
 #include "iMission.h"
 #include "Interface.h"
 #include "iCommonUI.h"
 #include "iCriticalIcons.h"
 #include "iCharacterPanel.h"
-#include "..\Misc\StrProc.h"
+#include "../Misc/StrProc.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NUI
 {

@@ -1,9 +1,9 @@
 #include "StdAfx.h"
 #include "wMine.h"
-#include "..\Misc\RandomGen.h"
-#include "..\DBFormat\DataRPG.h"
-#include "..\DBFormat\DataFormat.h"
-#include "..\DBFormat\DataGeometry.h"
+#include "../Misc/RandomGen.h"
+#include "../DBFormat/DataRPG.h"
+#include "../DBFormat/DataFormat.h"
+#include "../DBFormat/DataGeometry.h"
 #include "wMain.h"
 #include "wUnitServer.h"   // complete NWorld::CUnitServer before CMinesWorld forces the CWorld TBS template instantiation
 #include "Transform.h"

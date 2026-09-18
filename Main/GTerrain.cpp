@@ -9,9 +9,9 @@
 #include "GView.h"
 #include "Grid.h"
 #include "GMatShare.h"
-#include "..\DBFormat\DataFormat.h"
-#include "..\DBFormat\DataMap.h"
-#include "..\Misc\StrProc.h"
+#include "../DBFormat/DataFormat.h"
+#include "../DBFormat/DataMap.h"
+#include "../Misc/StrProc.h"
 #include "GGrass.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NGScene

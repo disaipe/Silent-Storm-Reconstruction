@@ -2,7 +2,7 @@
 #include "ModManager.h"
 #include "DG.h"						// ClearHoldQueue
 #include "GResource.h"				// NGScene::{CloseAllResources,ClearResourceDirs,AddResourceDir}
-#include "..\ADOImport\BasicDB.h"	// NDatabase::{ClearDatabaseTables,Serialize} + CFileStream (via BasicChunk1.h)
+#include "../ADOImport/BasicDB.h"	// NDatabase::{ClearDatabaseTables,Serialize} + CFileStream (via BasicChunk1.h)
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // CModManager -- mod enumeration / activation. Reconstructed from
 // .\release\ModManager.obj (Game.exe). All methods are static; state is file-scope.

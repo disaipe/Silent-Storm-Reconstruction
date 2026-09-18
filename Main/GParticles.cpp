@@ -3,8 +3,8 @@
 #include "GParticleFormat.h"
 #include "GGrass.h"
 #include "GParticleInfo.h"
-#include "..\DBFormat\DataTerrain.h"
-#include "..\DBFormat\DataFormat.h"
+#include "../DBFormat/DataTerrain.h"
+#include "../DBFormat/DataFormat.h"
 #include "Grid.h"
 #include "Interpolate.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////

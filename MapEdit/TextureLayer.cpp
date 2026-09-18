@@ -3,8 +3,8 @@
 #include "Layers.h"
 #include "dbDefs.h"
 #include "MEUserSettings.h"
-#include "..\Input\Bind.h"
-#include "..\Main\iMain.h"
+#include "../Input/Bind.h"
+#include "../Main/iMain.h"
 
 const int TRANSPARENT_TILE = 11;
 ////////////////////////////////////////////////////////////////////////////////////////////////////

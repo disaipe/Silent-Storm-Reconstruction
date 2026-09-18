@@ -12,7 +12,7 @@ namespace NScript
 {
 	class CScript;		// retail CWindow window-scripting members (eventsMap/pScript, op& tags 16/17)
 }
-#include "..\MiscDll\LogStream.h"
+#include "../MiscDll/LogStream.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NUI
 {

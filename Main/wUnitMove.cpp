@@ -10,7 +10,7 @@
 #include "RPGItem.h"
 #include "RPGUnitMission.h"
 #include "aiMoves.h"
-#include "..\DBFormat\DataRPG.h"
+#include "../DBFormat/DataRPG.h"
 namespace NWorld
 {
 ////////////////////////////////////////////////////////////////////////////////////////////////////

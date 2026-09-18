@@ -6,8 +6,8 @@
 #include "G2DView.h"
 #include "Interface.h"
 #include "iPopupMenu.h"
-#include "..\Misc\StrProc.h"
-#include "..\DBFormat\DataFormat.h"
+#include "../Misc/StrProc.h"
+#include "../DBFormat/DataFormat.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NUI
 {

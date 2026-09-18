@@ -2,8 +2,8 @@
 #include "LSHead.h"
 #include "LSController.h"
 #include "wInterface.h"
-#include "..\DBFormat\DataFormat.h"
-#include "..\Misc\RandomGen.h"
+#include "../DBFormat/DataFormat.h"
+#include "../Misc/RandomGen.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NLSHead
 {

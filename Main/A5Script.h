@@ -4,8 +4,8 @@
 #pragma once
 #endif // _MSC_VER > 1000
 //
-#include "..\Script\Script.h"
-#include "..\MiscDll\Commands.h"
+#include "../Script/Script.h"
+#include "../MiscDll/Commands.h"
 //
 namespace NScenario
 {

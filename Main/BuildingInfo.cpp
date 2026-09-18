@@ -1,9 +1,9 @@
 #include "StdAfx.h"
 #include "BuildingInfo.h"
-#include "..\DBFormat\DataFormat.h"
-#include "..\DBFormat\DataMap.h"
+#include "../DBFormat/DataFormat.h"
+#include "../DBFormat/DataMap.h"
 #include "Grid.h"
-#include "..\Misc\2Darray.h"
+#include "../Misc/2Darray.h"
 
 namespace NBuilding
 {

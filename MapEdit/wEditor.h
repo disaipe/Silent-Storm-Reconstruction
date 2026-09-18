@@ -4,10 +4,10 @@
 #pragma once
 #endif // _MSC_VER > 1000
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-#include "..\Main\wAnimation.h"
-#include "..\Main\wTerrain.h"
-#include "..\Main\MapBuild.h"
-#include "..\Main\terraininfo.h"
+#include "../Main/wAnimation.h"
+#include "../Main/wTerrain.h"
+#include "../Main/MapBuild.h"
+#include "../Main/terraininfo.h"
 #include "weInterface.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NRPG

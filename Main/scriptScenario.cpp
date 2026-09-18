@@ -2,12 +2,12 @@
 //
 #include "A5Script.h"
 #include "scriptCommon.h"
-#include "..\Misc\RandomGen.h"
+#include "../Misc/RandomGen.h"
 #include "scScenarioTracker.h"
 #include "scFlowChartItems.h"
 #include "wUICommands.h"
 #include "rpgGlobal.h"
-#include "..\MiscDll\LogStream.h"		// csSystem (ScenarioSetGoal/TaskComplete warning)
+#include "../MiscDll/LogStream.h"		// csSystem (ScenarioSetGoal/TaskComplete warning)
 #include "wMain.h"        // NWorld::CWorld::GetGame (SetMaxCriticalSeverity)
 #include "RPGGame.h"      // NRPG::IGame::SetMaxCriticalSeverity
 #include "aiCommander.h"  // NAI::CAICommander (LeaveToSubZone: skip AI players)

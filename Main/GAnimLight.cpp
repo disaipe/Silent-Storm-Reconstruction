@@ -1,7 +1,7 @@
 #include "StdAfx.h"
 #include "Transform.h"
 #include "GAnimLight.h"
-#include "..\DBFormat\DataFormat.h"
+#include "../DBFormat/DataFormat.h"
 #include "GScene.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NGScene

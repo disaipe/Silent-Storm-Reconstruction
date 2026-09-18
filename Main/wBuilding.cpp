@@ -1,15 +1,15 @@
 #include "StdAfx.h"
 #include "wBuilding.h"
 #include "BuildingInfo.h"
-#include "..\Misc\BasicShare.h"
+#include "../Misc/BasicShare.h"
 #include "RPGGame.h"
 #include "MakeBuilding.h"
 #include "BuildingGrid.h"
-#include "..\DBFormat\DataGeometry.h"
+#include "../DBFormat/DataGeometry.h"
 #include "Grid.h"
 #include "Transform.h"
 #include "wMain.h"
-#include "..\DBFormat\DataMap.h"
+#include "../DBFormat/DataMap.h"
 #include "aiObjectLoader.h"
 namespace NGScene
 {

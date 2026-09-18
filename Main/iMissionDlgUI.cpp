@@ -13,14 +13,14 @@
 #include "iMissionUI.h"
 #include "iMissionDlgUI.h"
 #include "iMissionExec.h"
-#include "..\Misc\StrProc.h"
-#include "..\Input\Bind.h"
-#include "..\DBFormat\DataAck.h"
-#include "..\DBFormat\DataRPG.h"
-#include "..\DBFormat\DataLight.h"
-#include "..\DBFormat\DataFormat.h"
-#include "..\DBFormat\DataCamera.h"
-#include "..\DBFormat\DataInterface.h"
+#include "../Misc/StrProc.h"
+#include "../Input/Bind.h"
+#include "../DBFormat/DataAck.h"
+#include "../DBFormat/DataRPG.h"
+#include "../DBFormat/DataLight.h"
+#include "../DBFormat/DataFormat.h"
+#include "../DBFormat/DataCamera.h"
+#include "../DBFormat/DataInterface.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NUI
 {

@@ -1,7 +1,7 @@
 #include "StdAfx.h"
 #include "aiStability.h"
 #include "aiMap.h"
-#include "..\DBFormat\DataFormat.h"
+#include "../DBFormat/DataFormat.h"
 #include "wTSFlags.h"
 #include "wInterface.h"
 #include "wOSBase.h"

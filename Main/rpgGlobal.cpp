@@ -4,13 +4,13 @@
 #include "RPGGlobal.h"
 #include "RPGStore.h"	// NRPG::CStore -- per-player vendor stock (retail side-seeded ctor @0x29a7c0 creates it)
 #include "RPGMerc.h"
-#include "..\DBFormat\DataMap.h"
-#include "..\DBFormat\DataRPG.h"
+#include "../DBFormat/DataMap.h"
+#include "../DBFormat/DataRPG.h"
 #include "scScenarioTracker.h"
 #include "RPGDiplomacy.h"
-#include "..\DBFormat\DataDifficulty.h"
-#include "..\MiscDll\LogStream.h"
-#include "..\DBFormat\DataAck.h"
+#include "../DBFormat/DataDifficulty.h"
+#include "../MiscDll/LogStream.h"
+#include "../DBFormat/DataAck.h"
 //
 namespace NRPG
 {

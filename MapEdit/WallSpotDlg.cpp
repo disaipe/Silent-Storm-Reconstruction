@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #include "mapedit.h"
 #include "WallSpotDlg.h"
-#include "..\Main\BuildingInfo.h"
+#include "../Main/BuildingInfo.h"
 #include "MESerialize.h"
-#include "..\Main\iMain.h"
-#include "..\Input\Bind.h"
+#include "../Main/iMain.h"
+#include "../Input/Bind.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

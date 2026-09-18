@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #include "mapedit.h"
 #include "FragmentDialog.h"
-#include "..\Main\BuildingInfo.h"
+#include "../Main/BuildingInfo.h"
 #include "MESerialize.h"
 #include "FinDBCmd.h"
-#include "..\DBFormat\DataMap.h"
+#include "../DBFormat/DataMap.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

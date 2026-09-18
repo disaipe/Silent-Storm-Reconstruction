@@ -1,7 +1,7 @@
 #ifndef _AI_MAP_COLOURER_H
 #define _AI_MAP_COLOURER_H
 
-#include "..\Misc\2DArray.h"
+#include "../Misc/2DArray.h"
 #include "aiMapProxy.h"
 #include "aiWaveSearch.h"
 #include "aiSimpleWaveSearch.h"

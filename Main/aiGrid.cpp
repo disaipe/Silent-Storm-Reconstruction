@@ -10,7 +10,7 @@
 #include "Bound.h"
 #include "wInterface.h"
 #include "wMine.h"
-#include "..\MiscDll\LogStream.h"
+#include "../MiscDll/LogStream.h"
 #include "aiLocker.h"
 #include "aiJob.h"
 #include "aiPassCalcJob.h"

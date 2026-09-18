@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 //
-#include "..\DBFormat\DataRPG.h"        // NDb::WT_PISTOL / WT_SUB_MACHINE_GUN -- BEFORE aiInventory.h (its NDB:: fwd-decl typo)
+#include "../DBFormat/DataRPG.h"        // NDb::WT_PISTOL / WT_SUB_MACHINE_GUN -- BEFORE aiInventory.h (its NDB:: fwd-decl typo)
 #include "aiUnit.h"            // NAI::IAIUnit (GetUnitServer/GetUnitMission/GetAIInventory/GetUnitPosition/SetReaction)
 #include "aiUnitState.h"       // NAI::SAIUnitState (pEnemy / pPossibleEnemy)
 #include "aiReactions.h"       // NAI::CAINormalReaction (the give-up fall-back)
@@ -16,9 +16,9 @@
 #include "wUnitCommands.h"     // NWorld::CCmdHide (the hide probe command)
 #include "RPGGlobal.h"         // NRPG::CGlobalGame::pDifficulty
 #include "RPGUnitMission.h"    // NRPG::IUnitMission::GetHearingProbability
-#include "..\DBFormat\DataDifficulty.h" // NDb::CDBDifficulty::nAssassinProbability
-#include "..\DBFormat\DataAI.h"         // NDb::SAISound / NDb::GetAISound
-#include "..\Misc\RandomGen.h"          // random (CRandomGenerator)
+#include "../DBFormat/DataDifficulty.h" // NDb::CDBDifficulty::nAssassinProbability
+#include "../DBFormat/DataAI.h"         // NDb::SAISound / NDb::GetAISound
+#include "../Misc/RandomGen.h"          // random (CRandomGenerator)
 //
 #include "aiAssassinReaction.h"
 //

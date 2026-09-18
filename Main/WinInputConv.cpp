@@ -1,8 +1,8 @@
 #include "StdAfx.h"
 #include "WinInputConv.h"
-#include "..\Game\WinFrame.h"
-#include "..\Input\Input.h"
-#include "..\Misc\StrProc.h"
+#include "../Game/WinFrame.h"
+#include "../Input/Input.h"
+#include "../Misc/StrProc.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Reconstruction of SWinToInputMessageConverter (retail Main.obj @0xa940 / @0xa9f0). See
 // WinInputConv.h. Ported verbatim from the oracle src/s2_swintoinputmessageconverter.h,

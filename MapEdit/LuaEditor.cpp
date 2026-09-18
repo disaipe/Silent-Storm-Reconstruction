@@ -5,8 +5,8 @@
 #include "resource.h"
 #include "LuaEditor.h"
 
-#include "..\Scintilla\SString.h"
-#include "..\Scintilla\SciLexer.h"
+#include "../Scintilla/SString.h"
+#include "../Scintilla/SciLexer.h"
 //#include "MainFrame.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW

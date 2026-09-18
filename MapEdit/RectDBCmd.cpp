@@ -2,8 +2,8 @@
 #include "RectsDBCmd.h"
 #include "Variant.h"
 #include "DbInl.h"
-#include "..\DBFormat\DataMap.h"
-#include "..\DBFormat\DataFormat.h"
+#include "../DBFormat/DataMap.h"
+#include "../DBFormat/DataFormat.h"
 
 namespace NDb
 {

@@ -5,10 +5,10 @@
 #include "G2DView.h"
 #include "GLocale.h"
 #include "GText.h"
-#include "..\Misc\StrProc.h"
-#include "..\DBFormat\DataFormat.h"
-#include "..\DBFormat\DataMap.h"
-#include "..\MiscDll\LogStream.h"   // csSystem (font-load diagnostics)
+#include "../Misc/StrProc.h"
+#include "../DBFormat/DataFormat.h"
+#include "../DBFormat/DataMap.h"
+#include "../MiscDll/LogStream.h"   // csSystem (font-load diagnostics)
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NGScene
 {

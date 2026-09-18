@@ -1,5 +1,5 @@
 #include "StdAfx.h"
-#include "..\Misc\Geom.h"
+#include "../Misc/Geom.h"
 #include "GSceneParticles.h"
 #include "GfxUtils.h"
 

@@ -6,10 +6,10 @@
 #include "wInterface.h"				// NGame::IUnitTracker, NWorld::CUnit::GetRPG
 #include "RPGUnit.h"				// NRPG::CUnit, NRPG::CMedalsGainer::GetGainedMedals / HasNewMedalToShow
 #include "RPGUnitInfo.h"			// NRPG::IUnitMissionInfo::GetRPGUnit
-#include "..\DBFormat\DataRPG.h"		// NDb::CRPGItem, SCameraParams (medal model + preview camera)
-#include "..\DBFormat\DataMisc.h"	// NDb::CMedal (pModel @+0x2c, pName @+0x28)
-#include "..\DBFormat\DataFormat.h"	// NDb::CTRndModel::CreateModel, NDb::CModel
-#include "..\DBFormat\DataInterface.h"	// NDb::GetUITexture
+#include "../DBFormat/DataRPG.h"		// NDb::CRPGItem, SCameraParams (medal model + preview camera)
+#include "../DBFormat/DataMisc.h"	// NDb::CMedal (pModel @+0x2c, pName @+0x28)
+#include "../DBFormat/DataFormat.h"	// NDb::CTRndModel::CreateModel, NDb::CModel
+#include "../DBFormat/DataInterface.h"	// NDb::GetUITexture
 #include "Interface.h"				// NUI::CInterface (GetInterface / SetCursorInfo / CreateMouseCapture)
 #include "UIBaseCtrls.h"			// CModel, CText, CImage
 #include "UICommCtrls.h"			// CListView, CButton

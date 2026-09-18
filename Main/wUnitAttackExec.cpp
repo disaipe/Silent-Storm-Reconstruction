@@ -13,17 +13,17 @@
 #include "aiMap.h"
 #include "aiCollider.h"
 #include "phCollider.h"	// PhysCollideInfo (impact path; the free NAI::CollideInfo was removed)
-#include "..\misc\RandomGen.h"
-#include "..\MiscDll\LogStream.h"
+#include "../misc/RandomGen.h"
+#include "../MiscDll/LogStream.h"
 #include "wObject.h"
 #include "wUnitStates.h"
 #include "wAckBase.h"
 #include "RPGToHit.h"
-#include "..\DBFormat\DataFormat.h"
-#include "..\DBFormat\DataSound.h"
-#include "..\DBFormat\DataRPG.h"
-#include "..\DBFormat\DataAI.h"
-#include "..\DBFormat\DataMap.h"	// NDb::EDiplomacyState / DS_ENEMY (CExecHeal::CanDoIt diplomacy gate)
+#include "../DBFormat/DataFormat.h"
+#include "../DBFormat/DataSound.h"
+#include "../DBFormat/DataRPG.h"
+#include "../DBFormat/DataAI.h"
+#include "../DBFormat/DataMap.h"	// NDb::EDiplomacyState / DS_ENEMY (CExecHeal::CanDoIt diplomacy gate)
 #include "RPGCritical.h"
 #include "wUnitAttack.h"
 #include "wUnitAttackExec.h"
@@ -33,7 +33,7 @@
 #include "wUnitQueue.h"
 #include "wDialog.h"
 #include "scriptCallLUA.h"
-#include "..\Misc\EventsBase.h"
+#include "../Misc/EventsBase.h"
 #include "eventUnit.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NWorld

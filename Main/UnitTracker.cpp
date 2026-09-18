@@ -17,10 +17,10 @@
 #include "MemObject.h"
 #include "UnitTracker.h"
 #include "iGameStates.h"	// GetSelectionColor (v1.2 selection palette)
-#include "..\Misc\StrProc.h"
-#include "..\DBFormat\DataMap.h"
-#include "..\DBFormat\DataFormat.h"
-#include "..\DBFormat\DataGeometry.h"
+#include "../Misc/StrProc.h"
+#include "../DBFormat/DataMap.h"
+#include "../DBFormat/DataFormat.h"
+#include "../DBFormat/DataGeometry.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NGame
 {

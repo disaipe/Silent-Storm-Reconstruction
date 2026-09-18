@@ -4,7 +4,7 @@
 #include "aiPosition.h"
 #include "time.h"
 #include "../DBFormat/DataAnimation.h"
-#include "..\Misc\EventsBase.h"   // NGlobal::CEventRegister (CTaskCommandSync::regOnDie, retail CRouteCommandSync::regEvent @+0x18)
+#include "../Misc/EventsBase.h"   // NGlobal::CEventRegister (CTaskCommandSync::regOnDie, retail CRouteCommandSync::regEvent @+0x18)
 #include "eventUnit.h"            // NWorld::CEventOnUnitDiedOrLoseConsciousness (the sync barrier's died/unconscious drop)
 
 namespace NWorld

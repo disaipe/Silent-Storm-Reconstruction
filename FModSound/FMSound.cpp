@@ -6,7 +6,7 @@
 #include <dsound.h>                  // NFMSound::GetSpeakerType: DirectSoundCreate + IDirectSound::GetSpeakerConfig
 #pragma comment( lib, "dsound.lib" )  // self-contained -- no vcxproj edit (DirectSound device-config query)
 #include "FMSound.h"
-#include "..\Misc\HPTimer.h"
+#include "../Misc/HPTimer.h"
 
 namespace NFMSound 
 {

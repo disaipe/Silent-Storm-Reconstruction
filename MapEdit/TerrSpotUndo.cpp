@@ -1,8 +1,8 @@
 #include "StdAfx.h"
 #include "TerrSpotUndo.h"
-#include "..\DBFormat\DataMap.h"
-#include "..\DBFormat\DataTerrain.h"
-#include "..\Main\BuildingInfo.h"
+#include "../DBFormat/DataMap.h"
+#include "../DBFormat/DataTerrain.h"
+#include "../Main/BuildingInfo.h"
 #include "weInterface.h"
 
 namespace NWysiwyg

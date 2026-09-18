@@ -1,5 +1,5 @@
 #include "StdAfx.h"
-#include "..\DBFormat\DataRPG.h"
+#include "../DBFormat/DataRPG.h"
 #include "RPGUnit.h"
 #include "RPGUnitInfo.h"
 #include "RPGCritical.h"

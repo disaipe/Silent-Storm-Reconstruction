@@ -5,7 +5,7 @@
 #include "MapEdit.h"
 #include "TextEditor.h"
 #include "Export.h"
-#include "..\Script\Script.h"
+#include "../Script/Script.h"
 #include <fstream>
 #include "MEParams.h"
 #include "MEUserSettings.h"

@@ -3,7 +3,7 @@
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
-#include "..\Input\Bind.h"
+#include "../Input/Bind.h"
 #include "wInterfaceVisitors.h"
 #include "Transform.h"   // CTransformStack (CMission::sTransform by-value member; included by TUs beyond iMission.cpp now)
 ////////////////////////////////////////////////////////////////////////////////////////////////////

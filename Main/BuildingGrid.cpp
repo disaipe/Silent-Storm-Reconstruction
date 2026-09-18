@@ -1,5 +1,5 @@
 #include "StdAfx.h"
-#include "..\Misc\2DArray.h"
+#include "../Misc/2DArray.h"
 #include "BuildingGrid.h"
 #include "BuildingInfo.h" // WALL_HEIGHT
 #include "Grid.h"

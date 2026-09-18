@@ -1,9 +1,9 @@
 #include "StdAfx.h"
 #include "MEUndoRedo.h"
-#include "..\MapEdit\history.h"
-#include "..\MapEdit\MapEdit.h"
+#include "../MapEdit/history.h"
+#include "../MapEdit/MapEdit.h"
 #include "weInterface.h"
-#include "..\Input\Bind.h"
+#include "../Input/Bind.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NMapEditor
 {

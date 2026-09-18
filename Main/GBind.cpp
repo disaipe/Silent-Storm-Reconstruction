@@ -1,5 +1,5 @@
 #include "StdAfx.h"
-#include "..\Misc\BasicShare.h"
+#include "../Misc/BasicShare.h"
 #include "GAnimFormat.h"
 #include "GBind.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////

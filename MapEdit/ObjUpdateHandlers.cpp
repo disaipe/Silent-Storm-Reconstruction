@@ -1,8 +1,8 @@
 #include "StdAfx.h"
 #include "ObjUpdateHandlers.h"
 #include "MapEdit.h"
-#include "..\Misc\BasicShare.h"
-#include "..\Main\BuildingInfo.h"
+#include "../Misc/BasicShare.h"
+#include "../Main/BuildingInfo.h"
 /////////////////////////////////////////////////////////////////////////////////////
 namespace NGScene
 {

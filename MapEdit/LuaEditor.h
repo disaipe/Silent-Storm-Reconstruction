@@ -7,8 +7,8 @@
 // LuaEditor.h : header file
 //
 
-#include "..\Scintilla\Platform.h"
-#include "..\Scintilla\scintilla.h"
+#include "../Scintilla/Platform.h"
+#include "../Scintilla/scintilla.h"
 #include "FindTextDlg.h"
 
 /////////////////////////////////////////////////////////////////////////////

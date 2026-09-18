@@ -1,7 +1,7 @@
 #include "StdAfx.h"
 #include "RPGMedals.h"
 #include "RPGUnit.h"
-#include "..\MiscDll\LogStream.h"   // CLogStream / csSystem / EConsoleColor (CC_RED=1, CC_GREEN=2)
+#include "../MiscDll/LogStream.h"   // CLogStream / csSystem / EConsoleColor (CC_RED=1, CC_GREEN=2)
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace NRPG
 {

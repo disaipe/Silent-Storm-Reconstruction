@@ -1,8 +1,8 @@
 #include "StdAfx.h"
-#include "..\FileIO\Streams.h"
-#include "..\Image\Image.h"
-#include "..\Image\ImageMMP.h"
-#include "..\Misc\StrProc.h"
+#include "../FileIO/Streams.h"
+#include "../Image/Image.h"
+#include "../Image/ImageMMP.h"
+#include "../Misc/StrProc.h"
 
 static CObj<NImage::CImageMMP> pImage;
 ////////////////////////////////////////////////////////////////////////////////////////////////////

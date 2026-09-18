@@ -1,14 +1,14 @@
 #include "StdAfx.h"
-#include "..\FileIO\Streams.h"
-#include "..\Image\Image.h"
-#include "..\Image\ImageMMP.h"
-#include "..\Image\ImageOperation.h"
-#include "..\Image\ImagePack.h"
-#include "..\Misc\StrProc.h"
+#include "../FileIO/Streams.h"
+#include "../Image/Image.h"
+#include "../Image/ImageMMP.h"
+#include "../Image/ImageOperation.h"
+#include "../Image/ImagePack.h"
+#include "../Misc/StrProc.h"
 #include <ddraw.h>
 #include "dds.h"
 
-#include "..\Image\ImageTGA.h" // for debug
+#include "../Image/ImageTGA.h" // for debug
 
 enum EImageType
 {

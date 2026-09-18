@@ -3,11 +3,11 @@
 #include "GTexture.h"
 #include "GPixelFormat.h"
 #include "mmpFormat.h"
-#include "..\Misc\StrProc.h"
-#include "..\MiscDll\Commands.h"
-#include "..\DBFormat\DataFormat.h"
+#include "../Misc/StrProc.h"
+#include "../MiscDll/Commands.h"
+#include "../DBFormat/DataFormat.h"
 #include "SWTexture.h"
-#include "..\Misc\HPTimer.h"
+#include "../Misc/HPTimer.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 bool bDXTModeOn = true;

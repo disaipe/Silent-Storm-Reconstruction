@@ -3,7 +3,7 @@
 //
 #include "wMain.h"
 #include "rpgUnit.h"
-#include "..\MiscDll\LogStream.h"
+#include "../MiscDll/LogStream.h"
 #include "scriptPtr.h"
 #include "scriptCommon.h"
 #include "scriptUnitGroup.h"

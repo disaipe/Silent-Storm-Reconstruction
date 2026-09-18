@@ -4,9 +4,9 @@
 #include "dbDefs.h"
 #include "PlacableDB.h"
 #include "ItemsMgr.h"
-#include "..\DBFormat\DataFormat.h"
-#include "..\DBFormat\DataObject.h"
-#include "..\DBFormat\DataRPG.h"
+#include "../DBFormat/DataFormat.h"
+#include "../DBFormat/DataObject.h"
+#include "../DBFormat/DataRPG.h"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 CPlacableItemsDlg::CPlacableItemsDlg( const vector<SResTree> &vResTrees )
 :CTreeSelItemDlg( vResTrees )

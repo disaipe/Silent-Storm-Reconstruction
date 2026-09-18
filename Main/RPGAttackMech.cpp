@@ -1,9 +1,9 @@
 #include "StdAfx.h"
 #include "RPGAttackMech.h"
-#include "..\DBFormat\DataRPG.h"
+#include "../DBFormat/DataRPG.h"
 // complete types CalcStructDmg needs: IWorld::GetGlobalGame, CGlobalGame::pDifficulty,
 // CDBDifficulty::f{Enemy,Our}DamageMult, IUnitMissionInfo::IsAIPlayer.
-#include "..\DBFormat\DataDifficulty.h"
+#include "../DBFormat/DataDifficulty.h"
 #include "wInterface.h"
 #include "rpgGlobal.h"
 #include "RPGUnitInfo.h"
