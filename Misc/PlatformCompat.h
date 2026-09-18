@@ -56,6 +56,8 @@ typedef void *LPVOID;
 typedef const void *LPCVOID;
 struct HWND__;
 typedef HWND__ *HWND;
+struct HINSTANCE__;
+typedef HINSTANCE__ *HINSTANCE;
 
 #ifndef TRUE
 #define TRUE 1
