@@ -186,7 +186,7 @@ struct SObjectPosition
 	int operator&( CStructureSaver &f );
 };
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-enum EPose	// DO NOT REORDER! This is tied to AP calculation!
+enum EPose : int// DO NOT REORDER! This is tied to AP calculation!
 {
 	CRAWL = 0,	// prone (crawling)
 	CROUCH,		// crouched
@@ -233,7 +233,7 @@ struct SUnitPosition
 	int operator&( CStructureSaver &f );
 };
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-enum EBlowHeight // Close combat
+enum EBlowHeight : int// Close combat
 {
 	BH_TOP,
 	BH_MIDDLE,

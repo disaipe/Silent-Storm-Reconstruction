@@ -40,7 +40,7 @@ template <int nMaxNumMatrices>
 class CMatrixStack43: public CBaseMatrixStack<nMaxNumMatrices, SHMatrix>
 {
 public :
-	CMatrixStack43() { for ( int i = 0; i < nMaxNumMatrices; i++ ) Identity( matrices + i ); }
+	CMatrixStack43() { for ( int i = 0; i < nMaxNumMatrices; i++ ) Identity( this->matrices + i ); }
 	void Push43( const SHMatrix &matrix );
 	void Push33( const SHMatrix &matrix );
 	void Push( const CVec3 &pos );
@@ -55,12 +55,12 @@ template <int nMaxNumMatrices>
 class CFBMatrixStack: public CBaseMatrixStack<nMaxNumMatrices, SFBTransform>
 {
 protected:
-	void SetToFirst() { ASSERT( nCurrentMatrix >= 0 ); nCurrentMatrix = 0; }
+	void SetToFirst() { ASSERT( this->nCurrentMatrix >= 0 ); this->nCurrentMatrix = 0; }
 public :
 	CFBMatrixStack() {}
 	//
-	void Init( const SHMatrix &matrix ) { nCurrentMatrix = 0; matrices[0].forward = matrix; InvertMatrix( &matrices[0].backward, matrix ); }
-	void Init() { nCurrentMatrix = 0; Identity( &matrices[0].forward ); Identity( &matrices[0].backward ); }
+	void Init( const SHMatrix &matrix ) { this->nCurrentMatrix = 0; this->matrices[0].forward = matrix; InvertMatrix( &this->matrices[0].backward, matrix ); }
+	void Init() { this->nCurrentMatrix = 0; Identity( &this->matrices[0].forward ); Identity( &this->matrices[0].backward ); }
 	//
 	void Push44( const SHMatrix &matrix );
 	void Push43( const SHMatrix &matrix );
@@ -100,7 +100,7 @@ public:
 	bool PushClipHint( const SBound &s );
 	void PopClipHint();
 	bool IsFullGet() const { return nClipFlags[ nClipFlagsPtr ] == 0; }
-	const SFBTransform& GetProjection() const { return matrices[0]; }
+	const SFBTransform& GetProjection() const { return this->matrices[0]; }
 	bool GetCoverRect( CTRect<float> *pRes, const CVec3 &ptCenter, float fRadius );
 };
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -310,23 +310,23 @@ inline void MultiplyTranslate43( SHMatrix *p, const SHMatrix &a, const CVec3 &b 
 template <int nMaxNumMatrices>
 inline void CMatrixStack43<nMaxNumMatrices>::Push43( const SHMatrix &matrix ) 
 {
-	ASSERT( nCurrentMatrix >= 0 );
-	Multiply43( &matrices[nCurrentMatrix + 1], matrices[nCurrentMatrix], matrix );
-	nCurrentMatrix++;
+	ASSERT( this->nCurrentMatrix >= 0 );
+	Multiply43( &this->matrices[this->nCurrentMatrix + 1], this->matrices[this->nCurrentMatrix], matrix );
+	this->nCurrentMatrix++;
 }
 template <int nMaxNumMatrices>
 inline void CMatrixStack43<nMaxNumMatrices>::Push33( const SHMatrix &matrix ) 
 {
-	ASSERT( nCurrentMatrix >= 0 );
-	Multiply33( &matrices[nCurrentMatrix + 1], matrices[nCurrentMatrix], matrix );
-	nCurrentMatrix++;
+	ASSERT( this->nCurrentMatrix >= 0 );
+	Multiply33( &this->matrices[this->nCurrentMatrix + 1], this->matrices[this->nCurrentMatrix], matrix );
+	this->nCurrentMatrix++;
 }
 template <int nMaxNumMatrices>
 inline void CMatrixStack43<nMaxNumMatrices>::Push( const CVec3 &pos ) 
 {
-	ASSERT( nCurrentMatrix >= 0 );
-	MultiplyTranslate43( &matrices[nCurrentMatrix + 1], matrices[nCurrentMatrix], pos );
-	nCurrentMatrix++;
+	ASSERT( this->nCurrentMatrix >= 0 );
+	MultiplyTranslate43( &this->matrices[this->nCurrentMatrix + 1], this->matrices[this->nCurrentMatrix], pos );
+	this->nCurrentMatrix++;
 }
 template <int nMaxNumMatrices>
 inline void CMatrixStack43<nMaxNumMatrices>::Push( const CQuat &rot )
@@ -362,53 +362,53 @@ inline void CMatrixStack43<nMaxNumMatrices>::PushScale( float val )
 template <int nMaxNumMatrices>
 inline void CFBMatrixStack<nMaxNumMatrices>::Push44( const SHMatrix &matrix ) 
 {
-	ASSERT( nCurrentMatrix >= 0 );
-	Multiply( &matrices[nCurrentMatrix + 1].forward, matrices[nCurrentMatrix].forward, matrix );
-	InvertMatrix( &matrices[nCurrentMatrix + 1].backward, matrices[nCurrentMatrix + 1].forward );
-	nCurrentMatrix++;
+	ASSERT( this->nCurrentMatrix >= 0 );
+	Multiply( &this->matrices[this->nCurrentMatrix + 1].forward, this->matrices[this->nCurrentMatrix].forward, matrix );
+	InvertMatrix( &this->matrices[this->nCurrentMatrix + 1].backward, this->matrices[this->nCurrentMatrix + 1].forward );
+	this->nCurrentMatrix++;
 }
 template <int nMaxNumMatrices>
 inline void CFBMatrixStack<nMaxNumMatrices>::Push43( const SHMatrix &matrix ) 
 {
-	ASSERT( nCurrentMatrix >= 0 );
-	MultiplyF43( &matrices[nCurrentMatrix + 1].forward, matrices[nCurrentMatrix].forward, matrix );
-	InvertMatrix( &matrices[nCurrentMatrix + 1].backward, matrices[nCurrentMatrix + 1].forward );
-	nCurrentMatrix++;
+	ASSERT( this->nCurrentMatrix >= 0 );
+	MultiplyF43( &this->matrices[this->nCurrentMatrix + 1].forward, this->matrices[this->nCurrentMatrix].forward, matrix );
+	InvertMatrix( &this->matrices[this->nCurrentMatrix + 1].backward, this->matrices[this->nCurrentMatrix + 1].forward );
+	this->nCurrentMatrix++;
 }
 template <int nMaxNumMatrices>
 inline void CFBMatrixStack<nMaxNumMatrices>::Push33( const SHMatrix &matrix ) 
 {
-	ASSERT( nCurrentMatrix >= 0 );
-	MultiplyF33( &matrices[nCurrentMatrix + 1].forward, matrices[nCurrentMatrix].forward, matrix );
-	InvertMatrix( &matrices[nCurrentMatrix + 1].backward, matrices[nCurrentMatrix + 1].forward );
-	nCurrentMatrix++;
+	ASSERT( this->nCurrentMatrix >= 0 );
+	MultiplyF33( &this->matrices[this->nCurrentMatrix + 1].forward, this->matrices[this->nCurrentMatrix].forward, matrix );
+	InvertMatrix( &this->matrices[this->nCurrentMatrix + 1].backward, this->matrices[this->nCurrentMatrix + 1].forward );
+	this->nCurrentMatrix++;
 }
 template <int nMaxNumMatrices>
 inline void CFBMatrixStack<nMaxNumMatrices>::Push33Orthonormal( const SHMatrix &matrix ) 
 {
-	ASSERT( nCurrentMatrix >= 0 );
-	MultiplyF33( &matrices[nCurrentMatrix + 1].forward, matrices[nCurrentMatrix].forward, matrix );
-	InvertMatrix( &matrices[nCurrentMatrix + 1].backward, matrices[nCurrentMatrix + 1].forward );
-	//MultiplyF33Inv( &matrices[nCurrentMatrix + 1].backward, matrices[nCurrentMatrix].backward, matrix );
-	nCurrentMatrix++;
+	ASSERT( this->nCurrentMatrix >= 0 );
+	MultiplyF33( &this->matrices[this->nCurrentMatrix + 1].forward, this->matrices[this->nCurrentMatrix].forward, matrix );
+	InvertMatrix( &this->matrices[this->nCurrentMatrix + 1].backward, this->matrices[this->nCurrentMatrix + 1].forward );
+	//MultiplyF33Inv( &this->matrices[this->nCurrentMatrix + 1].backward, this->matrices[this->nCurrentMatrix].backward, matrix );
+	this->nCurrentMatrix++;
 }
 template <int nMaxNumMatrices>
 inline void CFBMatrixStack<nMaxNumMatrices>::Push33( const SHMatrix &matrix, const SHMatrix &invMatrix ) 
 {
-	ASSERT( nCurrentMatrix >= 0 );
-	MultiplyF33( &matrices[nCurrentMatrix + 1].forward, matrices[nCurrentMatrix].forward, matrix );
-	InvertMatrix( &matrices[nCurrentMatrix + 1].backward, matrices[nCurrentMatrix + 1].forward );
-	//MultiplyF33( &matrices[nCurrentMatrix + 1].backward, matrices[nCurrentMatrix].backward, invMatrix );
-	nCurrentMatrix++;
+	ASSERT( this->nCurrentMatrix >= 0 );
+	MultiplyF33( &this->matrices[this->nCurrentMatrix + 1].forward, this->matrices[this->nCurrentMatrix].forward, matrix );
+	InvertMatrix( &this->matrices[this->nCurrentMatrix + 1].backward, this->matrices[this->nCurrentMatrix + 1].forward );
+	//MultiplyF33( &this->matrices[this->nCurrentMatrix + 1].backward, this->matrices[this->nCurrentMatrix].backward, invMatrix );
+	this->nCurrentMatrix++;
 }
 template <int nMaxNumMatrices>
 inline void CFBMatrixStack<nMaxNumMatrices>::Push( const CVec3 &pos ) 
 {
-	ASSERT( nCurrentMatrix >= 0 );
-	MultiplyTranslate( &matrices[nCurrentMatrix + 1].forward, matrices[nCurrentMatrix].forward, pos );
-	InvertMatrix( &matrices[nCurrentMatrix + 1].backward, matrices[nCurrentMatrix + 1].forward );
-	//MultiplyInvTranslate( &matrices[nCurrentMatrix + 1].backward, matrices[nCurrentMatrix].backward, pos );
-	nCurrentMatrix++;
+	ASSERT( this->nCurrentMatrix >= 0 );
+	MultiplyTranslate( &this->matrices[this->nCurrentMatrix + 1].forward, this->matrices[this->nCurrentMatrix].forward, pos );
+	InvertMatrix( &this->matrices[this->nCurrentMatrix + 1].backward, this->matrices[this->nCurrentMatrix + 1].forward );
+	//MultiplyInvTranslate( &this->matrices[this->nCurrentMatrix + 1].backward, this->matrices[this->nCurrentMatrix].backward, pos );
+	this->nCurrentMatrix++;
 }
 template <int nMaxNumMatrices>
 inline void CFBMatrixStack<nMaxNumMatrices>::Push( const CQuat &rot )
@@ -428,11 +428,11 @@ inline void CFBMatrixStack<nMaxNumMatrices>::Push( const CVec3 &pos, const CQuat
 template <int nMaxNumMatrices>
 inline void CFBMatrixStack<nMaxNumMatrices>::PushScale( float x, float y, float z )
 {
-	ASSERT( nCurrentMatrix >= 0 );
-	MultiplyFScale( &matrices[nCurrentMatrix + 1].forward, matrices[nCurrentMatrix].forward, x, y, z );
-	InvertMatrix( &matrices[nCurrentMatrix + 1].backward, matrices[nCurrentMatrix + 1].forward );
-	//MultiplyFScale( &matrices[nCurrentMatrix + 1].backward, matrices[nCurrentMatrix].backward, 1/x, 1/y, 1/z );
-	nCurrentMatrix++;
+	ASSERT( this->nCurrentMatrix >= 0 );
+	MultiplyFScale( &this->matrices[this->nCurrentMatrix + 1].forward, this->matrices[this->nCurrentMatrix].forward, x, y, z );
+	InvertMatrix( &this->matrices[this->nCurrentMatrix + 1].backward, this->matrices[this->nCurrentMatrix + 1].forward );
+	//MultiplyFScale( &this->matrices[this->nCurrentMatrix + 1].backward, this->matrices[this->nCurrentMatrix].backward, 1/x, 1/y, 1/z );
+	this->nCurrentMatrix++;
 }
 template <int nMaxNumMatrices>
 inline void CFBMatrixStack<nMaxNumMatrices>::PushScale( float val ) 

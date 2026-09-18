@@ -201,7 +201,25 @@ function(s2_module name type)
   else()
     set(_names ${${name}_SRC})
   endif()
+  # sources.cmake is baked from the original .vcxproj manifests, where file names were
+  # matched case-insensitively (Windows). On a case-sensitive filesystem a few entries
+  # therefore miss the real file (e.g. Main's "RPGGlobal.cpp" vs the on-disk
+  # "rpgGlobal.cpp"). Resolve those by a case-insensitive lookup rather than editing
+  # sources.cmake, whose own header says it stays baked from the manifests.
+  file(GLOB _ondisk RELATIVE "${root}/${name}" "${root}/${name}/*")
+  set(_lower "")
+  foreach(_f IN LISTS _ondisk)
+    string(TOLOWER "${_f}" _fl)
+    set(_ondisk_by_lower_${_fl} "${_f}")
+    list(APPEND _lower "${_fl}")
+  endforeach()
   foreach(_rel IN LISTS _names)
+    if(NOT EXISTS "${root}/${name}/${_rel}")
+      string(TOLOWER "${_rel}" _rell)
+      if(DEFINED _ondisk_by_lower_${_rell})
+        set(_rel "${_ondisk_by_lower_${_rell}}")
+      endif()
+    endif()
     get_filename_component(_abs "${root}/${name}/${_rel}" ABSOLUTE)
     list(APPEND src "${_abs}")
   endforeach()
@@ -328,16 +346,19 @@ s2_module(Script    lib LINK FileIO Input MiscDll Misc)
 s2_module(DBFormat  lib LINK ADOImport FileIO Misc)
 
 if(S2_LINUX_FULL_ENGINE)
-  # Main_SRC minus GBinkPlayer.cpp (no-op stub instead, see Main/GBinkPlayerStub.cpp) and
+  # Main_SRC minus GBinkPlayer.cpp (no-op stub instead, see Main/GBinkPlayerStub.cpp),
   # 2DSceneSW.cpp/SWTexture.cpp (the MMX software rasterizer -- a fallback path when D3D9
-  # hardware T&L isn't available; excluded rather than porting its asm until proven needed).
+  # hardware T&L isn't available; excluded rather than porting its asm until proven needed)
+  # and SplashScreen.cpp/SplashScreenDialog.cpp (a pure-GDI Win32 splash window -- no-op
+  # stub instead, see Main/SplashScreenStub.cpp).
   # NOTE: Main/Gfx.cpp, GfxRender.cpp, GfxBuffers.cpp still call raw D3D9 (IDirect3DDevice9)
   # directly -- this target will NOT compile until the dxvk-native render port lands
   # (docs/linux-port.md, render section). S2_LINUX_FULL_ENGINE exists so a plain
   # `cmake --build` succeeds on the modules that ARE ready without this expected failure.
   set(Main_SRC_LINUX ${Main_SRC})
-  list(REMOVE_ITEM Main_SRC_LINUX "GBinkPlayer.cpp" "2DSceneSW.cpp" "SWTexture.cpp")
-  list(APPEND Main_SRC_LINUX "GBinkPlayerStub.cpp")
+  list(REMOVE_ITEM Main_SRC_LINUX "GBinkPlayer.cpp" "2DSceneSW.cpp" "SWTexture.cpp"
+                                  "SplashScreen.cpp" "SplashScreenDialog.cpp")
+  list(APPEND Main_SRC_LINUX "GBinkPlayerStub.cpp" "SplashScreenStub.cpp")
   s2_module(Main lib SRC ${Main_SRC_LINUX}
                        LINK ADOImport DBFormat FileIO FModSound Input MiscDll Misc Script SDL2::SDL2)
   # MainLinux.cpp + WinFrameSDL2.cpp instead of Main.cpp + WinFrame.cpp + the .rc resource

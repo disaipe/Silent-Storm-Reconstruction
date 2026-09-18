@@ -121,7 +121,7 @@ public:
 		const CSyncSrc<T> &src = *pSource;
 		for ( int nID = src.objects[0].nNext; nID != 0; nID = src.objects[nID].nNext )
 		{
-			const CSyncSrc<T>::SObject &o = src.objects[nID];
+			const typename CSyncSrc<T>::SObject &o = src.objects[nID];
 			if ( o.nVersion <= nVersion )
 				break;
 			VisitObject( nID, o.pObject );
@@ -189,13 +189,13 @@ public:
 		for ( int k = 0; k < newSet.size(); ++k )
 		{
 			T *p = newSet[k];
-			CStuffHash::iterator i = t.find( p );
+			typename CStuffHash::iterator i = t.find( p );
 			if ( i != t.end() )
 				t.erase( i );
 			else
 				stuff[p] = Add( p );
 		}
-		for ( CStuffHash::iterator i = t.begin(); i != t.end(); ++i )
+		for ( typename CStuffHash::iterator i = t.begin(); i != t.end(); ++i )
 		{
 			CStuffHash::iterator k = stuff.find( i->first );
 			ASSERT( k != stuff.end() );
@@ -205,7 +205,7 @@ public:
 	}
 	void Set( T *p ) 
 	{
-		CStuffHash::iterator k = stuff.find( i->first );
+		typename CStuffHash::iterator k = stuff.find( i->first );
 		if ( k == stuff.end() )
 			stuff[p] = Add( p );
 	}
@@ -266,7 +266,7 @@ class CBoolSyncSrc: public CSyncSrc<T>
 	
 	void BoolSwitch( T *pObject, int nMask )
 	{
-		CObjectsHash::iterator i = objects.find( pObject );
+		typename CObjectsHash::iterator i = objects.find( pObject );
 		if ( i == objects.end() )
 		{
 			SObjectInfo &r = objects[pObject];
@@ -301,7 +301,7 @@ class CBoolSyncSrc: public CSyncSrc<T>
 	}
 	void BoolUpdate( T *pObject )
 	{
-		CObjectsHash::iterator i = objects.find( pObject );
+		typename CObjectsHash::iterator i = objects.find( pObject );
 		ASSERT( i != objects.end() );
 		if ( i->second.nTrackID >= 0 )
 			Update( i->second.nTrackID );

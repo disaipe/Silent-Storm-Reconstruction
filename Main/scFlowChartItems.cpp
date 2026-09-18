@@ -31,7 +31,7 @@ static void RemoveVectorItem( vector< CPtr<T> > *pVector, T *pItem )
 	ASSERT( IsValid( pItem ) );
 	if ( !IsValid( pItem ) || pVector == 0 )
 		return;
-	vector< CPtr<T> >::iterator i = find( pVector->begin(), pVector->end(), pItem );
+	typename vector< CPtr<T> >::iterator i = find( pVector->begin(), pVector->end(), pItem );
 	if ( i != pVector->end() )
 		pVector->erase( i );
 }

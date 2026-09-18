@@ -98,7 +98,7 @@ static T* GetBestMeleeWeaponT( const vector< CObj<T> > &weapons )
 {
 	T *pBest = 0;
 	int nBestScore = -1;
-	for ( vector< CObj<T> >::const_iterator i = weapons.begin(); i != weapons.end(); ++i )
+	for ( typename vector< CObj<T> >::const_iterator i = weapons.begin(); i != weapons.end(); ++i )
 	{
 		NDb::CRPGMeleeWeapon *pDB = (*i)->GetItem()->GetDBMeleeWeapon();
 		if ( !IsValid( pDB ) )

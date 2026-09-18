@@ -240,6 +240,64 @@ void *GetProcAddress( HMODULE hModule, const char *pszProcName );
 inline HMODULE LoadLibrary( const char *pszFileName ) { return LoadLibraryA( pszFileName ); }
 
 // ----------------------------------------------------------------------------
+//  Misc CRT spellings MSVC provides and glibc does not (or names differently).
+// ----------------------------------------------------------------------------
+typedef int64_t __int64;
+#define __assume(x) ((void)0)
+#define ZeroMemory( p, n ) memset( (p), 0, (n) )
+#define CopyMemory( d, s, n ) memcpy( (d), (s), (n) )
+inline int sprintf_s( char *pBuf, size_t nSize, const char *pszFormat, ... )
+{
+	va_list va;
+	va_start( va, pszFormat );
+	int nRes = vsnprintf( pBuf, nSize, pszFormat, va );
+	va_end( va );
+	return nRes;
+}
+
+// ----------------------------------------------------------------------------
+//  Virtual-key codes. Only the ones the engine actually names are listed; the
+//  values are the Win32 ones so saved key bindings keep their meaning.
+// ----------------------------------------------------------------------------
+#define VK_TAB     0x09
+#define VK_RETURN  0x0D
+#define VK_PRIOR   0x21
+#define VK_NEXT    0x22
+#define VK_UP      0x26
+#define VK_DOWN    0x28
+#define VK_DELETE  0x2E
+
+// ----------------------------------------------------------------------------
+//  Local time and memory status.
+// ----------------------------------------------------------------------------
+struct SYSTEMTIME
+{
+	WORD wYear, wMonth, wDayOfWeek, wDay, wHour, wMinute, wSecond, wMilliseconds;
+};
+inline void GetLocalTime( SYSTEMTIME *pTime )
+{
+	struct timespec ts;
+	clock_gettime( CLOCK_REALTIME, &ts );
+	struct tm tmv;
+	localtime_r( &ts.tv_sec, &tmv );
+	pTime->wYear = (WORD)( tmv.tm_year + 1900 );
+	pTime->wMonth = (WORD)( tmv.tm_mon + 1 );
+	pTime->wDayOfWeek = (WORD)tmv.tm_wday;
+	pTime->wDay = (WORD)tmv.tm_mday;
+	pTime->wHour = (WORD)tmv.tm_hour;
+	pTime->wMinute = (WORD)tmv.tm_min;
+	pTime->wSecond = (WORD)tmv.tm_sec;
+	pTime->wMilliseconds = (WORD)( ts.tv_nsec / 1000000 );
+}
+
+struct MEMORYSTATUS
+{
+	DWORD dwLength, dwMemoryLoad;
+	size_t dwTotalPhys, dwAvailPhys, dwTotalPageFile, dwAvailPageFile, dwTotalVirtual, dwAvailVirtual;
+};
+void GlobalMemoryStatus( MEMORYSTATUS *pStatus );
+
+// ----------------------------------------------------------------------------
 //  Timing.
 // ----------------------------------------------------------------------------
 inline DWORD GetTickCount()

@@ -323,3 +323,23 @@ void *GetProcAddress( HMODULE hModule, const char *pszProcName )
 {
 	return hModule && pszProcName ? dlsym( hModule, pszProcName ) : 0;
 }
+
+void GlobalMemoryStatus( MEMORYSTATUS *pStatus )
+{
+	if ( !pStatus )
+		return;
+	memset( pStatus, 0, sizeof( *pStatus ) );
+	pStatus->dwLength = sizeof( MEMORYSTATUS );
+	long nPages = sysconf( _SC_PHYS_PAGES );
+	long nAvail = sysconf( _SC_AVPHYS_PAGES );
+	long nPageSize = sysconf( _SC_PAGESIZE );
+	if ( nPages > 0 && nPageSize > 0 )
+	{
+		pStatus->dwTotalPhys = (size_t)nPages * (size_t)nPageSize;
+		pStatus->dwAvailPhys = nAvail > 0 ? (size_t)nAvail * (size_t)nPageSize : 0;
+		pStatus->dwMemoryLoad = pStatus->dwTotalPhys
+			? (DWORD)( 100 - ( 100ull * pStatus->dwAvailPhys / pStatus->dwTotalPhys ) ) : 0;
+	}
+	// The engine only reads dwTotalPhys/dwAvailPhys (texture-budget heuristics);
+	// the page-file and virtual figures have no meaningful Linux analogue.
+}

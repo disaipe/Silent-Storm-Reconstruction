@@ -711,7 +711,7 @@ void CMapBuilder::WriteLightRooms( SMapInfo *pInfo, NBuilding::CBuildingGrid *pG
 template<class T>
 inline void SetStuffOnLayer( T *pDst, T *pSrc, int nMaxFloor )
 {
-	for ( T::iterator i = pSrc->begin(); i != pSrc->end(); )
+	for ( typename T::iterator i = pSrc->begin(); i != pSrc->end(); )
 	{
 		T::iterator k = i++;
 		int nFloor = k->pos.nFloor;
@@ -724,7 +724,7 @@ inline void SetStuffOnLayer( T *pDst, T *pSrc, int nMaxFloor )
 template<class T>
 inline void SetObjectsOnLayer( T *pDst, T *pSrc, int nMaxFloor )
 {
-	for ( T::iterator i = pSrc->begin(); i != pSrc->end(); )
+	for ( typename T::iterator i = pSrc->begin(); i != pSrc->end(); )
 	{
 		T::iterator k = i++;
 		if ( !IsValid( k->pObject ) )
@@ -739,7 +739,7 @@ inline void SetObjectsOnLayer( T *pDst, T *pSrc, int nMaxFloor )
 template<class T>
 inline void SetWaypointsOnLayer( T *pDst, T *pSrc, int nMaxFloor )
 {
-	for ( T::iterator i = pSrc->begin(); i != pSrc->end(); )
+	for ( typename T::iterator i = pSrc->begin(); i != pSrc->end(); )
 	{
 		T::iterator j = i++;
 		T::reference k = *j;
@@ -1234,14 +1234,14 @@ void CMapBuilder::GenerateWalls()
 template<class T>
 inline void FixHeights( STerrainInfo &terrain, T *pSet )
 {
-	for ( T::iterator i = pSet->begin(); i != pSet->end(); ++i )
+	for ( typename T::iterator i = pSet->begin(); i != pSet->end(); ++i )
 		i->pos.ptPos.z += GetMeterHeightCheck( terrain, i->ptAlignTo.x, i->ptAlignTo.y );
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 template<class T>
 inline void FixHeightsPtr( STerrainInfo &terrain, T *pSet )
 {
-	for ( T::iterator i = pSet->begin(); i != pSet->end(); ++i )
+	for ( typename T::iterator i = pSet->begin(); i != pSet->end(); ++i )
 			(*i)->pos.ptPos.z += GetMeterHeightCheck( terrain, (*i)->ptAlignTo.x, (*i)->ptAlignTo.y );	
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////

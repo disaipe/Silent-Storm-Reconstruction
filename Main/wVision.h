@@ -47,7 +47,7 @@ public:
 	const list<CPtr<CObjectBase> >& GetTBSTempVisibleObjects() const { return tempVisibleObjects; }
 	bool CanSeePlayer( TPlayer *pThisPlayer ) const
 	{
-		for ( list<CPtr<TUnit> >::const_iterator k = visible.begin(); k != visible.end(); ++k )
+		for ( typename list<CPtr<TUnit> >::const_iterator k = visible.begin(); k != visible.end(); ++k )
 		{
 			if ( (*k)->GetTBSPlayer() != pThisPlayer ) 
 				return true;
@@ -61,7 +61,7 @@ template <class TOut, class TIn>
 inline bool MergeSets( TOut *pRes, const TIn &src )
 {
 	bool bRes = false;
-	for ( TIn::const_iterator i = src.begin(); i != src.end(); ++i )
+	for ( typename TIn::const_iterator i = src.begin(); i != src.end(); ++i )
 	{
 		if ( !IsInSet( *pRes, *i ) )
 		{
@@ -94,7 +94,7 @@ public:
 private:
 	void AddVisibleCorpsesToAddVisible()
 	{
-		for ( TUnitList::iterator i = visible.begin(); i != visible.end(); ++i )
+		for ( typename TUnitList::iterator i = visible.begin(); i != visible.end(); ++i )
 		{
 			// retail @0x7713f2: a corpse on someone's shoulders is not surfaced into the
 			// persistent set (CUnit vtbl+0x24 == GetCorpseCarrier).
@@ -112,7 +112,7 @@ private:
 	// first: the CanFight() dispatch @0x7704f5 has no validity check.
 	void EraseCarriedCorpses( TUnitList *pList )
 	{
-		for ( TUnitList::iterator i = pList->begin(); i != pList->end(); )
+		for ( typename TUnitList::iterator i = pList->begin(); i != pList->end(); )
 		{
 			TUnit *p = *i;
 			if ( !p->CanFight() && p->GetCorpseCarrier() )

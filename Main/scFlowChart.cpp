@@ -736,7 +736,7 @@ void CScenarioFlowChartItemsList<T>::UpdateSignature()
 		signature.resize( nMaxSize / 32 + 1 );
 		for ( int i = 0; i < signature.size(); ++i )
 			signature[i] = 0;
-		for (	list< CPtr<T> >::iterator i = items.begin(); i != items.end(); ++i )
+		for (	typename list< CPtr<T> >::iterator i = items.begin(); i != items.end(); ++i )
 			signature[ (*i)->GetInnerID() / 32 ] |= ( 1 << ( (*i)->GetInnerID() % 32 ) );
 		bUpdateSignature = false;
 	}
@@ -781,7 +781,7 @@ void CScenarioFlowChartItemsList<T>::Erase( T *pItem )
 	//
 	if ( IsContainItem( pItem ) )
 	{
-		list< CPtr<T> >::iterator i = find( items.begin(), items.end(), pItem );
+		typename list< CPtr<T> >::iterator i = find( items.begin(), items.end(), pItem );
 		if ( i != items.end() )
 		{
 			items.erase( i );
