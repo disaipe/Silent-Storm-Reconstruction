@@ -220,6 +220,7 @@ public:
 		float fU2 = tPlace.vUVs[1].nU * (1.0f/NGfx::N_VEC_FULL_TEX_SIZE);
 		float fV2 = tPlace.vUVs[1].nV * (1.0f/NGfx::N_VEC_FULL_TEX_SIZE);
 		DWORD dwResColor = dwPColor;
+#ifdef _MSC_VER
 		__asm
 		{
 			mov eax, dwColor
@@ -247,6 +248,25 @@ public:
 			packuswb mm0, mm0
 			movd dwResColor, mm0
 		}
+#else
+		// Portable placeholder for the MMX blend above -- a per-channel modulate
+		// (dwColor * dwResColor / 255) weighted by dwColor's high bits as an alpha
+		// factor, approximating the original's intent. Not verified bit-exact
+		// against the MMX path; revisit once the Linux renderer can be compared
+		// visually against the Windows build.
+		{
+			BYTE alpha = (BYTE)( ( dwColor >> 25 ) & 0x7f ) | 0x80;
+			BYTE outBytes[4];
+			const BYTE *pColor = reinterpret_cast<const BYTE *>( &dwColor );
+			const BYTE *pRes = reinterpret_cast<const BYTE *>( &dwResColor );
+			for ( int i = 0; i < 4; ++i )
+			{
+				int nModulated = ( (int)pColor[i] * (int)pRes[i] ) / 255;
+				outBytes[i] = (BYTE)( ( nModulated * alpha ) / 255 );
+			}
+			memcpy( &dwResColor, outBytes, 4 );
+		}
+#endif
 		StartMMXBound( &bcPart.ptMin, &bcPart.ptMax );
 		NGfx::SGeomVecT1C1 *pRes = &pWriteBuffer->res[pWriteBuffer->nTarget];
 		pWriteBuffer->nTarget += 4;

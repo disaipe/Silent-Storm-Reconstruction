@@ -33,6 +33,7 @@
 #define __cdecl
 #define __declspec(x)
 #define __debugbreak() __builtin_trap()
+#define __forceinline inline __attribute__(( always_inline ))
 
 // ----------------------------------------------------------------------------
 //  Basic Win32 typedefs used throughout the engine's headers.

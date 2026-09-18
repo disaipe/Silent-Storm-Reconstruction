@@ -88,7 +88,10 @@ inline void CalcBound( TRes *pRes, const TSet &a, TGetPoint GetPoint )
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // should not be mixed with fpu & mmx code from StartMMXBound to StoreMMXBoundResult
+#ifdef _MSC_VER
 #pragma warning( disable : 4799 )
+#endif
+#ifdef _MSC_VER
 inline void StartMMXBound( CVec3 *pMin, CVec3 *pMax )
 {
 	__asm
@@ -144,6 +147,36 @@ inline void StoreMMXBoundResult( CVec3 *pMin, CVec3 *pMax )
 		emms
 	}
 }
+#else
+// Portable fallback -- StartMMXBound/AddMMXBoundPoint/StoreMMXBoundResult share running
+// min/max state across calls the same way the MMX registers did on the MSVC path (see
+// above): a function-local static in an inline function is a single instance shared by
+// every translation unit that includes this header.
+inline CVec3 &MMXBoundMinAcc() { static CVec3 v; return v; }
+inline CVec3 &MMXBoundMaxAcc() { static CVec3 v; return v; }
+inline void StartMMXBound( CVec3 *pMin, CVec3 *pMax )
+{
+	MMXBoundMinAcc() = *pMin;
+	MMXBoundMaxAcc() = *pMax;
+}
+inline void AddMMXBoundPoint( const CVec3 *p )
+{
+	CVec3 &vMin = MMXBoundMinAcc();
+	CVec3 &vMax = MMXBoundMaxAcc();
+	for ( int i = 0; i < 3; ++i )
+	{
+		if ( p->m[i] < vMin.m[i] ) vMin.m[i] = p->m[i];
+		if ( p->m[i] > vMax.m[i] ) vMax.m[i] = p->m[i];
+	}
+}
+inline void StoreMMXBoundResult( CVec3 *pMin, CVec3 *pMax )
+{
+	*pMin = MMXBoundMinAcc();
+	*pMax = MMXBoundMaxAcc();
+}
+#endif // _MSC_VER
+#ifdef _MSC_VER
 #pragma warning( default : 4799 )
+#endif
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #endif
