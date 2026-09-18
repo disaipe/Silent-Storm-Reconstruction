@@ -713,7 +713,7 @@ inline void SetStuffOnLayer( T *pDst, T *pSrc, int nMaxFloor )
 {
 	for ( typename T::iterator i = pSrc->begin(); i != pSrc->end(); )
 	{
-		T::iterator k = i++;
+		typename T::iterator k = i++;
 		int nFloor = k->pos.nFloor;
 		ASSERT( nFloor >= nMaxFloor || nMaxFloor == 1000 );
 		if ( nFloor <= nMaxFloor )
@@ -726,7 +726,7 @@ inline void SetObjectsOnLayer( T *pDst, T *pSrc, int nMaxFloor )
 {
 	for ( typename T::iterator i = pSrc->begin(); i != pSrc->end(); )
 	{
-		T::iterator k = i++;
+		typename T::iterator k = i++;
 		if ( !IsValid( k->pObject ) )
 			continue;
 		int nFloor = k->pos.nFloor;
@@ -741,8 +741,8 @@ inline void SetWaypointsOnLayer( T *pDst, T *pSrc, int nMaxFloor )
 {
 	for ( typename T::iterator i = pSrc->begin(); i != pSrc->end(); )
 	{
-		T::iterator j = i++;
-		T::reference k = *j;
+		typename T::iterator j = i++;
+		typename T::reference k = *j;
 		int nFloor = k->pos.nFloor;
 		ASSERT( nFloor >= nMaxFloor );
 		if ( nFloor <= nMaxFloor )

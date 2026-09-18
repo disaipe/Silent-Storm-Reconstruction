@@ -24,17 +24,19 @@ void CPointGlowEffect::AddParticles( IParticleOutput *pRender )
 {
 	pParent->CalcSize();
 
-	const SParticleOrientationInfo &or = pRender->GetOrientationInfo();
+	// renamed from 'or': that is an alternative spelling of '||' in standard C++
+	// (MSVC only treats it as a keyword with /permissive-), so it cannot name a variable.
+	const SParticleOrientationInfo &orient = pRender->GetOrientationInfo();
 	CVec3 vRes[4];
-	float fLeng = ( vPos - or.vBasic[3] ) * or.vBasic[2];
+	float fLeng = ( vPos - orient.vBasic[3] ) * orient.vBasic[2];
 	if ( fLeng <= F_NEAR_CLIP )
 		return;
 	// Retail 0x5471f8 / v1.2 0x5472d8: build the billboard at the light,
 	// not on the camera's near plane. Perspective supplies the distance scaling.
-	vRes[0] = vPos - or.vBasic[0] * fSize - or.vBasic[1] * fSize;
-	vRes[1] = vPos + or.vBasic[0] * fSize - or.vBasic[1] * fSize;
-	vRes[2] = vPos + or.vBasic[0] * fSize + or.vBasic[1] * fSize;
-	vRes[3] = vPos - or.vBasic[0] * fSize + or.vBasic[1] * fSize;
+	vRes[0] = vPos - orient.vBasic[0] * fSize - orient.vBasic[1] * fSize;
+	vRes[1] = vPos + orient.vBasic[0] * fSize - orient.vBasic[1] * fSize;
+	vRes[2] = vPos + orient.vBasic[0] * fSize + orient.vBasic[1] * fSize;
+	vRes[3] = vPos - orient.vBasic[0] * fSize + orient.vBasic[1] * fSize;
 	CDGPtr<CPtrFuncBase<NGfx::CTexture> > pTex( textures[0] );
 	if ( !IsValid( pTex ) )
 		return;

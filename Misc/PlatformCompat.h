@@ -310,6 +310,60 @@ struct MEMORYSTATUS
 void GlobalMemoryStatus( MEMORYSTATUS *pStatus );
 
 // ----------------------------------------------------------------------------
+//  File I/O.
+//
+//  Only the read path is provided -- that is all the engine uses these Win32
+//  calls for (GResource.cpp, ModManager.cpp); everything else goes through
+//  FileIO's own streams. Backed by open/read/fstat, with the handle carried as
+//  an fd so CloseHandle can tell it apart from the heap-allocated waitables.
+// ----------------------------------------------------------------------------
+#define GENERIC_READ   0x80000000u
+#define GENERIC_WRITE  0x40000000u
+#define FILE_SHARE_READ  0x00000001u
+#define FILE_SHARE_WRITE 0x00000002u
+#define CREATE_ALWAYS   2
+#define OPEN_EXISTING   3
+#define INVALID_FILE_SIZE 0xFFFFFFFFu
+
+HANDLE CreateFileA( const char *pszFileName, DWORD dwAccess, DWORD dwShare, void *pSecAttr,
+                    DWORD dwCreation, DWORD dwFlags, HANDLE hTemplate );
+inline HANDLE CreateFile( const char *pszFileName, DWORD dwAccess, DWORD dwShare, void *pSecAttr,
+                          DWORD dwCreation, DWORD dwFlags, HANDLE hTemplate )
+{
+	return CreateFileA( pszFileName, dwAccess, dwShare, pSecAttr, dwCreation, dwFlags, hTemplate );
+}
+DWORD GetFileSize( HANDLE hFile, LPDWORD pHigh );
+BOOL ReadFile( HANDLE hFile, LPVOID pBuffer, DWORD nToRead, LPDWORD pnRead, void *pOverlapped );
+
+// ----------------------------------------------------------------------------
+//  Mouse cursor position and the pointer-acceleration query.
+//
+//  SPI_GETMOUSE reports the two acceleration thresholds plus the enable flag.
+//  SDL delivers already-accelerated motion, so acceleration is reported OFF
+//  (0,0,0) -- the engine then applies none of its own, which is what we want.
+//  GetCursorPos/ScreenToClient are answered from the SDL window (implemented
+//  in PlatformCompat.cpp via the hooks Game/WinFrameSDL2.cpp installs); with
+//  no window up yet they report the origin rather than failing.
+// ----------------------------------------------------------------------------
+#define SPI_GETMOUSE 0x0003
+struct POINT { LONG x, y; };
+
+BOOL SystemParametersInfoA( UINT uiAction, UINT uiParam, void *pvParam, UINT fWinIni );
+inline BOOL SystemParametersInfo( UINT uiAction, UINT uiParam, void *pvParam, UINT fWinIni )
+{
+	return SystemParametersInfoA( uiAction, uiParam, pvParam, fWinIni );
+}
+BOOL GetCursorPos( POINT *pPoint );
+BOOL ScreenToClient( HWND hWnd, POINT *pPoint );
+
+// Installed by the windowing layer (Game/WinFrameSDL2.cpp) so the two calls
+// above can answer from the live SDL window. Misc must not depend on SDL2
+// itself, hence the hook rather than a direct call.
+typedef void ( *TGetCursorPosHook )( long *pnScreenX, long *pnScreenY,
+                                     long *pnWindowX, long *pnWindowY );
+void SetCursorPosHook( TGetCursorPosHook pHook );
+
+// ----------------------------------------------------------------------------
 //  Timing.
 // ----------------------------------------------------------------------------
 inline DWORD GetTickCount()

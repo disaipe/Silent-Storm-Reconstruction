@@ -15,6 +15,7 @@
 #include <dirent.h>
 #include <fnmatch.h>
 #include <sys/stat.h>
+#include <fcntl.h>
 
 namespace
 {
@@ -261,6 +262,14 @@ HANDLE CreateThread( void *, size_t, LPTHREAD_START_ROUTINE pStartRoutine,
 	return new SThreadHandle( std::move( t ) );
 }
 
+namespace
+{
+	// Forward declarations for the file-handle helpers defined with the file I/O
+	// section below -- CloseHandle (above them) has to dispatch on handle kind.
+	bool IsFileHandle( HANDLE h );
+	int HandleToFd( HANDLE h );
+}
+
 DWORD WaitForSingleObject( HANDLE hHandle, DWORD dwMilliseconds )
 {
 	SWaitable *pHandle = static_cast<SWaitable *>( hHandle );
@@ -273,6 +282,11 @@ BOOL CloseHandle( HANDLE hObject )
 {
 	if ( !hObject || hObject == INVALID_HANDLE_VALUE )
 		return FALSE;
+	if ( IsFileHandle( hObject ) )   // a tagged fd, not a heap object -- see the file I/O section
+	{
+		close( HandleToFd( hObject ) );
+		return TRUE;
+	}
 	delete static_cast<SWaitable *>( hObject );
 	return TRUE;
 }
@@ -342,4 +356,131 @@ void GlobalMemoryStatus( MEMORYSTATUS *pStatus )
 	}
 	// The engine only reads dwTotalPhys/dwAvailPhys (texture-budget heuristics);
 	// the page-file and virtual figures have no meaningful Linux analogue.
+}
+
+// ----------------------------------------------------------------------------
+//  File I/O (read path only -- see the header note).
+//
+//  A file HANDLE is the fd biased by +1 and tagged in the high bit, so it can
+//  never collide with a real pointer (the waitable handles) nor with 0 /
+//  INVALID_HANDLE_VALUE, and CloseHandle can tell the two kinds apart.
+// ----------------------------------------------------------------------------
+namespace
+{
+	const uintptr_t FILE_HANDLE_TAG = (uintptr_t)1 << ( sizeof( uintptr_t ) * 8 - 2 );
+
+	inline HANDLE FdToHandle( int fd ) { return (HANDLE)( FILE_HANDLE_TAG | (uintptr_t)( fd + 1 ) ); }
+	bool IsFileHandle( HANDLE h )
+	{
+		uintptr_t v = (uintptr_t)h;
+		return h != INVALID_HANDLE_VALUE && ( v & FILE_HANDLE_TAG ) != 0;
+	}
+	int HandleToFd( HANDLE h ) { return (int)( ( (uintptr_t)h & ~FILE_HANDLE_TAG ) - 1 ); }
+}
+
+HANDLE CreateFileA( const char *pszFileName, DWORD dwAccess, DWORD, void *,
+                    DWORD dwCreation, DWORD, HANDLE )
+{
+	if ( !pszFileName )
+		return INVALID_HANDLE_VALUE;
+	int nFlags;
+	if ( dwAccess & GENERIC_WRITE )
+		nFlags = ( dwAccess & GENERIC_READ ) ? O_RDWR : O_WRONLY;
+	else
+		nFlags = O_RDONLY;
+	if ( dwCreation == CREATE_ALWAYS )
+		nFlags |= O_CREAT | O_TRUNC;
+	int fd = open( pszFileName, nFlags, 0644 );
+	return fd < 0 ? INVALID_HANDLE_VALUE : FdToHandle( fd );
+}
+
+DWORD GetFileSize( HANDLE hFile, LPDWORD pHigh )
+{
+	if ( !IsFileHandle( hFile ) )
+		return INVALID_FILE_SIZE;
+	struct stat st;
+	if ( fstat( HandleToFd( hFile ), &st ) != 0 )
+		return INVALID_FILE_SIZE;
+	if ( pHigh )
+		*pHigh = (DWORD)( (uint64_t)st.st_size >> 32 );
+	return (DWORD)( (uint64_t)st.st_size & 0xFFFFFFFFull );
+}
+
+BOOL ReadFile( HANDLE hFile, LPVOID pBuffer, DWORD nToRead, LPDWORD pnRead, void * )
+{
+	if ( pnRead )
+		*pnRead = 0;
+	if ( !IsFileHandle( hFile ) || !pBuffer )
+		return FALSE;
+	int fd = HandleToFd( hFile );
+	char *p = (char *)pBuffer;
+	DWORD nDone = 0;
+	while ( nDone < nToRead )
+	{
+		ssize_t n = read( fd, p + nDone, (size_t)( nToRead - nDone ) );
+		if ( n < 0 )
+		{
+			if ( errno == EINTR )
+				continue;
+			return FALSE;
+		}
+		if ( n == 0 )
+			break;   // EOF -- Win32 reports success with a short count
+		nDone += (DWORD)n;
+	}
+	if ( pnRead )
+		*pnRead = nDone;
+	return TRUE;
+}
+
+// ----------------------------------------------------------------------------
+//  Cursor / system parameters (see the header note).
+// ----------------------------------------------------------------------------
+namespace
+{
+	TGetCursorPosHook g_pCursorPosHook = 0;
+}
+
+void SetCursorPosHook( TGetCursorPosHook pHook ) { g_pCursorPosHook = pHook; }
+
+BOOL SystemParametersInfoA( UINT uiAction, UINT, void *pvParam, UINT )
+{
+	if ( uiAction == SPI_GETMOUSE && pvParam )
+	{
+		// {threshold1, threshold2, acceleration-enabled} -- all zero: SDL hands
+		// us motion the compositor has already accelerated, so the engine must
+		// not accelerate it a second time.
+		DWORD *pParams = (DWORD *)pvParam;
+		pParams[0] = pParams[1] = pParams[2] = 0;
+		return TRUE;
+	}
+	return FALSE;
+}
+
+BOOL GetCursorPos( POINT *pPoint )
+{
+	if ( !pPoint )
+		return FALSE;
+	pPoint->x = pPoint->y = 0;
+	if ( !g_pCursorPosHook )
+		return FALSE;
+	long nScreenX = 0, nScreenY = 0, nWindowX = 0, nWindowY = 0;
+	g_pCursorPosHook( &nScreenX, &nScreenY, &nWindowX, &nWindowY );
+	pPoint->x = nScreenX;
+	pPoint->y = nScreenY;
+	return TRUE;
+}
+
+BOOL ScreenToClient( HWND, POINT *pPoint )
+{
+	if ( !pPoint )
+		return FALSE;
+	if ( !g_pCursorPosHook )
+		return FALSE;
+	long nScreenX = 0, nScreenY = 0, nWindowX = 0, nWindowY = 0;
+	g_pCursorPosHook( &nScreenX, &nScreenY, &nWindowX, &nWindowY );
+	// The hook reports where the window's client origin sits on screen.
+	pPoint->x -= nWindowX;
+	pPoint->y -= nWindowY;
+	return TRUE;
 }

@@ -197,7 +197,7 @@ public:
 		}
 		for ( typename CStuffHash::iterator i = t.begin(); i != t.end(); ++i )
 		{
-			CStuffHash::iterator k = stuff.find( i->first );
+			typename CStuffHash::iterator k = stuff.find( i->first );
 			ASSERT( k != stuff.end() );
 			stuff.erase( k );
 			Remove( i->second );

@@ -156,7 +156,7 @@ inline void UpdateSet( TSet *a, TParam *p )
 			++i;
 		else
 		{
-			TSet::iterator k = i;
+			typename TSet::iterator k = i;
 			++i;
 			a->erase( k );
 		}
@@ -172,7 +172,7 @@ inline void UpdateSet( TSet *a, TParam *p, TParam2 *p2 )
 			++i;
 		else
 		{
-			TSet::iterator k = i;
+			typename TSet::iterator k = i;
 			++i;
 			a->erase( k );
 		}
@@ -188,7 +188,7 @@ inline void UpdateSet( TSet *a, TParam *p, TParam2 *p2, TParam3 *p3 )
 			++i;
 		else
 		{
-			TSet::iterator k = i;
+			typename TSet::iterator k = i;
 			++i;
 			a->erase( k );
 		}

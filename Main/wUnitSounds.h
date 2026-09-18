@@ -86,7 +86,7 @@ public:
 		for ( typename list<TSound>::iterator i = aiSounds.begin(); i != aiSounds.end(); ++i )
 		{
 			bool bFound = false;
-			for ( list<TSound>::iterator k = pRes->begin(); k != pRes->end(); ++k )
+			for ( typename list<TSound>::iterator k = pRes->begin(); k != pRes->end(); ++k )
 			{
 				if ( k->pWho == i->pWho )
 				{

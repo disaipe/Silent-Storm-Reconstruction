@@ -527,7 +527,7 @@ public:
 				continue;
 			vector<CPtr<CUnit> > visible;
 			(*iu)->GetVisible( &visible );
-			for ( vector<CMObj<TUnit>>::const_iterator ku = units.begin(); ku != units.end(); ++ku )
+			for ( typename vector<CMObj<TUnit>>::const_iterator ku = units.begin(); ku != units.end(); ++ku )
 			{
 				TUnit *pU = *ku;
 				// Just to make the compiler shut the fuck up (it can't compare const CPtr<CUnit> with const TUnit*)
