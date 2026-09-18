@@ -381,3 +381,4 @@ Binary/
 *.idb
 
 build/
+build-linux/
