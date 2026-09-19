@@ -499,8 +499,10 @@ void CWindow::Update( const STime &sTime, NGScene::I2DGameView *pView )
 	for ( int i = 0; i < (int)listChildren.size(); i++ )
 	{
 		CWindow *pChild = listChildren[i].GetPtr();
-		unsigned u = (unsigned)pChild;
-		if ( pChild == 0 || u < 0x00010000 || u >= 0x7f000000 || ( u & 3 ) )
+		// plausibility window for a user-space heap pointer + alignment check; the
+		// upper bound is a 32-bit address-space artefact, so only apply it there
+		uintptr_t u = (uintptr_t)pChild;
+		if ( pChild == 0 || u < 0x00010000 || ( sizeof( void* ) == 4 && u >= 0x7f000000 ) || ( u & 3 ) )
 			continue;
 		if ( IsBadReadPtr( pChild, 4 ) || IsBadReadPtr( *(void**)pChild, 4 ) || !IsValid( listChildren[i] ) )
 			continue;

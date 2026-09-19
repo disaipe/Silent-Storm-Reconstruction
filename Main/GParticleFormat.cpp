@@ -99,14 +99,26 @@ void CParticlesLoader::RecalcValue( CFileRequest *pRequest )
 	p += sizeof(int);
 	pValue->particles = (SParticle*)p;
 
+	// Relocation pass: SParticle is overlaid directly on the file image, and each
+	// `keys` field arrives holding a byte OFFSET into that image rather than a
+	// pointer; it is patched in place to the real address here.
+	//
+	// WARNING (64-bit): this overlay is only correct while a pointer is 4 bytes.
+	// The .particles blob is written by the Windows content tools with 32-bit
+	// pointer fields, so on a 64-bit build every SParticle is a different size
+	// than the file assumes and this loop walks the wrong stride. The casts below
+	// are made explicit so the code COMPILES, but the format itself has to become
+	// pointer-size-independent (store the offsets in an int32 field and keep the
+	// pointers out of the on-disk struct) before particles actually load on
+	// 64-bit Linux. Tracked in docs/linux-port.md.
 	for ( int nP = 0; nP < pValue->nParticles; ++nP )
 	{
 		SParticle &particle = pValue->particles[nP];
-		particle.pos.keys = (TKey<CVec3>*)(pData + (int)particle.pos.keys);
-		particle.rot.keys = (TKey<float>*)(pData + (int)particle.rot.keys);
-		particle.scale.keys = (TKey<CVec2>*)(pData + (int)particle.scale.keys);
-		particle.color.keys = (TKey<DWORD>*)(pData + (int)particle.color.keys);
-		particle.sprite.keys = (TKey<short>*)(pData + (int)particle.sprite.keys);
+		particle.pos.keys = (TKey<CVec3>*)(pData + (intptr_t)particle.pos.keys);
+		particle.rot.keys = (TKey<float>*)(pData + (intptr_t)particle.rot.keys);
+		particle.scale.keys = (TKey<CVec2>*)(pData + (intptr_t)particle.scale.keys);
+		particle.color.keys = (TKey<DWORD>*)(pData + (intptr_t)particle.color.keys);
+		particle.sprite.keys = (TKey<short>*)(pData + (intptr_t)particle.sprite.keys);
 	}
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////

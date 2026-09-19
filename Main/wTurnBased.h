@@ -3,6 +3,10 @@
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
+// CCmdCheat (used below through CDynamicCast, including its members) must be COMPLETE here.
+// Every includer already pulled wInterface.h in first, so this only makes the header
+// self-contained; MSVC resolved the name late, at instantiation.
+#include "wInterface.h"
 namespace NWorld
 {
 template<class TUnit> struct SAISound;   // wUnitSounds.h (CanPlayerSeeOrHearAction's heard part)

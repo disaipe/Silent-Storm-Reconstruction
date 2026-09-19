@@ -24,6 +24,7 @@
 #include <cstring>
 #include <cstdarg>
 #include <cwchar>
+#include <cwctype>
 #include <ctime>
 #include <cerrno>
 #include <mutex>
@@ -220,6 +221,10 @@ inline double _wtof( const wchar_t *psz ) { return wcstod( psz, 0 ); }
 inline int _wtoi( const wchar_t *psz ) { return (int)wcstol( psz, 0, 10 ); }
 inline long _wtol( const wchar_t *psz ) { return wcstol( psz, 0, 10 ); }
 
+// Double-click threshold. Win32 reports a user preference; SDL has no portable
+// equivalent, so return the Windows default the engine was tuned against.
+inline UINT GetDoubleClickTime() { return 500; }
+
 // ----------------------------------------------------------------------------
 //  Events and modules.
 //
@@ -362,6 +367,45 @@ BOOL ScreenToClient( HWND hWnd, POINT *pPoint );
 typedef void ( *TGetCursorPosHook )( long *pnScreenX, long *pnScreenY,
                                      long *pnWindowX, long *pnWindowY );
 void SetCursorPosHook( TGetCursorPosHook pHook );
+
+// ----------------------------------------------------------------------------
+//  BMP file structures (screenshot writing -- bmpfile.cpp, iMain.cpp).
+//
+//  These are written to disk verbatim, so the layout is what matters: exactly
+//  14 and 40 bytes, packed, little-endian fields. BITMAPFILEHEADER is packed to
+//  1 because its 4-byte bfSize sits at offset 2 and must NOT be padded -- that
+//  is why the Win32 header packs it too.
+// ----------------------------------------------------------------------------
+#define BI_RGB 0
+
+#pragma pack( push, 1 )
+struct BITMAPFILEHEADER
+{
+	WORD  bfType;
+	DWORD bfSize;
+	WORD  bfReserved1;
+	WORD  bfReserved2;
+	DWORD bfOffBits;
+};
+struct BITMAPINFOHEADER
+{
+	DWORD biSize;
+	int32_t biWidth;
+	int32_t biHeight;
+	WORD  biPlanes;
+	WORD  biBitCount;
+	DWORD biCompression;
+	DWORD biSizeImage;
+	int32_t biXPelsPerMeter;
+	int32_t biYPelsPerMeter;
+	DWORD biClrUsed;
+	DWORD biClrImportant;
+};
+struct RGBQUAD { BYTE rgbBlue, rgbGreen, rgbRed, rgbReserved; };
+#pragma pack( pop )
+
+static_assert( sizeof( BITMAPFILEHEADER ) == 14, "BMP file header must stay 14 bytes on disk" );
+static_assert( sizeof( BITMAPINFOHEADER ) == 40, "BMP info header must stay 40 bytes on disk" );
 
 // ----------------------------------------------------------------------------
 //  Timing.

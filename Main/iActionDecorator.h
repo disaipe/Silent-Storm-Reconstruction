@@ -91,7 +91,7 @@ public:
 		// retail @0x1ef4c0: claim the state target only if this window can handle the CURRENT state.
 		// Ungated, an item icon under the cursor claims the target during a drag even though it
 		// declines the state, and the drop is classified GROUND instead of hitting the cell beneath.
-		if ( GetStyle( STYLE_VISIBLE ) && bMouseEnter && CanHandleState( pMission->GetState() ) )
+		if ( this->GetStyle( STYLE_VISIBLE ) && bMouseEnter && CanHandleState( pMission->GetState() ) )
 			pMission->SetStateTarget( GetTarget() );
 
 		Type::Update( sTime, pView );

@@ -245,13 +245,15 @@ void CalcHeightMap( NAI::IAIMap *pMap, CHeightMapBlockInfo *pRes, const float fH
 	pMap->TraceGrid( &render, NWorld::TS_PASS_BLOCKER, IAIMap::STH_NOSORT, CFloorsSet() );
 
 	// Get info about source for every special point
-	unordered_map<int, bool> hSources;
+	// keyed by pointer identity (TU-local, never serialized) -- intptr_t so the
+	// key stays lossless on 64-bit
+	unordered_map<intptr_t, bool> hSources;
 	for ( list<CVec3>::const_iterator i = specialPoints.begin(); i != specialPoints.end(); ++i )
 	{
 		int nX = Float2Int( i->x / HEIGHT_MAP_SAMPLE_SIZE );
 		int nY = Float2Int( i->y / HEIGHT_MAP_SAMPLE_SIZE );
 		float fBestDiff = 100;
-		int pI = 0;
+		intptr_t pI = 0;
 		if ( nY < rect.top || nX < rect.left || nY - rect.top >= rect.bottom || nX - rect.left >= rect.right )
 			continue; // happens when "relocating" unit very far
 		for ( CFastRenderer::SResult *p = render.resGrid[nY-rect.top][nX-rect.left]; p; p = p->pNext )
@@ -262,8 +264,8 @@ void CalcHeightMap( NAI::IAIMap *pMap, CHeightMapBlockInfo *pRes, const float fH
 			if ( fDiff < fBestDiff )
 			{
 				CObjectBase *pObj = p->pSrc->pSrc->pUserData;
-				pI = reinterpret_cast<int>( pObj );
-				//pI = reinterpret_cast<int>( p->pSrc->pSrc );
+				pI = reinterpret_cast<intptr_t>( pObj );
+				//pI = reinterpret_cast<intptr_t>( p->pSrc->pSrc );
 				fBestDiff = fDiff;
 			}		
 		}
@@ -281,8 +283,8 @@ void CalcHeightMap( NAI::IAIMap *pMap, CHeightMapBlockInfo *pRes, const float fH
 				if ( IsDoor( p ) )
 					continue;
 				CObjectBase *pObj = p->pSrc->pSrc->pUserData;
-				int pInfo = reinterpret_cast<int>( pObj );
-				//int pInfo = reinterpret_cast<int>( p->pSrc->pSrc );
+				intptr_t pInfo = reinterpret_cast<intptr_t>( pObj );
+				//intptr_t pInfo = reinterpret_cast<intptr_t>( p->pSrc->pSrc );
 				if ( hSources.find( pInfo ) != hSources.end() )
 				{
 					pRes->height[ Wrap( y, nYSize ) ][ Wrap( x, nXSize ) ] = p->fExit;

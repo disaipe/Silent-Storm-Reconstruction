@@ -22,7 +22,7 @@ struct SDecalTargetPart
 };
 struct SDecalTargetPartHash
 {
-	int operator()( const SDecalTargetPart &p ) const { return (int)p.pUser.GetPtr() ^ p.nUserID;}
+	int operator()( const SDecalTargetPart &p ) const { return (int)(intptr_t)p.pUser.GetPtr() ^ p.nUserID;}
 };
 struct SSrcPosInfo
 {
@@ -38,7 +38,7 @@ struct SSrcPosInfo
 };
 struct SSrcPosInfoHash
 {
-	int operator()( const SSrcPosInfo &p ) const { return (int)p.pUser.GetPtr() ^ p.nUserID ^ (int)p.pSource.GetPtr(); }
+	int operator()( const SSrcPosInfo &p ) const { return (int)(intptr_t)p.pUser.GetPtr() ^ p.nUserID ^ (int)(intptr_t)p.pSource.GetPtr(); }
 };
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 class CNonePart;

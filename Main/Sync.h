@@ -272,7 +272,7 @@ class CBoolSyncSrc: public CSyncSrc<T>
 			SObjectInfo &r = objects[pObject];
 			r.nMask = nMask;
 			if ( TFunc::GetResult( r.nMask ) )
-				r.nTrackID = Add( pObject );
+				r.nTrackID = this->Add( pObject );
 			else
 				r.nTrackID = -1;
 		}
@@ -282,13 +282,13 @@ class CBoolSyncSrc: public CSyncSrc<T>
 			if ( TFunc::GetResult( i->second.nMask ) )
 			{
 				if ( i->second.nTrackID == -1 )
-					i->second.nTrackID = Add( pObject );
+					i->second.nTrackID = this->Add( pObject );
 			}
 			else
 			{
 				if ( i->second.nTrackID >= 0 )
 				{
-					Remove( i->second.nTrackID );
+					this->Remove( i->second.nTrackID );
 					i->second.nTrackID = -1;
 				}
 			}
@@ -304,7 +304,7 @@ class CBoolSyncSrc: public CSyncSrc<T>
 		typename CObjectsHash::iterator i = objects.find( pObject );
 		ASSERT( i != objects.end() );
 		if ( i->second.nTrackID >= 0 )
-			Update( i->second.nTrackID );
+			this->Update( i->second.nTrackID );
 	}
 	virtual void Refresh()
 	{
