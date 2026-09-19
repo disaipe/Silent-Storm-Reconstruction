@@ -476,7 +476,7 @@ bool CDebrisController::Segment( NAI::IAIMap *pMap, SSphere *pInvalidate )
 		if ( !IsValid( pInventoryItem ) )
 			continue;
 		//
-		CDBPtr<NDb::CTEffect> pTEffect = pInventoryItem->GetDBItem()->pDestructionEffect;
+		CDBPtr<NDb::CTEffect> pTEffect = pInventoryItem->GetDBItem()->pDestructionEffect.GetPtr();
 		if ( IsValid( pTEffect ) )
 		{
 			SRand rand;

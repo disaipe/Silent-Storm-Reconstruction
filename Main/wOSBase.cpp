@@ -700,7 +700,7 @@ void CAnimObjectServerBase::GetApproachPts( vector<CVec3> *pRes ) const
 		int nIndex = pAnimator->GetBoneIndex( pszName );
 		if ( nIndex < 0 )
 			break;
-		CDGPtr<CFuncBase<NAnimation::SSkeletonPose> > pToUpdate = pAnimator;
+		CDGPtr<CFuncBase<NAnimation::SSkeletonPose> > pToUpdate = pAnimator.GetPtr();
 		pToUpdate.Refresh();
 
 		NAnimation::SBonePose bone;
@@ -729,7 +729,7 @@ void CAnimObjectServerBase::GetApproaches( vector<NAI::SPathPlace> *pRes, NAI::I
 		int nIndex = pAnimator->GetBoneIndex( pszName );
 		if ( nIndex < 0 )
 			break;
-		CDGPtr<CFuncBase<NAnimation::SSkeletonPose> > pToUpdate = pAnimator;
+		CDGPtr<CFuncBase<NAnimation::SSkeletonPose> > pToUpdate = pAnimator.GetPtr();
 		pToUpdate.Refresh();
 
 		NAnimation::SBonePose bone;

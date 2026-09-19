@@ -317,7 +317,7 @@ bool CUnitAnimator::GetBarrelPos( NDb::CGeometry *pWeaponGeometry, NAnimation::S
 		{
 			CPtr<NAnimation::CAddBoneLocators> pLocators =
 				new NAnimation::CAddBoneLocators( nIndex, pWeaponGeometry );
-			CDGPtr< CFuncBase<NAnimation::SSkeletonPose> > pLocatorsDG = pLocators;
+			CDGPtr< CFuncBase<NAnimation::SSkeletonPose> > pLocatorsDG = pLocators.GetPtr();
 			pLocators->pAnimation = pAnimator;
 			pLocatorsDG.Refresh();
 			nIndex = pLocators->pLocators->GetValue()->GetBoneIndex( "Barrel" );
@@ -351,7 +351,7 @@ void CUnitAnimator::DropStep()
 		tSteps.erase( tSteps.begin() );
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-void CUnitAnimator::StandStill( CVec2 &pos, float fAngle, bool bNeedStrafe )
+void CUnitAnimator::StandStill( const CVec2 &pos, float fAngle, bool bNeedStrafe )
 {
 	CPtr<NAnimation::CAnimation> pAnim;
 	if ( bNeedStrafe )
@@ -1091,7 +1091,7 @@ void CUnitAnimator::Attack( const NAI::SUnitPosition &cmdPos, const CRay &ray, b
 	tLabel1 = pAtAnim->GetTimeLabel1();
 	pAtAnim->SetStand( tEnd + tTransit, cmdPos.GetCPNoHeight(), cmdPos.GetDirection() );
 
-	CPtr<NAnimation::CAnimator> pVertAnim = pAtAnim;
+	CPtr<NAnimation::CAnimator> pVertAnim = pAtAnim.GetPtr();
 	CPtr<NAnimation::CAnimation> pUpAnim, pSuperUpAnim;
 	if ( fVertAngle < 0 )
 	{

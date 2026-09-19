@@ -285,7 +285,8 @@ NDb::CDBAckSequence *CGlobalAck::GetSequence( IPlayer *pPlayer, CUnitServer **pp
 		if ( fProb > 0 )
 			roulette.AddSector( fProb );
 		//
-		int nSector = roulette.GetRandomSector( &SRand() );
+		SRand rnd;
+		int nSector = roulette.GetRandomSector( &rnd );
 		if ( nSector < sequences.size() )
 		{
 			list< SAck >::iterator i = sequences.begin();

@@ -173,7 +173,7 @@ void CAIInventory::GetInventoryItems( list< CPtr<NRPG::IInventoryItem> > *pItems
 	vector<NRPG::SBackPackItem>::const_iterator i;
 	for ( i = vBackPackItems.begin(); i != vBackPackItems.end(); ++i )
 	{
-		CPtr<NRPG::IInventoryItem> pItem = (*i).pItem;
+		CPtr<NRPG::IInventoryItem> pItem = (*i).pItem.GetPtr();
 		if ( !IsValid( pItem ) )
 			continue;
 		CDynamicCast<NRPG::CClipItem> pClip( pItem );

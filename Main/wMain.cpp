@@ -1628,7 +1628,8 @@ bool CWorld::PlaceTemplate( int nTemplateID, CVec3 ptPos )
 	if ( !IsValid( pTemplate ) )
 		return false;
 	//
-	int nVariantID = NDb::GetTemplVariant( pTemplate, vector<int>(), -1, &SRand() )->GetRecordID();
+	SRand rnd;
+	int nVariantID = NDb::GetTemplVariant( pTemplate, vector<int>(), -1, &rnd )->GetRecordID();
 	//
 	SMapInfo mapInfo;
 	if ( !BuildMap( nVariantID, vector<string>(), GetPathNetwork(), &mapInfo ) )

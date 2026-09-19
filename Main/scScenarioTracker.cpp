@@ -564,7 +564,7 @@ void CScenarioTracker::ProcessScenario( const vector< CPtr<NRPG::CUnit> > &units
 	for ( vector< CPtr<NRPG::CUnit> >::const_iterator i = units.begin();
 		i != units.end(); ++i )
 	{
-		CPtr<NRPG::IInventory> pInventory = (*i)->pInventory;
+		CPtr<NRPG::IInventory> pInventory = (*i)->pInventory.GetPtr();
 		// slots
 		for ( int n = 0; n < NDb::N_SLOTS; ++n )
 		{
@@ -616,7 +616,7 @@ void CScenarioTracker::GetCluesFromPers( NRPG::CUnit *pPers, NRPG::CUnit *pCorps
 	if ( IsValid( pClue ) && !pPers->IsDead() )
 		pClues->push_back( pClue );
 	//
-	CPtr<NRPG::IInventory> pInventory = pPers->pInventory;
+	CPtr<NRPG::IInventory> pInventory = pPers->pInventory.GetPtr();
 	// hand slots (retail scans slots 0..1 only)
 	for ( int n = 0; n < NDb::N_SLOTS; ++n )
 	{

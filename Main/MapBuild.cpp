@@ -1483,7 +1483,8 @@ bool CMapBuilder::BuildMap( int nPlacementID )
 		pos.ptPos.z = 0;
 		pos.ptScale = CVec3( 1, 1, 1 );
 		CDBPtr<NDb::CRndObject> pRndObject = NDb::GetDBRndObject( 1836 );
-		CPtr<NDb::CObject> pObject = pRndObject->CreateObject( &SRand(), vector<int>() );
+		SRand rnd;
+		CPtr<NDb::CObject> pObject = pRndObject->CreateObject( &rnd, vector<int>() );
 		for ( pos.ptPos.x = fX1; pos.ptPos.x <= fX2; pos.ptPos.x += 2 * F_HALF_BLOCK_SIZE )
 		{
 			pos.ptPos.y = fY1;

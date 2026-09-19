@@ -3400,7 +3400,7 @@ static void CommandStartScenarioZone( const string &szID, const vector<wstring> 
 	else
 		pGlobalGame->players.push_back( NRPG::CreateGlobalPlayer( perses ) );
 	//
-	CPtr<NScenario::CScenarioTracker> pScenario = pGlobalGame->pScenarioTracker;
+	CPtr<NScenario::CScenarioTracker> pScenario = pGlobalGame->pScenarioTracker.GetPtr();
 	string szScenarioName = NStr::ToAscii( paramsSet[ 0 ] );
 	pScenario->CreateScenario( szScenarioName );
 	CDBPtr<NDb::CSide> pSide = NScenario::GetSideForScenario( pScenario );

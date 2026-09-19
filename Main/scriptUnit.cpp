@@ -200,12 +200,14 @@ int luaUnitApplyCritical( lua_State* pState )
 	bool bCriticalFromTable = luaGetParamCount( pState ) == 2;
 	if ( !bCriticalFromTable )
 	{
-		if ( !luaPrepareData( pState, "UnitApplyCritical", "unn", &pScript, &vector<SLuaParams>() ) )
+		vector<SLuaParams> params;
+		if ( !luaPrepareData( pState, "UnitApplyCritical", "unn", &pScript, &params ) )
 			return 0;
 	}
 	else
 	{
-		if ( !luaPrepareData( pState, "UnitApplyCritical", "un", &pScript, &vector<SLuaParams>() ) )
+		vector<SLuaParams> params;
+		if ( !luaPrepareData( pState, "UnitApplyCritical", "un", &pScript, &params ) )
 			return 0;
 	}
 	//
@@ -501,7 +503,7 @@ BEGIN_SCRIPT_COMMAND( UnitRemove, "u" )
 	if (pUS)
 	{
 		// if this is a clue, it is considered destroyed
-		CPtr<NScenario::CScenarioTracker> pTracker = pScript->pWorld->GetGlobalGame()->pScenarioTracker;
+		CPtr<NScenario::CScenarioTracker> pTracker = pScript->pWorld->GetGlobalGame()->pScenarioTracker.GetPtr();
 		if ( IsValid( pTracker ) )
 		{
 			int nPersID = pUS->GetUnitRPG()->GetRPGPersID();

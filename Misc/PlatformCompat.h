@@ -25,6 +25,7 @@
 #include <cstdarg>
 #include <cwchar>
 #include <cwctype>
+#include <type_traits>
 #include <ctime>
 #include <cerrno>
 #include <mutex>
@@ -406,6 +407,43 @@ struct RGBQUAD { BYTE rgbBlue, rgbGreen, rgbRed, rgbReserved; };
 
 static_assert( sizeof( BITMAPFILEHEADER ) == 14, "BMP file header must stay 14 bytes on disk" );
 static_assert( sizeof( BITMAPINFOHEADER ) == 40, "BMP info header must stay 40 bytes on disk" );
+
+// ----------------------------------------------------------------------------
+//  windef.h's min/max, as functions.
+//
+//  The engine calls lowercase min()/max() with MIXED argument types
+//  (min(float, int), max(int, float), min(int, size_t)). On Windows those are
+//  windows.h's macros, which do not care about types; std::min/std::max are
+//  templates that need BOTH arguments to be the same type, so those calls do
+//  not compile here.
+//
+//  Reproducing the macros would wreck libstdc++ -- StdAfx.h includes
+//  <algorithm> after this header, and the macro would eat std::min's own
+//  declaration. So these are overloads instead, deliberately constrained to
+//  the case the macros were covering: two DIFFERENT types. Same-type calls
+//  still resolve to std::min/std::max (StdAfx.h does `using namespace std`),
+//  and the result type is the ternary's common type, exactly as the macro
+//  produced.
+//
+//  The engine's own capitalised Max()/Min() templates in Misc/tools.h are a
+//  separate thing and unaffected.
+// ----------------------------------------------------------------------------
+template <class TA, class TB>
+inline typename std::enable_if< !std::is_same<TA, TB>::value,
+                                typename std::common_type<TA, TB>::type >::type
+min( TA a, TB b )
+{
+	typedef typename std::common_type<TA, TB>::type TR;
+	return (TR)a < (TR)b ? (TR)a : (TR)b;
+}
+template <class TA, class TB>
+inline typename std::enable_if< !std::is_same<TA, TB>::value,
+                                typename std::common_type<TA, TB>::type >::type
+max( TA a, TB b )
+{
+	typedef typename std::common_type<TA, TB>::type TR;
+	return (TR)a > (TR)b ? (TR)a : (TR)b;
+}
 
 // ----------------------------------------------------------------------------
 //  Timing.
