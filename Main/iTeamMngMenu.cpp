@@ -1117,7 +1117,7 @@ void CTeamMngUI::Set( NRPG::CUnit *_pMerc, EPanel _ePanel )
 
 	for( int nTemp = 0; nTemp < unitsStateSet.size(); nTemp++ )
 	{
-		CPtr<CUnitPortraitState> pState = unitsStateSet[nTemp];
+		CPtr<CUnitPortraitState> pState = unitsStateSet[nTemp].GetPtr();
 
 		if( pState->GetMerc() == pMerc )
 			pState->SetSelected( true );
@@ -1176,7 +1176,7 @@ bool CTeamMngUI::ProcessMessage( const SEvent &sEvent )
 
 			for( int nTemp = 0; nTemp < unitsStateSet.size(); nTemp++ )
 			{
-				CPtr<CUnitPortraitState> pState = unitsStateSet[nTemp];
+				CPtr<CUnitPortraitState> pState = unitsStateSet[nTemp].GetPtr();
 
 				if ( pState->GetWindowID() != sEvent.szID )
 					continue;

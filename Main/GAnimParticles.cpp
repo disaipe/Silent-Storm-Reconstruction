@@ -5,7 +5,7 @@
 #include "aiMap.h"
 #include "aiCollider.h"
 #include "phCollider.h"
-#include "../Misc/Tools.h"
+#include "../Misc/tools.h"
 #include "../Misc/RandomGen.h"
 #include "../MiscDll/LogStream.h"
 #include "../Misc/StrProc.h"

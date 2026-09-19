@@ -5,7 +5,7 @@
 #include <limits>
 #include "Grid.h"
 #include "Transform.h"
-#include "../Misc/2Darray.h"
+#include "../Misc/2DArray.h"
 #include "../DBFormat/DataGeometry.h"
 #include "../DBFormat/DataMap.h"
 #include "../DBFormat/DataFormat.h"

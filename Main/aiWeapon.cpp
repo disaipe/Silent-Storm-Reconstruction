@@ -157,12 +157,15 @@ bool CAIFireArmsWeaponBase::IsWorseThen( NRPG::CWeaponItem *pCandidate ) const
 	return pWeaponItem->GetDBWeapon()->nAIRating < pCandidate->GetDBWeapon()->nAIRating;
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// NOTE: '::##Name' / '->##RPGName' dropped the '##'. Pasting '::' or '->' with an
+// identifier does not form a valid preprocessing token; plain juxtaposition expands
+// identically (MSVC merely tolerated the stray operator).
 #define GET_WEAPON_OPERATION_AP( Name, RPGName )									\
-int CAIFireArmsWeapon::##Name() const															\
+int CAIFireArmsWeapon::Name() const															\
 {																																	\
 	ASSERT( IsValid( pOwner ) );																		\
 	if ( IsValid( pOwner ) )																				\
-		return pOwner->GetRPGUnit()->##RPGName( GetItem() );					\
+		return pOwner->GetRPGUnit()->RPGName( GetItem() );					\
 	else																														\
 		return N_MAX_AP;																							\
 }

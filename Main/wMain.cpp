@@ -521,7 +521,7 @@ CObjectServerBase *CWorld::AddObject( const SObjectPlace &pos,
 	NRPG::IObject *pRPGObject, const SMapElement &mapElement, CPostWorldCreateInfo *pPostInfo )
 {
 	CPtr<CObjectServerBase> pResult = 0;
-	CDBPtr<NDb::CObject> pDBObject = mapElement.pObject;
+	CDBPtr<NDb::CObject> pDBObject = mapElement.pObject.GetPtr();
 	if ( pDBObject->pDoor || pDBObject->pGun )
 	{
 		if ( !pDBObject->pModels[0] || !pDBObject->pModels[0]->pModel || !pDBObject->pModels[0]->pModel->pSkeleton )

@@ -223,7 +223,7 @@ void CExecQueue::FullCancel()
 {
 	if ( !execList.empty() )
 	{
-		CPtr<CCommandExecute> pFront = execList.front();
+		CPtr<CCommandExecute> pFront = execList.front().GetPtr();
 		CDynamicCast<IExecMove> pMove(pFront);
 		if (pMove)
 			pMove->FullCancel();

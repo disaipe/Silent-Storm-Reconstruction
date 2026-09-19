@@ -14,7 +14,7 @@
 namespace NScript
 {
 externA5 Script::SRegFunction pRegList[];
-Script::SRegFunction pLuaPtrTagFuncList[] = { (0,0) };
+Script::SRegFunction pLuaPtrTagFuncList[] = { { 0, 0 } };
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 static void SharedInit( Script *scr )
 {

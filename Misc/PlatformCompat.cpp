@@ -484,3 +484,148 @@ BOOL ScreenToClient( HWND, POINT *pPoint )
 	pPoint->y -= nWindowY;
 	return TRUE;
 }
+
+// ----------------------------------------------------------------------------
+//  <io.h> directory walk + file attribute helpers (see the header note).
+// ----------------------------------------------------------------------------
+namespace
+{
+	unsigned FindAttribToIoAttrib( DWORD dwAttributes )
+	{
+		unsigned n = 0;
+		if ( dwAttributes & FILE_ATTRIBUTE_DIRECTORY ) n |= _A_SUBDIR;
+		if ( dwAttributes & FILE_ATTRIBUTE_READONLY )  n |= _A_RDONLY;
+		if ( dwAttributes & FILE_ATTRIBUTE_HIDDEN )    n |= _A_HIDDEN;
+		if ( dwAttributes & FILE_ATTRIBUTE_SYSTEM )    n |= _A_SYSTEM;
+		return n;
+	}
+
+	void FindDataToIoData( const WIN32_FIND_DATAA &ff, _finddata_t *pDst )
+	{
+		pDst->attrib = FindAttribToIoAttrib( ff.dwFileAttributes );
+		pDst->size = (long)ff.nFileSizeLow;
+		pDst->time_create = pDst->time_access = pDst->time_write = 0;
+		strncpy( pDst->name, ff.cFileName, MAX_PATH - 1 );
+		pDst->name[MAX_PATH - 1] = 0;
+	}
+}
+
+intptr_t _findfirst( const char *pszPattern, _finddata_t *pFindData )
+{
+	if ( !pFindData )
+		return -1;
+	WIN32_FIND_DATAA ff;
+	HANDLE h = FindFirstFileA( pszPattern, &ff );
+	if ( h == INVALID_HANDLE_VALUE )
+		return -1;
+	FindDataToIoData( ff, pFindData );
+	return (intptr_t)h;
+}
+
+int _findnext( intptr_t hFind, _finddata_t *pFindData )
+{
+	if ( hFind == -1 || !pFindData )
+		return -1;
+	WIN32_FIND_DATAA ff;
+	if ( !FindNextFileA( (HANDLE)hFind, &ff ) )
+		return -1;
+	FindDataToIoData( ff, pFindData );
+	return 0;
+}
+
+int _findclose( intptr_t hFind )
+{
+	if ( hFind == -1 )
+		return -1;
+	return FindClose( (HANDLE)hFind ) ? 0 : -1;
+}
+
+BOOL SetFileAttributesA( const char *pszFileName, DWORD dwAttributes )
+{
+	if ( !pszFileName )
+		return FALSE;
+	struct stat st;
+	if ( stat( pszFileName, &st ) != 0 )
+		return FALSE;
+	// Only the read-only bit maps onto a POSIX mode; the rest have no analogue.
+	mode_t mode = st.st_mode;
+	if ( dwAttributes & FILE_ATTRIBUTE_READONLY )
+		mode &= ~(mode_t)( S_IWUSR | S_IWGRP | S_IWOTH );
+	else
+		mode |= S_IWUSR;
+	return chmod( pszFileName, mode ) == 0 ? TRUE : FALSE;
+}
+
+BOOL DeleteFileA( const char *pszFileName )
+{
+	return pszFileName && unlink( pszFileName ) == 0 ? TRUE : FALSE;
+}
+
+BOOL CreateDirectoryA( const char *pszPath, void * )
+{
+	return pszPath && mkdir( pszPath, 0755 ) == 0 ? TRUE : FALSE;
+}
+
+BOOL RemoveDirectoryA( const char *pszPath )
+{
+	return pszPath && rmdir( pszPath ) == 0 ? TRUE : FALSE;
+}
+
+BOOL CopyFileA( const char *pszFrom, const char *pszTo, BOOL bFailIfExists )
+{
+	if ( !pszFrom || !pszTo )
+		return FALSE;
+	int fdIn = open( pszFrom, O_RDONLY );
+	if ( fdIn < 0 )
+		return FALSE;
+	int nFlags = O_WRONLY | O_CREAT | ( bFailIfExists ? O_EXCL : O_TRUNC );
+	int fdOut = open( pszTo, nFlags, 0644 );
+	if ( fdOut < 0 )
+	{
+		close( fdIn );
+		return FALSE;
+	}
+	char buf[64 * 1024];
+	bool bOk = true;
+	for ( ;; )
+	{
+		ssize_t nRead = read( fdIn, buf, sizeof( buf ) );
+		if ( nRead < 0 )
+		{
+			if ( errno == EINTR )
+				continue;
+			bOk = false;
+			break;
+		}
+		if ( nRead == 0 )
+			break;
+		ssize_t nDone = 0;
+		while ( nDone < nRead )
+		{
+			ssize_t nWritten = write( fdOut, buf + nDone, (size_t)( nRead - nDone ) );
+			if ( nWritten < 0 )
+			{
+				if ( errno == EINTR )
+					continue;
+				bOk = false;
+				break;
+			}
+			nDone += nWritten;
+		}
+		if ( !bOk )
+			break;
+	}
+	close( fdIn );
+	close( fdOut );
+	return bOk ? TRUE : FALSE;
+}
+
+int GetLocaleInfoA( DWORD, DWORD dwType, char *pszData, int nSize )
+{
+	if ( dwType != LOCALE_IDATE || !pszData || nSize < 2 )
+		return 0;
+	// "1" == day-month-year, the ordering the game shipped with.
+	pszData[0] = '1';
+	pszData[1] = 0;
+	return 2;
+}

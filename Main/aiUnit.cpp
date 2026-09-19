@@ -473,7 +473,7 @@ void CAIUnit::AssignControl( IAIControl *pAIControl )
 	//
 	if ( !controls.empty() )
 	{
-		CPtr<IAIControl> pAICurrentControl = controls.back();
+		CPtr<IAIControl> pAICurrentControl = controls.back().GetPtr();
 		EAIControlType type = pAICurrentControl->GetType();
 		if ( type == AI_CONTROL_UNINTERRUPTABLE && manager > currentManager )
 			type = AI_CONTROL_ERASABLE;
@@ -504,7 +504,7 @@ void CAIUnit::OnControlFinished()
 	EAIManager currentManager = AIM_AI;
 	if ( !controls.empty() )
 	{
-		CPtr<IAIControl> pControl = controls.back();
+		CPtr<IAIControl> pControl = controls.back().GetPtr();
 		currentManager = pControl->GetManager();
 		if ( pControl->IsActive() )
 			pControl->DeActivate();
@@ -515,7 +515,7 @@ void CAIUnit::OnControlFinished()
 	//
 	if ( !controls.empty() )
 	{
-		CPtr<IAIControl> pControl = controls.back();
+		CPtr<IAIControl> pControl = controls.back().GetPtr();
 		EAIManager manager = pControl->GetManager();
 		if ( manager >= currentManager )
 			controls.back()->Activate();

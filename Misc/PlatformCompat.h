@@ -26,11 +26,13 @@
 #include <cwchar>
 #include <cwctype>
 #include <type_traits>
+#include <cmath>
 #include <ctime>
 #include <cerrno>
 #include <mutex>
 #include <unistd.h>
 #include <sys/mman.h>
+#include <sys/stat.h>
 
 // ----------------------------------------------------------------------------
 //  MSVC-only keywords, neutralised on GCC/Clang.
@@ -444,6 +446,63 @@ max( TA a, TB b )
 	typedef typename std::common_type<TA, TB>::type TR;
 	return (TR)a > (TR)b ? (TR)a : (TR)b;
 }
+
+// ----------------------------------------------------------------------------
+//  MSVC's <io.h> directory walk (_findfirst / _findnext / _findclose) and the
+//  file-attribute helpers, used by the save-game manager. Layered on the Find*
+//  API above, so the same case-insensitive matching applies.
+// ----------------------------------------------------------------------------
+#define _A_NORMAL 0x00
+#define _A_RDONLY 0x01
+#define _A_HIDDEN 0x02
+#define _A_SYSTEM 0x04
+#define _A_SUBDIR 0x10
+#define _A_ARCH   0x20
+
+struct _finddata_t
+{
+	unsigned attrib;
+	time_t   time_create;
+	time_t   time_access;
+	time_t   time_write;
+	long     size;
+	char     name[MAX_PATH];
+};
+
+intptr_t _findfirst( const char *pszPattern, _finddata_t *pFindData );
+int _findnext( intptr_t hFind, _finddata_t *pFindData );
+int _findclose( intptr_t hFind );
+
+BOOL SetFileAttributesA( const char *pszFileName, DWORD dwAttributes );
+BOOL DeleteFileA( const char *pszFileName );
+BOOL CreateDirectoryA( const char *pszPath, void *pSecAttr );
+BOOL RemoveDirectoryA( const char *pszPath );
+BOOL CopyFileA( const char *pszFrom, const char *pszTo, BOOL bFailIfExists );
+inline BOOL SetFileAttributes( const char *pszFileName, DWORD dwAttributes )
+{
+	return SetFileAttributesA( pszFileName, dwAttributes );
+}
+inline BOOL DeleteFile( const char *pszFileName ) { return DeleteFileA( pszFileName ); }
+inline BOOL CreateDirectory( const char *pszPath, void *pSecAttr ) { return CreateDirectoryA( pszPath, pSecAttr ); }
+inline BOOL RemoveDirectory( const char *pszPath ) { return RemoveDirectoryA( pszPath ); }
+inline BOOL CopyFile( const char *pszFrom, const char *pszTo, BOOL bFailIfExists )
+{
+	return CopyFileA( pszFrom, pszTo, bFailIfExists );
+}
+
+// Date-format query. Only LOCALE_IDATE is asked for (the save browser picks a
+// d/m/y ordering); "1" is Windows' day-month-year, matching the Russian locale
+// the game shipped under.
+#define LOCALE_USER_DEFAULT 0x0400
+#define LOCALE_IDATE 0x00000021
+int GetLocaleInfoA( DWORD dwLocale, DWORD dwType, char *pszData, int nSize );
+
+inline int _isnan( double d ) { return std::isnan( d ) ? 1 : 0; }
+
+// MSVC spellings of the POSIX stat family (<sys/stat.h> is included above).
+#define _stat stat
+#define _fstat fstat
+#define _access access
 
 // ----------------------------------------------------------------------------
 //  Timing.

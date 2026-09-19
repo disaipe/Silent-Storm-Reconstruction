@@ -16,7 +16,7 @@
 #include "aiMultiMoves.h"
 #include "aiPosition.h"
 
-#include "../DBFormat/datamap.h"
+#include "../DBFormat/DataMap.h"
 #include "../DBFormat/DataAnimation.h"
 
 #include "MapBuild.h"

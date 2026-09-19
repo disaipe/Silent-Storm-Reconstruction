@@ -6,7 +6,12 @@
 #include "../FileIO/Streams.h"
 #include "Interface.h"     // NUI umbrella -- GetDBString (IsValidCustomName's reserved-name lookups)
 #include "iSaveManager.h"
+#ifdef _WIN32
 #include <io.h>
+#else
+// _findfirst/_findnext/_findclose and the file-attribute helpers live in the
+// Win32 shim on Linux (already pulled in via StdAfx.h).
+#endif
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <time.h>

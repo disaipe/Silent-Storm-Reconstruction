@@ -541,7 +541,7 @@ public:
 	virtual EWeather GetWeather() const { return weather; }
 	virtual void RollNewWeather( int nTicks );
 	//
-	virtual const CTRect<float>& CWorld::GetMapSafeZone() const;
+	virtual const CTRect<float>& GetMapSafeZone() const;
 	//
 	virtual void CreateRandom( int nVariantID, const vector<string> &params, bool bBuildingStability, 
 		const list< CPtr<NScenario::CScenarioClue> > &clues, int nMobsLevel,
