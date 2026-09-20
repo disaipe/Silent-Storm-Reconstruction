@@ -42,11 +42,64 @@
 #include "LifeStudioHeadAPITransform.h"
 #include "LifeStudioHeadAPIGDP.h"
 #include "LifeStudioHeadAPIInit.h"
+#include "lsgdp.h"
+
+#include <string>
+#include <vector>
 
 namespace LifeStudioHeadAPI
 {
 namespace
 {
+
+// --- base head geometry ------------------------------------------------------
+// The engine hands IGDPFile::Create the path to Res\FaceGenHead.gdp, then calls
+// Process() expecting head vertices back. We cannot morph, but we CAN read the
+// base mesh out of that same file (see lsgdp.cpp) and hand it over unchanged --
+// which gives real heads instead of the collapsed ones a do-nothing Process()
+// produced. Loaded once, on the first Create() that names a path.
+std::vector<float> g_baseVerts;
+bool g_bBaseTried = false;
+
+void EnsureBaseMesh( const char *pszGdpPath )
+{
+	if ( g_bBaseTried )
+		return;
+	g_bBaseTried = true;
+
+	// Normally the engine tells us the path (IGDPFile::Create, for transformable
+	// heads). Plain heads never open a GDP at all, yet their animators still need
+	// vertices, so fall back to where retail keeps the file.
+	const char *pszDefault = "Res\\FaceGenHead.gdp";
+	// The DB spells paths the Windows way; ResolvePath maps that onto the real
+	// filesystem (backslashes, case).
+	const std::string szPath = ResolvePath( ( pszGdpPath && *pszGdpPath ) ? pszGdpPath : pszDefault );
+	if ( !NLSGdp::LoadBaseMesh( szPath.c_str(), "object.msh", &g_baseVerts ) )
+		printf( "LifeStudio stub: no base mesh from %s -- heads will be flat\n", szPath.c_str() );
+	else
+		printf( "LifeStudio stub: base head mesh loaded (%d vertices) from %s\n",
+		        (int)( g_baseVerts.size() / 3 ), szPath.c_str() );
+}
+
+// Copies the base mesh into the caller's array. step is in floats (the engine
+// passes 3 for tightly-packed CVec3). Returns false when we have no mesh or the
+// caller's vertex count does not match what we loaded -- a partial copy would
+// be worse than none.
+bool WriteBaseMesh( float *pVertexArray, int nStep, int nVertsWanted )
+{
+	if ( !pVertexArray || g_baseVerts.empty() || nStep <= 0 )
+		return false;
+	const int nHave = (int)( g_baseVerts.size() / 3 );
+	if ( nVertsWanted > 0 && nVertsWanted != nHave )
+		return false;
+	for ( int i = 0; i < nHave; ++i )
+	{
+		pVertexArray[i * nStep + 0] = g_baseVerts[i * 3 + 0];
+		pVertexArray[i * nStep + 1] = g_baseVerts[i * 3 + 1];
+		pVertexArray[i * nStep + 2] = g_baseVerts[i * 3 + 2];
+	}
+	return true;
+}
 
 struct CNullAnimator : public IAnimator
 {
@@ -62,10 +115,11 @@ struct CNullAnimator : public IAnimator
 	int BonesCount() const { return 0; }
 	void FillUnused( bool ) {}
 	bool FillUnused() const { return false; }
-	// false = "nothing was morphed", leaving the caller's vertex array as the
-	// base mesh it already holds.
-	bool Process( float *, int ) { return false; }
-	int VerticesCount() const { return 0; }
+	// The whole point of the GDP reader: hand back the base head geometry the
+	// real animator would have produced. No morph is applied -- every head comes
+	// out with the same neutral face -- but it IS a head.
+	bool Process( float *pVertexArray, int nStep ) { return WriteBaseMesh( pVertexArray, nStep, 0 ); }
+	int VerticesCount() const { return (int)( g_baseVerts.size() / 3 ); }
 	void ClearAllMacroMuscles() {}
 	void AddMacroMuscle( IMacroMuscle *, float ) {}
 	void MultMacroMuscle( IMacroMuscle *, float ) {}
@@ -102,8 +156,8 @@ struct CNullTransformer : public ITransformer
 	int BonesCount() const { return 0; }
 	void FillUnused( bool ) {}
 	bool FillUnused() const { return false; }
-	bool Process( float *, int ) { return false; }
-	int VerticesCount() const { return 0; }
+	bool Process( float *pVertexArray, int nStep ) { return WriteBaseMesh( pVertexArray, nStep, 0 ); }
+	int VerticesCount() const { return (int)( g_baseVerts.size() / 3 ); }
 	void ClearAllMacroMuscles() {}
 	void AddMacroMuscle( IMacroMuscle *, float ) {}
 	void MultMacroMuscle( IMacroMuscle *, float ) {}
@@ -182,11 +236,22 @@ IAnimator *CNullTransformer::OutputAnimator() const { return &g_animator; }
 
 }   // anonymous namespace
 
-IAnimator *IAnimator::Create() { return &g_animator; }
+IAnimator *IAnimator::Create()
+{
+	// Plain (non-transformable) heads never open a GDP, so this is where their
+	// geometry has to come from -- EnsureBaseMesh falls back to the retail path.
+	EnsureBaseMesh( 0 );
+	return &g_animator;
+}
 IMMTree *IMMTree::Create() { return &g_mmTree; }
 ISequencer *ISequencer::Create() { return &g_sequencer; }
 ITransformer *ITransformer::Create() { return &g_transformer; }
-IGDPFile *IGDPFile::Create( const char * ) { return &g_gdpFile; }
+IGDPFile *IGDPFile::Create( const char *pszFileName )
+{
+	// The one place the engine tells us where FaceGenHead.gdp lives.
+	EnsureBaseMesh( pszFileName );
+	return &g_gdpFile;
+}
 
 // The real Init() hands the DLL a host curve-evaluation callback; with no DLL
 // to talk to there is nothing to do.

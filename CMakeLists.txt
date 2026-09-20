@@ -329,7 +329,9 @@ else() # UNIX -- see docs/linux-port.md for the per-subsystem replacement plan.
 # interop headers are in-tree. lsstub.cpp supplies their factory entry points as
 # no-ops (see the file banner -- the engine already degrades gracefully when a head
 # rig fails to build; the visible effect is that faces do not morph).
-add_library(lifestudio_stub STATIC "${root}/third_party/lifestudio/src/lsstub.cpp")
+add_library(lifestudio_stub STATIC
+  "${root}/third_party/lifestudio/src/lsstub.cpp"
+  "${root}/third_party/lifestudio/src/lsgdp.cpp")
 target_include_directories(lifestudio_stub PUBLIC "${root}/third_party/lifestudio/include")
 # LIFESTUDIOHEADAPI_API -> nothing (no DLL to import from). PUBLIC so Main sees the
 # same declarations the stub defines.
