@@ -338,12 +338,12 @@ void *GetProcAddress( HMODULE hModule, const char *pszProcName )
 	return hModule && pszProcName ? dlsym( hModule, pszProcName ) : 0;
 }
 
-void GlobalMemoryStatus( MEMORYSTATUS *pStatus )
+void GlobalMemoryStatus( S2_MEMORYSTATUS *pStatus )
 {
 	if ( !pStatus )
 		return;
 	memset( pStatus, 0, sizeof( *pStatus ) );
-	pStatus->dwLength = sizeof( MEMORYSTATUS );
+	pStatus->dwLength = sizeof( S2_MEMORYSTATUS );
 	long nPages = sysconf( _SC_PHYS_PAGES );
 	long nAvail = sysconf( _SC_AVPHYS_PAGES );
 	long nPageSize = sysconf( _SC_PAGESIZE );

@@ -319,17 +319,16 @@ inline void GetLocalTime( SYSTEMTIME *pTime )
 	pTime->wMilliseconds = (WORD)( ts.tv_nsec / 1000000 );
 }
 
-#ifndef S2_DXVK_WINDOWS_TYPES
-struct MEMORYSTATUS
+// dxvk's windows_base.h declares a two-field MEMORYSTATUS stub, so that name is
+// not ours to define once <d3d9.h> is in play. The engine gets the full Win32
+// layout under its own name instead; GAutoDetect.cpp is the only caller, and a
+// #define would collide with dxvk's struct, hence a distinct type.
+struct S2_MEMORYSTATUS
 {
 	DWORD dwLength, dwMemoryLoad;
 	size_t dwTotalPhys, dwAvailPhys, dwTotalPageFile, dwAvailPageFile, dwTotalVirtual, dwAvailVirtual;
 };
-// Deliberately declared only alongside our own MEMORYSTATUS: dxvk's version of
-// the struct is smaller, so calling this with one would have the implementation
-// write past its end. A renderer TU that tries fails to compile instead.
-void GlobalMemoryStatus( MEMORYSTATUS *pStatus );
-#endif
+void GlobalMemoryStatus( S2_MEMORYSTATUS *pStatus );
 
 // ----------------------------------------------------------------------------
 //  File I/O.
@@ -368,13 +367,13 @@ BOOL ReadFile( HANDLE hFile, LPVOID pBuffer, DWORD nToRead, LPDWORD pnRead, void
 //  no window up yet they report the origin rather than failing.
 // ----------------------------------------------------------------------------
 #define SPI_GETMOUSE 0x0003
-// POINT and MEMORYSTATUS also exist in dxvk-native's windows_base.h, which
-// arrives with <d3d9.h> and defines them unconditionally. In renderer
-// translation units (S2_DXVK_WINDOWS_TYPES, set by CMake) we therefore let
-// dxvk own them and declare neither -- the layouts agree, and the engine
-// only ever reads POINT::x/y and MEMORYSTATUS::dwTotalPhys.
+// POINT also lives in dxvk-native's windows_base.h, which arrives with
+// <d3d9.h> and defines it unconditionally. Rather than race it, renderer
+// builds (S2_DXVK_WINDOWS_TYPES, set by CMake for the whole Main target) take
+// dxvk's header as the single source for it -- the layout is identical, and
+// pulling it in HERE means every TU agrees whether or not it touches D3D9.
 #ifdef S2_DXVK_WINDOWS_TYPES
-struct POINT;              // defined by dxvk's windows_base.h, same layout
+#include <windows_base.h>
 #else
 typedef struct POINT { LONG x, y; } POINT;
 #endif

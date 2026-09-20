@@ -360,27 +360,57 @@ s2_module(Script    lib LINK FileIO Input MiscDll Misc)
 s2_module(DBFormat  lib LINK ADOImport FileIO Misc)
 
 if(S2_LINUX_FULL_ENGINE)
+  # --- dxvk-native: the D3D9 -> Vulkan translation layer the renderer builds on.
+  # Not vendored (it is large and tracks its own release cadence); point the build at
+  # a checkout+build of https://github.com/doitsujin/dxvk configured with -Dnative_sdl2=enabled:
+  #   -DDXVK_NATIVE_DIR=/path/to/dxvk        (source tree, for include/native)
+  #   -DDXVK_NATIVE_BUILD=/path/to/dxvk/build-native   (defaults to <src>/build-native)
+  # At runtime dxvk-native REQUIRES the env var DXVK_WSI_DRIVER=SDL2 -- with it unset
+  # it throws before returning a device (Game/MainLinux.cpp sets it for us).
+  set(DXVK_NATIVE_DIR "" CACHE PATH "dxvk source tree (built with native_sdl2)")
+  if(NOT DXVK_NATIVE_DIR)
+    message(FATAL_ERROR
+      "S2_LINUX_FULL_ENGINE needs dxvk-native: set -DDXVK_NATIVE_DIR=/path/to/dxvk "
+      "(built with: meson setup build-native -Dnative_sdl2=enabled && ninja -C build-native). "
+      "See docs/linux-build.md.")
+  endif()
+  if(NOT DXVK_NATIVE_BUILD)
+    set(DXVK_NATIVE_BUILD "${DXVK_NATIVE_DIR}/build-native")
+  endif()
+  find_library(DXVK_D3D9_LIB NAMES dxvk_d3d9 HINTS "${DXVK_NATIVE_BUILD}/src/d3d9" NO_DEFAULT_PATH)
+  if(NOT DXVK_D3D9_LIB OR NOT EXISTS "${DXVK_NATIVE_DIR}/include/native/directx/d3d9.h")
+    message(FATAL_ERROR "dxvk-native not usable at ${DXVK_NATIVE_DIR}: need include/native/directx/d3d9.h "
+                        "and libdxvk_d3d9 under ${DXVK_NATIVE_BUILD}/src/d3d9.")
+  endif()
+
+  add_library(dxvk_native INTERFACE)
+  # Order matters: native/ first so its windows.h shadows nothing of ours by accident.
+  target_include_directories(dxvk_native INTERFACE
+    "${DXVK_NATIVE_DIR}/include/native"
+    "${DXVK_NATIVE_DIR}/include/native/windows"
+    "${DXVK_NATIVE_DIR}/include/native/directx")
+  # Tells PlatformCompat.h to yield POINT/MEMORYSTATUS to dxvk's windows_base.h.
+  target_compile_definitions(dxvk_native INTERFACE S2_DXVK_WINDOWS_TYPES)
+  target_link_libraries(dxvk_native INTERFACE "${DXVK_D3D9_LIB}")
+  message(STATUS "dxvk-native: ${DXVK_D3D9_LIB}")
+
   # Main_SRC minus GBinkPlayer.cpp (no-op stub instead, see Main/GBinkPlayerStub.cpp),
   # 2DSceneSW.cpp/SWTexture.cpp (the MMX software rasterizer -- a fallback path when D3D9
   # hardware T&L isn't available; excluded rather than porting its asm until proven needed)
   # and SplashScreen.cpp/SplashScreenDialog.cpp (a pure-GDI Win32 splash window -- no-op
   # stub instead, see Main/SplashScreenStub.cpp).
-  # NOTE: Main/Gfx.cpp, GfxRender.cpp, GfxBuffers.cpp still call raw D3D9 (IDirect3DDevice9)
-  # directly -- this target will NOT compile until the dxvk-native render port lands
-  # (docs/linux-port.md, render section). S2_LINUX_FULL_ENGINE exists so a plain
-  # `cmake --build` succeeds on the modules that ARE ready without this expected failure.
   set(Main_SRC_LINUX ${Main_SRC})
   list(REMOVE_ITEM Main_SRC_LINUX "GBinkPlayer.cpp" "2DSceneSW.cpp" "SWTexture.cpp"
                                   "SplashScreen.cpp" "SplashScreenDialog.cpp")
   list(APPEND Main_SRC_LINUX "GBinkPlayerStub.cpp" "SplashScreenStub.cpp")
   s2_module(Main lib SRC ${Main_SRC_LINUX}
                        LINK ADOImport DBFormat FileIO FModSound Input MiscDll Misc Script
-                            lifestudio_shim SDL2::SDL2)
+                            lifestudio_shim dxvk_native SDL2::SDL2)
   # MainLinux.cpp + WinFrameSDL2.cpp instead of Main.cpp + WinFrame.cpp + the .rc resource
   # (see Game/MainLinux.cpp, Game/WinFrameSDL2.cpp).
   s2_module(Game console WHOLE Main SRC MainLinux.cpp WinFrameSDL2.cpp StdAfx.cpp
                        LINK ADOImport DBFormat FileIO FModSound Input MiscDll Misc Script
-                            lifestudio_shim SDL2::SDL2)
+                            lifestudio_shim dxvk_native SDL2::SDL2)
 endif()
 
 # Tools not yet ported (need a Linux content-authoring story of their own -- see

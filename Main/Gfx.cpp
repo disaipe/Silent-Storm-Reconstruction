@@ -1,5 +1,5 @@
 #include "StdAfx.h"
-#include <D3D9.h>
+#include <d3d9.h>
 #include "../Misc/HPTimer.h"
 #include "../Misc/2DArray.h"
 #include "../MiscDll/Commands.h"

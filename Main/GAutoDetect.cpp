@@ -86,7 +86,7 @@ static SCfgValue *fsaaConfig[4] = { fsaaLow, fsaaMed, fsaaHigh, fsaaVHigh };
 // True when the machine has at most 256 MB of physical RAM.
 bool IsLowRAM()
 {
-	MEMORYSTATUS ms;
+	S2_MEMORYSTATUS ms;
 	GlobalMemoryStatus( &ms );
 	return ms.dwTotalPhys <= 0x10000000;
 }
@@ -143,7 +143,7 @@ void SetSpeedMode( EConfigValue mode )
 {
 	ApplyCfgValues( speedConfig, mode, CV_CUSTOM );
 
-	MEMORYSTATUS ms;
+	S2_MEMORYSTATUS ms;
 	GlobalMemoryStatus( &ms );
 	int nHSR = 0;
 	if ( ms.dwTotalPhys > 0x10000000 )           // > 256 MB
