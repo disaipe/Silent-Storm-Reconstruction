@@ -56,8 +56,12 @@ typedef uint16_t WORD;
 typedef unsigned char BYTE;
 typedef unsigned char byte;
 typedef int BOOL;
-typedef long LONG;
-typedef unsigned long ULONG;
+// LONG/ULONG are 32-bit in the Win32 ABI -- NOT C's `long`, which is 64-bit on
+// LP64 Linux. They appear inside structures written to disk verbatim
+// (BITMAPINFOHEADER etc.), so the width has to match the original. This also
+// matches dxvk-native's windows_base.h, letting both headers coexist.
+typedef int32_t LONG;
+typedef uint32_t ULONG;
 typedef unsigned int UINT;
 typedef const char *LPCSTR;
 typedef char *LPSTR;
@@ -67,10 +71,11 @@ typedef void *HANDLE;
 typedef DWORD *LPDWORD;
 typedef void *LPVOID;
 typedef const void *LPCVOID;
-struct HWND__;
-typedef HWND__ *HWND;
-struct HINSTANCE__;
-typedef HINSTANCE__ *HINSTANCE;
+// Spelled exactly as dxvk-native's windows_base.h spells them, so that a
+// translation unit pulling in both headers sees identical typedefs rather
+// than a conflict (repeating an identical typedef is legal).
+typedef HANDLE HWND;
+typedef HANDLE HINSTANCE;
 
 #ifndef TRUE
 #define TRUE 1
@@ -314,12 +319,17 @@ inline void GetLocalTime( SYSTEMTIME *pTime )
 	pTime->wMilliseconds = (WORD)( ts.tv_nsec / 1000000 );
 }
 
+#ifndef S2_DXVK_WINDOWS_TYPES
 struct MEMORYSTATUS
 {
 	DWORD dwLength, dwMemoryLoad;
 	size_t dwTotalPhys, dwAvailPhys, dwTotalPageFile, dwAvailPageFile, dwTotalVirtual, dwAvailVirtual;
 };
+// Deliberately declared only alongside our own MEMORYSTATUS: dxvk's version of
+// the struct is smaller, so calling this with one would have the implementation
+// write past its end. A renderer TU that tries fails to compile instead.
 void GlobalMemoryStatus( MEMORYSTATUS *pStatus );
+#endif
 
 // ----------------------------------------------------------------------------
 //  File I/O.
@@ -358,7 +368,16 @@ BOOL ReadFile( HANDLE hFile, LPVOID pBuffer, DWORD nToRead, LPDWORD pnRead, void
 //  no window up yet they report the origin rather than failing.
 // ----------------------------------------------------------------------------
 #define SPI_GETMOUSE 0x0003
-struct POINT { LONG x, y; };
+// POINT and MEMORYSTATUS also exist in dxvk-native's windows_base.h, which
+// arrives with <d3d9.h> and defines them unconditionally. In renderer
+// translation units (S2_DXVK_WINDOWS_TYPES, set by CMake) we therefore let
+// dxvk own them and declare neither -- the layouts agree, and the engine
+// only ever reads POINT::x/y and MEMORYSTATUS::dwTotalPhys.
+#ifdef S2_DXVK_WINDOWS_TYPES
+struct POINT;              // defined by dxvk's windows_base.h, same layout
+#else
+typedef struct POINT { LONG x, y; } POINT;
+#endif
 
 BOOL SystemParametersInfoA( UINT uiAction, UINT uiParam, void *pvParam, UINT fWinIni );
 inline BOOL SystemParametersInfo( UINT uiAction, UINT uiParam, void *pvParam, UINT fWinIni )
