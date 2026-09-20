@@ -12,6 +12,9 @@
 #include "StdAfx.h"
 #include "../Main/GInit.h"
 #include "WinFrame.h"
+// Implemented in WinFrameSDL2.cpp. Declared here rather than in WinFrame.h,
+// which is shared with the Windows build and has no such entry point.
+namespace NWinFrame { void DoneApplication(); }
 #include "../Main/iMain.h"
 #include "../Input/Bind.h"
 #include "../ADOImport/BasicDB.h"
@@ -130,6 +133,9 @@ int main( int argc, char *argv[] )
 	NGfx::Done3D();
 	NInput::DoneInput();
 	NSound::DoneSound();
+	// Linux-only: hands the display mode back. WinFrame.h has no counterpart
+	// because Windows does this for us when the process exits.
+	NWinFrame::DoneApplication();
 	return 0;
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////

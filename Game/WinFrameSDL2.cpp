@@ -22,7 +22,13 @@
 #include "WinFrame.h"
 #include "../Misc/HPTimer.h"
 #include <SDL2/SDL.h>
+#include <cstdlib>   // atexit
+#include <csignal>
 #include <list>
+
+// Linux-only addition to the NWinFrame interface; WinFrame.h is shared with the
+// Windows build, which needs no such call (the OS restores the mode for it).
+namespace NWinFrame { void DoneApplication(); }
 
 using namespace NWinFrame;
 
@@ -124,6 +130,32 @@ namespace
 	{
 		if ( SDL_Window *pWnd = (SDL_Window *)hWnd )
 			SDL_SetWindowSize( pWnd, nWidth, nHeight );
+	}
+
+	// Drop out of fullscreen (which is what actually restores the desktop mode),
+	// then tear the window down. Safe to call twice -- atexit and the explicit
+	// shutdown both land here.
+	void RestoreDisplayMode()
+	{
+		if ( pWindow )
+		{
+			SDL_SetWindowFullscreen( pWindow, 0 );
+			SDL_DestroyWindow( pWindow );
+			pWindow = 0;
+		}
+		if ( SDL_WasInit( SDL_INIT_VIDEO ) )
+			SDL_QuitSubSystem( SDL_INIT_VIDEO );
+	}
+
+	// Restore, then let the signal do what it would have done. Only
+	// async-signal-safe work happens before re-raising: SDL's mode switch is not
+	// strictly in that class, but a stuck display is the worse outcome, and by
+	// this point the process is going away regardless.
+	void FatalSignalHandler( int nSignal )
+	{
+		RestoreDisplayMode();
+		signal( nSignal, SIG_DFL );
+		raise( nSignal );
 	}
 
 	void AddMsg( SWindowsMsg::EMsg msg, int x, int y, DWORD dwFlags )
@@ -228,6 +260,27 @@ bool NWinFrame::InitApplication( HINSTANCE, const char *pszAppName, const char *
 	static const SWindowGeometryHooks geometryHooks =
 		{ GetClientSizeHook, IsWindowVisibleHook, ResizeWindowHook };
 	SetWindowGeometryHooks( &geometryHooks );
+
+	// Leaving the desktop stuck at 1024x768 is far worse than anything these
+	// handlers cost, so cover every way out:
+	//   - atexit: the early-return paths in MainLinux.cpp (sound/input failures)
+	//     and any exit() that skips DoneApplication.
+	//   - signals: atexit does NOT run on a signal, which is exactly how the game
+	//     ends when it crashes or is killed from a terminal. Each handler restores
+	//     the mode, then re-raises with the default action so the exit status and
+	//     any core dump stay truthful.
+	atexit( RestoreDisplayMode );
+	static const int anFatalSignals[] = { SIGINT, SIGTERM, SIGHUP, SIGQUIT, SIGSEGV, SIGABRT, SIGFPE, SIGILL, SIGBUS };
+	for ( size_t i = 0; i < sizeof( anFatalSignals ) / sizeof( anFatalSignals[0] ); ++i )
+		signal( anFatalSignals[i], FatalSignalHandler );
 	return true;
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Windows restores the display mode by itself when a fullscreen-exclusive app
+// exits; X11 does not -- whatever mode the game set stays on the desktop. dxvk
+// switches the mode through SDL, so it has to be handed back here.
+void NWinFrame::DoneApplication()
+{
+	RestoreDisplayMode();
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
