@@ -362,6 +362,21 @@ struct SWindowGeometryHooks
 };
 void SetWindowGeometryHooks( const SWindowGeometryHooks *pHooks );
 
+// ----------------------------------------------------------------------------
+//  Path resolution.
+//
+//  The engine's data files spell paths the Windows way: backslashes, and any
+//  capitalisation ("Res\\FaceGenHead.gdp", ".\\cfg\\intro.seq"). Both are fine on
+//  NTFS and fatal on a case-sensitive filesystem, so every path the engine hands
+//  to the C library goes through here first.
+//
+//  Backslashes become slashes; then, if the result does not exist as spelled,
+//  each component is matched case-insensitively against the real directory.
+//  That walk only happens on the miss path, so correctly-cased paths cost one
+//  stat().
+// ----------------------------------------------------------------------------
+std::string ResolvePath( const char *pszPath );
+
 BOOL GetClientRect( HWND hWnd, RECT *pRect );
 BOOL IsWindowVisible( HWND hWnd );
 BOOL SetWindowPos( HWND hWnd, HWND hWndInsertAfter, int nX, int nY, int nWidth, int nHeight, UINT uiFlags );

@@ -396,12 +396,37 @@ void CStructureSaver::DataChunkString( stdWString &str )
 		CChunkLevel &res = chunks.back();
 		if ( g_bWireAudit && !NWireAudit::frames.empty() )
 			NWireAudit::frames.back().bRaw = true;
+		// The wire format is UTF-16: two bytes per character, always. On Windows
+		// wchar_t is also 2 bytes, so the original cast is exact and is kept
+		// byte-for-byte. On Linux wchar_t is 4 bytes and reading the buffer as
+		// wchar_t* silently consumed characters in pairs -- "Courier" arrived as
+		// "Cuir\1\24D", which is what left every font lookup returning null.
+#if defined( _WIN32 )
 		const wchar_t *pStr = (wchar_t*) ( data.GetBuffer() + res.nStart );
 		str.assign( pStr, res.nLength / 2 );
+#else
+		const unsigned char *pBytes = data.GetBuffer() + res.nStart;
+		const int nChars = res.nLength / 2;
+		str.resize( nChars );
+		for ( int i = 0; i < nChars; ++i )
+			str[i] = (wchar_t)( (unsigned short)pBytes[i * 2] | ( (unsigned short)pBytes[i * 2 + 1] << 8 ) );
+#endif
 	}
 	else
 	{
+#if defined( _WIN32 )
 		WriteRawData( str.data(), str.size() * 2 );
+#else
+		// Narrow back to 2 bytes per character for the same reason.
+		std::vector<unsigned char> bytes( str.size() * 2 );
+		for ( size_t i = 0; i < str.size(); ++i )
+		{
+			const unsigned short nCh = (unsigned short)str[i];
+			bytes[i * 2] = (unsigned char)( nCh & 0xff );
+			bytes[i * 2 + 1] = (unsigned char)( nCh >> 8 );
+		}
+		WriteRawData( bytes.empty() ? 0 : &bytes[0], (int)bytes.size() );
+#endif
 	}
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////

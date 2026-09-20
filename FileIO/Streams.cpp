@@ -278,8 +278,15 @@ void CBufferedStream::LoadBufferForced( int nPos )
 	int nRead = __Min( pReservedEnd - pBuffer, pFileEnd - pCurrent );
 	if ( DoRead( nPos, pBuffer, nRead ) != nRead )
 		throw SFileIOError( "read error" );//SetFailed(); // throw
-	pCurrent += nBufferStart - nPos;
-	pFileEnd += nBufferStart - nPos;
+	// nBufferStart is unsigned int and nPos is int, so `nBufferStart - nPos`
+	// is UNSIGNED 32-bit arithmetic: seeking forward yields a huge positive
+	// value rather than a negative delta. On 32-bit Windows adding that to a
+	// pointer wrapped around and landed correctly, so the original is fine
+	// there; on LP64 it zero-extends and the pointer runs off by ~4GB. Do the
+	// arithmetic signed and wide before it ever touches a pointer.
+	const ptrdiff_t nShift = (ptrdiff_t)nBufferStart - (ptrdiff_t)nPos;
+	pCurrent += nShift;
+	pFileEnd += nShift;
 	nBufferStart = nPos;
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -394,7 +401,14 @@ void CFileStream::Open( const char *pszFName, const char *pszMode, int _nFlags )
 	CloseFile();
 	//SetOk();
 	nFlags = _nFlags; 
+#if defined( _WIN32 )
 	pFile = fopen( pszFName, pszMode ); 
+#else
+	// Paths in the game data are Windows-spelled (backslashes, arbitrary case),
+	// which a case-sensitive filesystem will not open; ResolvePath maps them onto
+	// the real thing.
+	pFile = fopen( ResolvePath( pszFName ).c_str(), pszMode ); 
+#endif
 	if ( pFile )
 	{
 		fseek( pFile, 0, SEEK_END );

@@ -97,20 +97,13 @@ void CParticlesLoader::RecalcValue( CFileRequest *pRequest )
 	p += sizeof(float);
 	pValue->nParticles = *( (int*)p );
 	p += sizeof(int);
+	// Relocation pass: each `keys` field arrives holding a byte OFFSET into the
+	// file image rather than a pointer, and is turned into a real address here.
+#if defined( _WIN32 )
+	// 32-bit Windows: SParticle can be overlaid straight onto the file image,
+	// because a pointer there is the same 4 bytes the tools wrote. Patched in
+	// place, exactly as the retail build does.
 	pValue->particles = (SParticle*)p;
-
-	// Relocation pass: SParticle is overlaid directly on the file image, and each
-	// `keys` field arrives holding a byte OFFSET into that image rather than a
-	// pointer; it is patched in place to the real address here.
-	//
-	// WARNING (64-bit): this overlay is only correct while a pointer is 4 bytes.
-	// The .particles blob is written by the Windows content tools with 32-bit
-	// pointer fields, so on a 64-bit build every SParticle is a different size
-	// than the file assumes and this loop walks the wrong stride. The casts below
-	// are made explicit so the code COMPILES, but the format itself has to become
-	// pointer-size-independent (store the offsets in an int32 field and keep the
-	// pointers out of the on-disk struct) before particles actually load on
-	// 64-bit Linux. Tracked in docs/linux-port.md.
 	for ( int nP = 0; nP < pValue->nParticles; ++nP )
 	{
 		SParticle &particle = pValue->particles[nP];
@@ -120,6 +113,45 @@ void CParticlesLoader::RecalcValue( CFileRequest *pRequest )
 		particle.color.keys = (TKey<DWORD>*)(pData + (intptr_t)particle.color.keys);
 		particle.sprite.keys = (TKey<short>*)(pData + (intptr_t)particle.sprite.keys);
 	}
+#else
+	// 64-bit: the overlay is impossible. With #pragma pack(2), the on-disk
+	// SParticle is 34 bytes (2+2 header, then five tracks of short + 32-bit
+	// offset) while the in-memory one is 54 (the offsets became 8-byte pointers),
+	// so indexing the image as SParticle[] walks the wrong stride and every
+	// `keys` lands in nowhere -- which is exactly the segfault this produced in
+	// TKeyTrack::GetValueBinSearch. Decode the file with its own layout instead
+	// and build the in-memory array separately.
+	const int N_FILE_TRACK = 2 + 4;                   // short nKeys + int32 offset
+	const int N_FILE_PARTICLE = 2 + 2 + 5 * N_FILE_TRACK;   // 34
+
+	pValue->unpackedParticles.resize( pValue->nParticles );
+	for ( int nP = 0; nP < pValue->nParticles; ++nP )
+	{
+		const char *pSrc = p + (size_t)nP * N_FILE_PARTICLE;
+		SParticle &particle = pValue->unpackedParticles[nP];
+
+		memcpy( &particle.nTStart, pSrc, 2 );
+		memcpy( &particle.nTEnd, pSrc + 2, 2 );
+		const char *pTrack = pSrc + 4;
+
+		// Same order as the struct: pos, rot, scale, color, sprite.
+		short nKeys; int nOffset;
+		#define S2_READ_TRACK( track, type ) \
+			memcpy( &nKeys, pTrack, 2 ); \
+			memcpy( &nOffset, pTrack + 2, 4 ); \
+			particle.track.nKeys = nKeys; \
+			particle.track.keys = (TKey<type>*)( pData + nOffset ); \
+			pTrack += N_FILE_TRACK;
+
+		S2_READ_TRACK( pos, CVec3 )
+		S2_READ_TRACK( rot, float )
+		S2_READ_TRACK( scale, CVec2 )
+		S2_READ_TRACK( color, DWORD )
+		S2_READ_TRACK( sprite, short )
+		#undef S2_READ_TRACK
+	}
+	pValue->particles = pValue->nParticles ? &pValue->unpackedParticles[0] : 0;
+#endif
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /*bool CParticlesLoader::NeedUpdate()

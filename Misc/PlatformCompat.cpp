@@ -204,6 +204,90 @@ namespace
 	}
 }
 
+// ----------------------------------------------------------------------------
+//  Path resolution -- see the header for why.
+// ----------------------------------------------------------------------------
+namespace
+{
+	// Find szName in szDir ignoring case. Empty string when there is no match.
+	std::string MatchNoCase( const std::string &szDir, const std::string &szName )
+	{
+		DIR *pDir = opendir( szDir.empty() ? "." : szDir.c_str() );
+		if ( !pDir )
+			return std::string();
+		std::string szResult;
+		while ( struct dirent *pEntry = readdir( pDir ) )
+		{
+			if ( strcasecmp( pEntry->d_name, szName.c_str() ) == 0 )
+			{
+				szResult = pEntry->d_name;
+				break;
+			}
+		}
+		closedir( pDir );
+		return szResult;
+	}
+}
+
+std::string ResolvePath( const char *pszPath )
+{
+	if ( !pszPath || !*pszPath )
+		return std::string();
+
+	std::string szPath( pszPath );
+	for ( size_t i = 0; i < szPath.size(); ++i )
+		if ( szPath[i] == '\\' )
+			szPath[i] = '/';
+
+	// Strip the "./" the engine likes to prefix; harmless but makes the walk below
+	// simpler to reason about.
+	while ( szPath.compare( 0, 2, "./" ) == 0 )
+		szPath.erase( 0, 2 );
+
+	// Fast path: as spelled, it exists.
+	struct stat st;
+	if ( stat( szPath.c_str(), &st ) == 0 )
+		return szPath;
+
+	// Slow path: resolve component by component, ignoring case.
+	const bool bAbsolute = !szPath.empty() && szPath[0] == '/';
+	std::string szBuilt = bAbsolute ? "/" : "";
+	size_t nStart = bAbsolute ? 1 : 0;
+	bool bResolved = true;
+
+	while ( nStart <= szPath.size() )
+	{
+		size_t nEnd = szPath.find( '/', nStart );
+		if ( nEnd == std::string::npos )
+			nEnd = szPath.size();
+		const std::string szPart = szPath.substr( nStart, nEnd - nStart );
+		if ( !szPart.empty() && szPart != "." )
+		{
+			std::string szCandidate = szBuilt + szPart;
+			if ( stat( szCandidate.c_str(), &st ) != 0 )
+			{
+				const std::string szMatch = MatchNoCase( szBuilt, szPart );
+				if ( szMatch.empty() )
+				{
+					// No such entry under any casing: hand back the slash-normalised
+					// path so the caller reports a sensible name in its error.
+					bResolved = false;
+					break;
+				}
+				szCandidate = szBuilt + szMatch;
+			}
+			szBuilt = szCandidate;
+			if ( nEnd < szPath.size() )
+				szBuilt += '/';
+		}
+		if ( nEnd == szPath.size() )
+			break;
+		nStart = nEnd + 1;
+	}
+
+	return bResolved ? szBuilt : szPath;
+}
+
 HANDLE FindFirstFileA( const char *pszPattern, WIN32_FIND_DATAA *pFindData )
 {
 	if ( !pszPattern || !pFindData )

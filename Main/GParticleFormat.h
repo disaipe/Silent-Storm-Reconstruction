@@ -88,6 +88,12 @@ public:
 	float fFrameRate;
 	int nParticles;
 	SParticle *particles;
+	// 64-bit builds cannot overlay SParticle on the file image (see
+	// GParticleFormat.cpp): the on-disk struct carries 32-bit `keys` pointers, so
+	// it is 34 bytes there against 54 in memory. The unpacked copy lives here and
+	// `particles` points into it; on Windows this stays empty and the overlay is
+	// used exactly as before.
+	vector<SParticle> unpackedParticles;
 
 	CParticlesInfo() { nBytes = 0; nParticles = 0; }
 	void CalcBound( SBound *pRes );

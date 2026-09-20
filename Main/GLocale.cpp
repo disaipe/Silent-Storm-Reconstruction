@@ -47,6 +47,8 @@ CTextLocaleInfo::CTextLocaleInfo()
 	}
 	// nRecords==0 -> db layer (CTypeface table not found / type-id or schema mismatch).
 	// nRecords>0 && nLoaded==0 -> res layer (Fonts.res CFileFont format mismatch).
+	if ( fonts.empty() )
+		printf( "FONTS: no usable typeface (%d records, %d loaded)\n", nRecords, nLoaded );
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 void CTextLocaleInfo::Setup( const CVec2 &_vScreenRect )
