@@ -325,6 +325,20 @@ s2_module(LSConverter  console LINK FileIO Image libpng Misc squish lifestudio_s
 #   OpenDynamix  -- only used by MapEdit (ODE physics; would also need ODE headers).
 
 else() # UNIX -- see docs/linux-port.md for the per-subsystem replacement plan.
+# LifeStudio:Head is a pair of proprietary Win32 DLLs with no Linux build; only the
+# interop headers are in-tree. lsstub.cpp supplies their factory entry points as
+# no-ops (see the file banner -- the engine already degrades gracefully when a head
+# rig fails to build; the visible effect is that faces do not morph).
+add_library(lifestudio_stub STATIC "${root}/third_party/lifestudio/src/lsstub.cpp")
+target_include_directories(lifestudio_stub PUBLIC "${root}/third_party/lifestudio/include")
+# LIFESTUDIOHEADAPI_API -> nothing (no DLL to import from). PUBLIC so Main sees the
+# same declarations the stub defines.
+target_compile_definitions(lifestudio_stub PUBLIC LIFESTUDIOHEADAPI_EXPORTS_LIB)
+
+add_library(lifestudio_shim INTERFACE)
+target_include_directories(lifestudio_shim INTERFACE "${root}/third_party/lifestudio/include")
+target_link_libraries(lifestudio_shim INTERFACE lifestudio_stub)
+
 # leaves
 s2_module(Misc lib)
 target_link_libraries(Misc PUBLIC Threads::Threads ${CMAKE_DL_LIBS})   # PlatformCompat.cpp uses std::thread and dlopen
@@ -360,11 +374,13 @@ if(S2_LINUX_FULL_ENGINE)
                                   "SplashScreen.cpp" "SplashScreenDialog.cpp")
   list(APPEND Main_SRC_LINUX "GBinkPlayerStub.cpp" "SplashScreenStub.cpp")
   s2_module(Main lib SRC ${Main_SRC_LINUX}
-                       LINK ADOImport DBFormat FileIO FModSound Input MiscDll Misc Script SDL2::SDL2)
+                       LINK ADOImport DBFormat FileIO FModSound Input MiscDll Misc Script
+                            lifestudio_shim SDL2::SDL2)
   # MainLinux.cpp + WinFrameSDL2.cpp instead of Main.cpp + WinFrame.cpp + the .rc resource
   # (see Game/MainLinux.cpp, Game/WinFrameSDL2.cpp).
   s2_module(Game console WHOLE Main SRC MainLinux.cpp WinFrameSDL2.cpp StdAfx.cpp
-                       LINK ADOImport DBFormat FileIO FModSound Input MiscDll Misc Script SDL2::SDL2)
+                       LINK ADOImport DBFormat FileIO FModSound Input MiscDll Misc Script
+                            lifestudio_shim SDL2::SDL2)
 endif()
 
 # Tools not yet ported (need a Linux content-authoring story of their own -- see

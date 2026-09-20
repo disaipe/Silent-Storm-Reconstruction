@@ -193,14 +193,14 @@ public:
 			if ( i != t.end() )
 				t.erase( i );
 			else
-				stuff[p] = Add( p );
+				stuff[p] = this->Add( p );
 		}
 		for ( typename CStuffHash::iterator i = t.begin(); i != t.end(); ++i )
 		{
 			typename CStuffHash::iterator k = stuff.find( i->first );
 			ASSERT( k != stuff.end() );
 			stuff.erase( k );
-			Remove( i->second );
+			this->Remove( i->second );
 		}
 	}
 	// NOTE: this looked up `i->first` -- `i` is the loop variable of the function

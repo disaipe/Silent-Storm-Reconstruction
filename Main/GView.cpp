@@ -1056,8 +1056,8 @@ static void MakeClipTS( CTransformStack *pRes, const CTransformStack &ts, const 
 {
 	const SFBTransform &projection = ts.GetProjection();
 	SHMatrix m = projection.forward;
-	m.x = m.x * (1.0f / vSize.x) + m.w * ( ( 1 - 2 * vOrigin.x - vSize.x ) / vSize.x );
-	m.y = m.y * (1.0f / vSize.y) + m.w * ( (-1 + 2 * vOrigin.y + vSize.y ) / vSize.y );
+	m.RowX() = m.RowX() * (1.0f / vSize.x) + m.RowW() * ( ( 1 - 2 * vOrigin.x - vSize.x ) / vSize.x );
+	m.RowY() = m.RowY() * (1.0f / vSize.y) + m.RowW() * ( (-1 + 2 * vOrigin.y + vSize.y ) / vSize.y );
 	pRes->Make( m );
 	pRes->Push43( projection.backward * ts.Get().forward );
 }

@@ -454,7 +454,7 @@ void CUnit::SetHead( NDb::CComplexHead *pNewHead )
 	if ( !pNewHead )
 		return;
 	pHeadInfo = new NLSHead::CHeadInfo( pNewHead );
-	pHeadInfo->SetSeed( SRandomSeed( (int)this ) );
+	pHeadInfo->SetSeed( SRandomSeed( (int)(intptr_t)this ) );
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // SetHeadInfo @0x192070 -- install an already-built live head directly (the CObj assignment open-codes the
