@@ -40,6 +40,10 @@
 #define __fastcall
 #define __stdcall
 #define __cdecl
+#define WINAPI
+#define CALLBACK
+#define APIENTRY
+#define WINBASEAPI
 #define __declspec(x)
 #define __debugbreak() __builtin_trap()
 #define __forceinline inline __attribute__(( always_inline ))

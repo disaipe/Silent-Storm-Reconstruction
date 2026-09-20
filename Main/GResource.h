@@ -35,6 +35,11 @@ public:
 };
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 class CFileRequest;
+// Declared here, not 130 lines further down as before: CLazyResourceLoader::Recalc
+// calls them and they are NOT dependent on the template parameters, so they must be
+// visible at the point of definition. (Still declared again below, harmlessly.)
+void ReleaseFileRequestHolder();
+void AddFileRequest( CFileRequest *pReq );
 template <class TKey, class TValue>
 class CLazyResourceLoader : public CResourceLoader<TKey,TValue>
 {
@@ -60,7 +65,7 @@ protected:
 				AddFileRequest( pRequest );
 		}
 	}
-	bool NeedUpdate() { TParent::NeedUpdate(); if ( !IsValid(pValue) && IsValid(pRequest) && pRequest->IsReady() ) return true; return false; }
+	bool NeedUpdate() { TParent::NeedUpdate(); if ( !IsValid(this->pValue) && IsValid(pRequest) && pRequest->IsReady() ) return true; return false; }
 public:
 };
 ////////////////////////////////////////////////////////////////////////////////////////////////////

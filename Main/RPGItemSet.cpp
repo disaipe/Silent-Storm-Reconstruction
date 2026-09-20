@@ -673,7 +673,7 @@ IWeaponItem *CreateWeaponItem( NDb::CRPGWeapon *pDBWeapon )
 	return new CWeaponItem( pDBWeapon );
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-static IInventoryItem *CreateGrenadeItem( NDb::CRPGGrenade *pDBGrenade )
+IInventoryItem *CreateGrenadeItem( NDb::CRPGGrenade *pDBGrenade )
 {
 	CGrenadeItem *pGrenade = new CGrenadeItem(pDBGrenade);
 	return pGrenade;
@@ -713,7 +713,7 @@ NDb::CRPGItem *GetGrenadeRecItem( IGrenadeItemInfo *pGrenade )
 	return pGrenade->GetDBEngGrenade()->pItem;
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-static IInventoryItem *CreateUniformItem( NDb::CRPGUniform *pDBUniform )
+IInventoryItem *CreateUniformItem( NDb::CRPGUniform *pDBUniform )
 {
 	//CUniformItem *pUniform = new CUniformItem(pDBUniform);
 	return 0;

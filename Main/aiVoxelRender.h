@@ -218,7 +218,8 @@ public:
 	void TraceEntity( const vector<SConvexHull> &e, bool bTerrain )	{	ASSERT(0); }
 	void TraceEntity( const SConvexHull &e, bool bTerrain );
 	//
-	friend class CTParent;
+	// (was `friend class CTParent` -- a friend declaration cannot name a typedef)
+	friend class CTVoxelRenderer<CExplVoxelRenderer, SExplVoxel>;
 };
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 class CVisionVoxelRenderer : public CTVoxelRenderer<CVisionVoxelRenderer, char>
@@ -250,7 +251,8 @@ public:
 	void TraceEntity( const SConvexHull &e, bool bTerrain );
 	void FillSolid();
 	//
-	friend class CTParent;
+	// (was `friend class CTParent` -- a friend declaration cannot name a typedef)
+	friend class CTVoxelRenderer<CVisionVoxelRenderer, char>;
 };
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 }

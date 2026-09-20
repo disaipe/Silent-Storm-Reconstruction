@@ -7,8 +7,10 @@ namespace NBuilding
 {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 CRod::CRod( CBuildingSchema *_pSchema, CJunctionID nLJ, CJunctionID nRJ ) 
-	: pSchema(_pSchema), nLJunction( nLJ ), nRJunction( nRJ )
+	: pSchema(_pSchema)
 {
+	juncs[RS_LEFT] = nLJ;
+	juncs[RS_RIGHT] = nRJ;
 	ASSERT( pSchema );
 	ASSERT( pSchema->IsJunctionValid( nLJ ) && pSchema->IsJunctionValid( nRJ ) );
 	CJunction *pLJ = pSchema->GetJunction( nLJ );
@@ -24,9 +26,9 @@ CRod::CRod( CBuildingSchema *_pSchema, CJunctionID nLJ, CJunctionID nRJ )
 	bDestroy = false;
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-CIVec3 CRod::GetLeftPt() const { return pSchema->GetJunction( nLJunction )->ptJ; }
+CIVec3 CRod::GetLeftPt() const { return pSchema->GetJunction( nLJunction() )->ptJ; }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-CIVec3 CRod::GetRightPt() const { return pSchema->GetJunction( nRJunction )->ptJ; }
+CIVec3 CRod::GetRightPt() const { return pSchema->GetJunction( nRJunction() )->ptJ; }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 bool CRod::Shoot( ERodSide from, EDirection dir )
 {
@@ -35,10 +37,10 @@ bool CRod::Shoot( ERodSide from, EDirection dir )
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 void CRod::AddWeight( float fWeight )
 {
-	ASSERT( pSchema->IsJunctionValid( nLJunction ) );
-	pSchema->GetJunction( nLJunction )->AddWeight( 0.5f * fWeight );
-	ASSERT( pSchema->IsJunctionValid( nRJunction ) );
-	pSchema->GetJunction( nRJunction )->AddWeight( 0.5f * fWeight );
+	ASSERT( pSchema->IsJunctionValid( nLJunction() ) );
+	pSchema->GetJunction( nLJunction() )->AddWeight( 0.5f * fWeight );
+	ASSERT( pSchema->IsJunctionValid( nRJunction() ) );
+	pSchema->GetJunction( nRJunction() )->AddWeight( 0.5f * fWeight );
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 bool CRod::AdvanceWavefront( ERodSide side, const int nWaveID, EDirection from, int nStep, CJuncList *pWaveList )
@@ -59,10 +61,10 @@ bool CRod::AdvanceWavefront( ERodSide side, const int nWaveID, EDirection from, 
 void CRod::Destroy() 
 { 
 	bDestroy = true;
-	if ( pSchema->IsJunctionValid( nLJunction ) )
-		pSchema->GetJunction( nLJunction )->CheckVerticalValidity();
-	if ( pSchema->IsJunctionValid( nRJunction ) )
-		pSchema->GetJunction( nRJunction )->CheckVerticalValidity();
+	if ( pSchema->IsJunctionValid( nLJunction() ) )
+		pSchema->GetJunction( nLJunction() )->CheckVerticalValidity();
+	if ( pSchema->IsJunctionValid( nRJunction() ) )
+		pSchema->GetJunction( nRJunction() )->CheckVerticalValidity();
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 } // namespace

@@ -8,6 +8,10 @@
 
 namespace NAI
 {
+// Declared for CalcBestWays' parameter below (full class in aiWayConstraints.h).
+// A `friend class` declaration further down does NOT introduce the name for
+// ordinary lookup -- MSVC treated it as if it did.
+class CLayerColorConstraints;
 enum ESpecialColor
 {
 	EC_LADDER_COLOR = 32000,

@@ -52,15 +52,15 @@ class CRod;
 class CRod
 {
 	CBuildingSchema *const pSchema;
-	union
-	{
-		int juncs[2]; // CJunctionID
-		struct 
-		{
-			CJunctionID nLJunction;
-			CJunctionID nRJunction;
-		};
-	};
+	// Was a union aliasing `int juncs[2]` with a named {nLJunction, nRJunction}
+	// pair. CJunctionID has a user-provided constructor, so it cannot live in an
+	// anonymous struct inside a union (MSVC allowed it). The array IS the storage
+	// now -- RS_LEFT/RS_RIGHT are 0/1, so juncs[side] indexes exactly as before --
+	// and the two names become references onto its elements.
+	CJunctionID juncs[2];
+	// the two former field names, as accessors onto that storage
+	CJunctionID nLJunction() const { return juncs[RS_LEFT]; }
+	CJunctionID nRJunction() const { return juncs[RS_RIGHT]; }
 	enum { NLOCKS = 2 };
 	BYTE bLock;
 	bool bVert;						// вертикальный стержень 

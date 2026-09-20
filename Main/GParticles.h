@@ -130,11 +130,13 @@ protected:
 	virtual void Recalc();
 public:
 	ZDATA
-	CDGPtr< CFuncBase<unsigned long> > pTime;
+	// was CFuncBase<unsigned long>: identical to STime (DWORD) on 32-bit Windows, but
+	// a DIFFERENT type on LP64. Every other animator here spells it STime.
+	CDGPtr< CFuncBase<STime> > pTime;
 	CDGPtr< CFuncBase<CVec3> > pCamera;
 	CObj<IParticleFilter> pFilter;
 	vector<CObj<CPtrFuncBase<NGfx::CTexture> > > textureIDs;
-	unsigned long tStart;
+	STime tStart;
 	// retail @0x146e50: 2=pTime, 3=pCamera, 4=pFilter, 5=textureIDs (DoVector), 6=tStart
 	ZEND int operator&( CStructureSaver &f ) { f.Add(2,&pTime); f.Add(3,&pCamera); f.Add(4,&pFilter); f.Add(5,&textureIDs); f.Add(6,&tStart); return 0; }
 

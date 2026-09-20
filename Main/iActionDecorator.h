@@ -77,11 +77,11 @@ public:
 			}
 			if ( bHandled )
 			{
-				GetInterface()->ResetMouseCapture();
+				this->GetInterface()->ResetMouseCapture();
 				return true;
 			}
 			if ( sEvent.nEvent == EVENT_MOUSEMOVE )
-				GetInterface()->SetCursorInfo( pMission->GetState()->GetCursorInfo() );
+				this->GetInterface()->SetCursorInfo( pMission->GetState()->GetCursorInfo() );
 		}
 
 		return Type::ProcessMessage( sEvent );

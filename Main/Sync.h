@@ -203,11 +203,15 @@ public:
 			Remove( i->second );
 		}
 	}
+	// NOTE: this looked up `i->first` -- `i` is the loop variable of the function
+	// ABOVE and does not exist here; the body was copy-pasted. The key is the
+	// parameter. Never called anywhere, which is why MSVC never instantiated (and
+	// so never checked) it.
 	void Set( T *p ) 
 	{
-		typename CStuffHash::iterator k = stuff.find( i->first );
+		typename CStuffHash::iterator k = stuff.find( p );
 		if ( k == stuff.end() )
-			stuff[p] = Add( p );
+			stuff[p] = this->Add( p );
 	}
 };
 ////////////////////////////////////////////////////////////////////////////////////////////////////
