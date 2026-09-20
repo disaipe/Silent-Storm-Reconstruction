@@ -50,8 +50,11 @@ void CSaveManager::GetProfilesList( list<string> *pList ) const
 	string szProfilesDir( string( S_SAVE_TEMPLATE ) + "*.*" );
 
 	_finddata_t sFindData;
-	int nHandle = _findfirst( szProfilesDir.c_str(), &sFindData );
-	int nRet = nHandle;
+	// intptr_t, not int: _findfirst hands back a handle (a pointer on this shim,
+	// see Misc/PlatformCompat.cpp). Truncating it to 32 bits crashed the moment
+	// _findnext dereferenced it. nRet stays int -- it is a status, not a handle.
+	intptr_t nHandle = _findfirst( szProfilesDir.c_str(), &sFindData );
+	int nRet = ( nHandle == -1 ) ? -1 : 0;
 	while ( nRet != -1 )
 	{
 		if ( sFindData.attrib & _A_SUBDIR )
@@ -142,8 +145,8 @@ void CSaveManager::GetSlotsList( list<string> *pList ) const
 	string szSourceMask( szSource + "*.*" );
 
 	_finddata_t sFindData;
-	int nHandle = _findfirst( szSourceMask.c_str(), &sFindData );
-	int nRet = nHandle;
+	intptr_t nHandle = _findfirst( szSourceMask.c_str(), &sFindData );   // see GetProfilesList
+	int nRet = ( nHandle == -1 ) ? -1 : 0;
 	while ( nRet != -1 )
 	{
 		string szName( sFindData.name );
@@ -254,8 +257,8 @@ void RemoveDir( const string &szDir )
 	string szSourcePath( szDir + "*.*" );
 
 	_finddata_t sFindData;
-	int nHandle = _findfirst( szSourcePath.c_str(), &sFindData );
-	int nRet = nHandle;
+	intptr_t nHandle = _findfirst( szSourcePath.c_str(), &sFindData );   // see GetProfilesList
+	int nRet = ( nHandle == -1 ) ? -1 : 0;
 	while ( nRet != -1 )
 	{
 		string szName( sFindData.name );
@@ -284,8 +287,8 @@ void CopyFiles( const string &szSource, const string &szTarget, const string &sz
 	string szSourcePath( szSource + szMask );
 
 	_finddata_t sFindData;
-	int nHandle = _findfirst( szSourcePath.c_str(), &sFindData );
-	int nRet = nHandle;
+	intptr_t nHandle = _findfirst( szSourcePath.c_str(), &sFindData );   // see GetProfilesList
+	int nRet = ( nHandle == -1 ) ? -1 : 0;
 	while ( nRet != -1 )
 	{
 		string sSourceFile( szSource + sFindData.name );

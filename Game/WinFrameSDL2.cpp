@@ -30,6 +30,17 @@
 // Windows build, which needs no such call (the OS restores the mode for it).
 namespace NWinFrame { void DoneApplication(); }
 
+// Linux-only entry points on Input/InputSDL2.cpp -- the SDL2 counterpart of the
+// DirectInput device poll. Declared here rather than in Input.h, which is shared
+// with the Windows build (where DirectInput reads the devices itself).
+namespace NInput
+{
+	void NotifyKey( int nScancode, bool bDown );
+	void NotifyMouseButton( int nButton, bool bDown );
+	void NotifyMouseMotion( int nDeltaX, int nDeltaY );
+	void NotifyMouseWheel( int nNotches );
+}
+
 using namespace NWinFrame;
 
 namespace
@@ -135,11 +146,22 @@ namespace
 	// Drop out of fullscreen (which is what actually restores the desktop mode),
 	// then tear the window down. Safe to call twice -- atexit and the explicit
 	// shutdown both land here.
-	void RestoreDisplayMode()
+	// bMinimal: called from a signal handler, where the process is already dying
+	// and SDL is not async-signal-safe. Do only the one thing the desktop cannot
+	// recover from by itself -- leaving fullscreen, which is what puts the video
+	// mode back -- and let the kernel reclaim the window and the X connection.
+	// Tearing down further from a handler raced with dxvk's own teardown and
+	// occasionally killed the process with a BadRRCrtc X error instead.
+	void RestoreDisplayMode( bool bMinimal )
 	{
+		SDL_SetRelativeMouseMode( SDL_FALSE );   // give the pointer back too
+		if ( pWindow )
+			SDL_SetWindowFullscreen( pWindow, 0 );
+		if ( bMinimal )
+			return;
+
 		if ( pWindow )
 		{
-			SDL_SetWindowFullscreen( pWindow, 0 );
 			SDL_DestroyWindow( pWindow );
 			pWindow = 0;
 		}
@@ -147,15 +169,31 @@ namespace
 			SDL_QuitSubSystem( SDL_INIT_VIDEO );
 	}
 
+	void RestoreDisplayModeAtExit() { RestoreDisplayMode( false ); }
+
 	// Restore, then let the signal do what it would have done. Only
 	// async-signal-safe work happens before re-raising: SDL's mode switch is not
 	// strictly in that class, but a stuck display is the worse outcome, and by
 	// this point the process is going away regardless.
 	void FatalSignalHandler( int nSignal )
 	{
-		RestoreDisplayMode();
+		RestoreDisplayMode( true );   // minimal: see the note above
 		signal( nSignal, SIG_DFL );
 		raise( nSignal );
+	}
+
+	// DirectInput numbers mouse buttons 0=left, 1=right, 2=middle; SDL uses
+	// 1=left, 2=middle, 3=right. cfg/input.cfg binds MOUSE_BUTTON0/1 for
+	// left/right, so the swap matters.
+	int SdlButtonToIndex( Uint8 nSdlButton )
+	{
+		switch ( nSdlButton )
+		{
+		case SDL_BUTTON_LEFT:   return 0;
+		case SDL_BUTTON_RIGHT:  return 1;
+		case SDL_BUTTON_MIDDLE: return 2;
+		default:                return nSdlButton - 1;   // X1/X2 -> 3/4
+		}
 	}
 
 	void AddMsg( SWindowsMsg::EMsg msg, int x, int y, DWORD dwFlags )
@@ -211,29 +249,49 @@ void NWinFrame::PumpMessages()
 			if ( ev.window.event == SDL_WINDOWEVENT_CLOSE )
 				bExit = true;
 			else if ( ev.window.event == SDL_WINDOWEVENT_FOCUS_GAINED )
+			{
 				bActive = true;
+				SDL_SetRelativeMouseMode( SDL_TRUE );
+			}
 			else if ( ev.window.event == SDL_WINDOWEVENT_FOCUS_LOST )
+			{
 				bActive = false;
+				// Hand the pointer back, or alt-tabbing away leaves it captured.
+				SDL_SetRelativeMouseMode( SDL_FALSE );
+			}
 			break;
 		case SDL_MOUSEMOTION:
 			AddMsg( SWindowsMsg::MOUSE_MOVE, ev.motion.x, ev.motion.y, 0 );
+			// NInput wants RELATIVE motion: the cursor integrates deltas, it is not
+			// positioned absolutely (Main/Cursor.cpp). SDL gives us both.
+			NInput::NotifyMouseMotion( ev.motion.xrel, ev.motion.yrel );
 			break;
 		case SDL_MOUSEBUTTONDOWN:
 			AddMsg( ev.button.button == SDL_BUTTON_RIGHT ? SWindowsMsg::RB_DOWN : SWindowsMsg::LB_DOWN,
 			        ev.button.x, ev.button.y, 0 );
+			NInput::NotifyMouseButton( SdlButtonToIndex( ev.button.button ), true );
 			break;
 		case SDL_MOUSEBUTTONUP:
 			AddMsg( ev.button.button == SDL_BUTTON_RIGHT ? SWindowsMsg::RB_UP : SWindowsMsg::LB_UP,
 			        ev.button.x, ev.button.y, 0 );
+			NInput::NotifyMouseButton( SdlButtonToIndex( ev.button.button ), false );
+			break;
+		case SDL_MOUSEWHEEL:
+			NInput::NotifyMouseWheel( ev.wheel.y );
 			break;
 		case SDL_KEYDOWN:
 			// nKey/nRep here carry SDL_Keycode + repeat flag, NOT a Win32 VK_* code -- full
 			// DIK_*/VK_* fidelity is out of scope for this minimal boot-to-render-loop pass
 			// (see docs/linux-port.md, "Разбор этапа «Ввод»", tracked as follow-up work).
 			AddMsg( SWindowsMsg::KEY_DOWN, ev.key.keysym.sym, ev.key.repeat ? 1 : 0, 0 );
+			// Auto-repeat must not reach the bindings: DirectInput reports physical
+			// transitions only, and a held key would re-fire every EVENT binding.
+			if ( !ev.key.repeat )
+				NInput::NotifyKey( ev.key.keysym.scancode, true );
 			break;
 		case SDL_KEYUP:
 			AddMsg( SWindowsMsg::KEY_UP, ev.key.keysym.sym, 0, 0 );
+			NInput::NotifyKey( ev.key.keysym.scancode, false );
 			break;
 		case SDL_TEXTINPUT:
 			if ( ev.text.text[0] )
@@ -261,6 +319,14 @@ bool NWinFrame::InitApplication( HINSTANCE, const char *pszAppName, const char *
 		{ GetClientSizeHook, IsWindowVisibleHook, ResizeWindowHook };
 	SetWindowGeometryHooks( &geometryHooks );
 
+	// Relative mouse mode: hides the system pointer, confines it to the window and
+	// reports pure deltas. That is what the engine expects -- it draws its OWN
+	// cursor, integrating mouse deltas with its own acceleration curve
+	// (Main/Cursor.cpp, SPI_GETMOUSE thresholds), so a visible system pointer is a
+	// second cursor moving at a different speed. The retail build gets the same
+	// effect from DirectInput's exclusive cooperative level.
+	SDL_SetRelativeMouseMode( SDL_TRUE );
+
 	// Leaving the desktop stuck at 1024x768 is far worse than anything these
 	// handlers cost, so cover every way out:
 	//   - atexit: the early-return paths in MainLinux.cpp (sound/input failures)
@@ -269,7 +335,7 @@ bool NWinFrame::InitApplication( HINSTANCE, const char *pszAppName, const char *
 	//     ends when it crashes or is killed from a terminal. Each handler restores
 	//     the mode, then re-raises with the default action so the exit status and
 	//     any core dump stay truthful.
-	atexit( RestoreDisplayMode );
+	atexit( RestoreDisplayModeAtExit );
 	static const int anFatalSignals[] = { SIGINT, SIGTERM, SIGHUP, SIGQUIT, SIGSEGV, SIGABRT, SIGFPE, SIGILL, SIGBUS };
 	for ( size_t i = 0; i < sizeof( anFatalSignals ) / sizeof( anFatalSignals[0] ); ++i )
 		signal( anFatalSignals[i], FatalSignalHandler );
@@ -281,6 +347,6 @@ bool NWinFrame::InitApplication( HINSTANCE, const char *pszAppName, const char *
 // switches the mode through SDL, so it has to be handed back here.
 void NWinFrame::DoneApplication()
 {
-	RestoreDisplayMode();
+	RestoreDisplayMode( false );
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
