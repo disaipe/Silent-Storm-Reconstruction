@@ -247,6 +247,18 @@ HWND NWinFrame::GetWnd()
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 void NWinFrame::PumpMessages()
 {
+	// Re-assert the mouse grab every pump. It is not enough to do this from
+	// ResizeWindowHook: dxvk drives fullscreen and display-mode changes through
+	// its OWN WSI layer (SDL_SetWindowFullscreen / SDL_SetWindowDisplayMode in
+	// dxvk's wsi_window_sdl2.cpp), never touching our hooks, and every such
+	// switch drops relative mode -- which is why the system pointer reappeared
+	// after changing resolution in Options. Checking here catches it whatever
+	// route caused it. SDL_GetRelativeMouseMode is a plain flag read, so this is
+	// free; the guard on bActive keeps us from grabbing a pointer the user is
+	// using in another window.
+	if ( bActive && pWindow && SDL_GetRelativeMouseMode() == SDL_FALSE )
+		SDL_SetRelativeMouseMode( SDL_TRUE );
+
 	SDL_Event ev;
 	while ( SDL_PollEvent( &ev ) )
 	{
