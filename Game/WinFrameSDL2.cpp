@@ -139,8 +139,18 @@ namespace
 
 	void ResizeWindowHook( HWND hWnd, int nWidth, int nHeight )
 	{
-		if ( SDL_Window *pWnd = (SDL_Window *)hWnd )
-			SDL_SetWindowSize( pWnd, nWidth, nHeight );
+		SDL_Window *pWnd = (SDL_Window *)hWnd;
+		if ( !pWnd )
+			return;
+		SDL_SetWindowSize( pWnd, nWidth, nHeight );
+
+		// Resizing drops relative mouse mode (the grab is tied to the old surface),
+		// which showed up as the system pointer reappearing and drifting away from
+		// the in-game cursor after changing resolution in Options. Re-assert it --
+		// but only while we have focus, or we would steal a pointer the user is
+		// using elsewhere.
+		if ( bActive && SDL_GetRelativeMouseMode() == SDL_FALSE )
+			SDL_SetRelativeMouseMode( SDL_TRUE );
 	}
 
 	// Drop out of fullscreen (which is what actually restores the desktop mode),
@@ -258,6 +268,14 @@ void NWinFrame::PumpMessages()
 				bActive = false;
 				// Hand the pointer back, or alt-tabbing away leaves it captured.
 				SDL_SetRelativeMouseMode( SDL_FALSE );
+			}
+			else if ( ev.window.event == SDL_WINDOWEVENT_SIZE_CHANGED )
+			{
+				// Backstop for the same problem ResizeWindowHook handles: any route
+				// that resizes the window drops the mouse grab. Catching the event
+				// covers resizes we did not initiate ourselves.
+				if ( bActive && SDL_GetRelativeMouseMode() == SDL_FALSE )
+					SDL_SetRelativeMouseMode( SDL_TRUE );
 			}
 			break;
 		case SDL_MOUSEMOTION:
