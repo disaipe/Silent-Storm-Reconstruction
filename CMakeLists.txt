@@ -340,7 +340,11 @@ target_include_directories(lifestudio_shim INTERFACE "${root}/third_party/lifest
 target_link_libraries(lifestudio_shim INTERFACE lifestudio_stub)
 
 # leaves
-s2_module(Misc lib)
+# Misc_SRC comes from sources.cmake (baked from the .vcxproj), so it cannot list
+# PlatformCompat.cpp -- that file is Linux-only and has no Windows counterpart.
+# Append it here rather than editing sources.cmake, which stays the Windows
+# source of truth.
+s2_module(Misc lib SRC ${Misc_SRC} PlatformCompat.cpp)
 target_link_libraries(Misc PUBLIC Threads::Threads ${CMAKE_DL_LIBS})   # PlatformCompat.cpp uses std::thread and dlopen
 # core
 s2_module(FileIO    lib LINK Misc)
@@ -394,13 +398,14 @@ if(S2_LINUX_FULL_ENGINE)
   target_link_libraries(dxvk_native INTERFACE "${DXVK_D3D9_LIB}")
   message(STATUS "dxvk-native: ${DXVK_D3D9_LIB}")
 
-  # Main_SRC minus GBinkPlayer.cpp (no-op stub instead, see Main/GBinkPlayerStub.cpp),
-  # 2DSceneSW.cpp/SWTexture.cpp (the MMX software rasterizer -- a fallback path when D3D9
-  # hardware T&L isn't available; excluded rather than porting its asm until proven needed)
+  # Main_SRC minus GBinkPlayer.cpp (no-op stub instead, see Main/GBinkPlayerStub.cpp)
   # and SplashScreen.cpp/SplashScreenDialog.cpp (a pure-GDI Win32 splash window -- no-op
   # stub instead, see Main/SplashScreenStub.cpp).
+  # 2DSceneSW.cpp/SWTexture.cpp ARE built: despite looking like a D3D9 fallback path,
+  # the terrain texture builder and LSHead both call into them unconditionally. Their
+  # MMX inner loops are #if'd to portable C (see the files).
   set(Main_SRC_LINUX ${Main_SRC})
-  list(REMOVE_ITEM Main_SRC_LINUX "GBinkPlayer.cpp" "2DSceneSW.cpp" "SWTexture.cpp"
+  list(REMOVE_ITEM Main_SRC_LINUX "GBinkPlayer.cpp"
                                   "SplashScreen.cpp" "SplashScreenDialog.cpp")
   list(APPEND Main_SRC_LINUX "GBinkPlayerStub.cpp" "SplashScreenStub.cpp")
   s2_module(Main lib SRC ${Main_SRC_LINUX}

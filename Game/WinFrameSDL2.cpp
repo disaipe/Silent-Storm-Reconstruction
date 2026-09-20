@@ -33,6 +33,99 @@ namespace
 	volatile bool bActive = true;
 	std::list<SWindowsMsg> msgList;
 
+
+	// --- Win32 shim hooks -------------------------------------------------------
+	// Misc/ deliberately does not depend on SDL2, so PlatformCompat.h asks the
+	// windowing layer for anything only a window can answer. Installed in
+	// InitApplication, below.
+
+	void CursorPosHook( long *pnScreenX, long *pnScreenY, long *pnClientX, long *pnClientY )
+	{
+		int nGlobalX = 0, nGlobalY = 0;
+		SDL_GetGlobalMouseState( &nGlobalX, &nGlobalY );
+		if ( pnScreenX ) *pnScreenX = nGlobalX;
+		if ( pnScreenY ) *pnScreenY = nGlobalY;
+
+		// Client coords: SDL reports these relative to the focused window already.
+		int nWinX = 0, nWinY = 0;
+		SDL_GetMouseState( &nWinX, &nWinY );
+		if ( pnClientX ) *pnClientX = nWinX;
+		if ( pnClientY ) *pnClientY = nWinY;
+	}
+
+	short GetKeyStateHook( int nVirtKey )
+	{
+		const Uint8 *pKeys = SDL_GetKeyboardState( 0 );
+		if ( !pKeys )
+			return 0;
+		bool bDown = false;
+		switch ( nVirtKey )
+		{
+		case VK_CONTROL: bDown = pKeys[SDL_SCANCODE_LCTRL]  || pKeys[SDL_SCANCODE_RCTRL];  break;
+		case VK_HOME:    bDown = pKeys[SDL_SCANCODE_HOME];   break;
+		case VK_END:     bDown = pKeys[SDL_SCANCODE_END];    break;
+		case VK_LEFT:    bDown = pKeys[SDL_SCANCODE_LEFT];   break;
+		case VK_RIGHT:   bDown = pKeys[SDL_SCANCODE_RIGHT];  break;
+		case VK_UP:      bDown = pKeys[SDL_SCANCODE_UP];     break;
+		case VK_DOWN:    bDown = pKeys[SDL_SCANCODE_DOWN];   break;
+		case VK_BACK:    bDown = pKeys[SDL_SCANCODE_BACKSPACE]; break;
+		case VK_DELETE:  bDown = pKeys[SDL_SCANCODE_DELETE]; break;
+		case VK_TAB:     bDown = pKeys[SDL_SCANCODE_TAB];    break;
+		case VK_RETURN:  bDown = pKeys[SDL_SCANCODE_RETURN] || pKeys[SDL_SCANCODE_KP_ENTER]; break;
+		default:         return 0;   // not a key the engine asks about
+		}
+		return bDown ? (short)0x8000 : 0;   // Win32 puts "is down" in the high bit
+	}
+
+	std::wstring GetClipboardTextHook()
+	{
+		if ( !SDL_HasClipboardText() )
+			return std::wstring();
+		char *pszText = SDL_GetClipboardText();   // UTF-8, SDL-allocated
+		if ( !pszText )
+			return std::wstring();
+		// UTF-8 -> UTF-32/16 via the shim's own converter, so the clipboard obeys
+		// the same encoding rules as the rest of the engine's wide strings.
+		std::wstring wsResult;
+		int nNeeded = MultiByteToWideChar( CP_UTF8, 0, pszText, -1, 0, 0 );
+		if ( nNeeded > 1 )
+		{
+			wsResult.resize( nNeeded - 1 );
+			MultiByteToWideChar( CP_UTF8, 0, pszText, -1, &wsResult[0], nNeeded );
+		}
+		SDL_free( pszText );
+		return wsResult;
+	}
+
+
+	// --- window geometry, for Main/Gfx.cpp's backbuffer sizing ------------------
+	bool GetClientSizeHook( HWND hWnd, int *pnWidth, int *pnHeight )
+	{
+		SDL_Window *pWnd = (SDL_Window *)hWnd;
+		if ( !pWnd )
+			return false;
+		int nWidth = 0, nHeight = 0;
+		SDL_GetWindowSize( pWnd, &nWidth, &nHeight );
+		if ( pnWidth ) *pnWidth = nWidth;
+		if ( pnHeight ) *pnHeight = nHeight;
+		return true;
+	}
+
+	bool IsWindowVisibleHook( HWND hWnd )
+	{
+		SDL_Window *pWnd = (SDL_Window *)hWnd;
+		if ( !pWnd )
+			return false;
+		const Uint32 dwFlags = SDL_GetWindowFlags( pWnd );
+		return ( dwFlags & SDL_WINDOW_SHOWN ) && !( dwFlags & SDL_WINDOW_MINIMIZED );
+	}
+
+	void ResizeWindowHook( HWND hWnd, int nWidth, int nHeight )
+	{
+		if ( SDL_Window *pWnd = (SDL_Window *)hWnd )
+			SDL_SetWindowSize( pWnd, nWidth, nHeight );
+	}
+
 	void AddMsg( SWindowsMsg::EMsg msg, int x, int y, DWORD dwFlags )
 	{
 		SWindowsMsg m;
@@ -124,6 +217,17 @@ bool NWinFrame::InitApplication( HINSTANCE, const char *pszAppName, const char *
 		return false;
 	pWindow = SDL_CreateWindow( pszAppName, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 	                             100, 100, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE );
-	return pWindow != 0;
+	if ( !pWindow )
+		return false;
+
+	// Hand the Win32 shim the things only the windowing layer can answer.
+	SetCursorPosHook( CursorPosHook );
+	SetGetKeyStateHook( GetKeyStateHook );
+	SetGetClipboardTextHook( GetClipboardTextHook );
+
+	static const SWindowGeometryHooks geometryHooks =
+		{ GetClientSizeHook, IsWindowVisibleHook, ResizeWindowHook };
+	SetWindowGeometryHooks( &geometryHooks );
+	return true;
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////

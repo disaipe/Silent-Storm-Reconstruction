@@ -141,6 +141,7 @@ private:
 		{
 			if ( bDoMask )
 			{
+#if defined( _WIN32 )
 				_asm
 				{
 					pxor mm2, mm2
@@ -167,15 +168,24 @@ private:
 						packuswb mm0, mm0
 						movd [esi], mm0
 					}
-					//const NGfx::SPixel8888 &color = tex.Fetch();
-					//NGfx::SPixel8888 &dst = *pDst;
-					//int a = color.a;
-					//dst.r = color.r + ( ( dst.r * ( 256 - a ) ) >> 8 );
-					//dst.g = color.g + ( ( dst.g * ( 256 - a ) ) >> 8 );
-					//dst.b = color.b + ( ( dst.b * ( 256 - a ) ) >> 8 );
-					//dst.a = color.a + ( ( dst.a * ( 256 - a ) ) >> 8 );
 				}
 				__asm emms
+#else
+				// The C form the author left commented out beside the asm: a
+				// premultiplied-alpha "over" composite. The MMX above computes
+				// dst + src - ((dst * (a*2)) >> 8) in 16-bit lanes, which is the
+				// same thing once the doubled alpha is halved back (psrlw mm3,1).
+				for ( ; pDst < pFinish; ++pDst )
+				{
+					const NGfx::SPixel8888 &color = tex.Fetch();
+					NGfx::SPixel8888 &dst = *pDst;
+					const int a = color.a;
+					dst.r = color.r + ( ( dst.r * ( 256 - a ) ) >> 8 );
+					dst.g = color.g + ( ( dst.g * ( 256 - a ) ) >> 8 );
+					dst.b = color.b + ( ( dst.b * ( 256 - a ) ) >> 8 );
+					dst.a = color.a + ( ( dst.a * ( 256 - a ) ) >> 8 );
+				}
+#endif
 			}
 			else
 			{

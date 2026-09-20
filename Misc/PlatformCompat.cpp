@@ -443,6 +443,110 @@ namespace
 
 void SetCursorPosHook( TGetCursorPosHook pHook ) { g_pCursorPosHook = pHook; }
 
+// ----------------------------------------------------------------------------
+//  Keyboard state and clipboard -- both answered by the windowing layer.
+// ----------------------------------------------------------------------------
+namespace
+{
+	TGetKeyStateHook g_pGetKeyStateHook = 0;
+	TGetClipboardTextHook g_pGetClipboardTextHook = 0;
+
+	// Owns the text handed out by GetClipboardData until CloseClipboard. Not
+	// thread-safe, matching Win32: the clipboard is a UI-thread affair, and the
+	// engine only touches it from the paste handler.
+	std::wstring g_wsClipboard;
+	bool g_bClipboardOpen = false;
+}
+
+void SetGetKeyStateHook( TGetKeyStateHook pHook ) { g_pGetKeyStateHook = pHook; }
+void SetGetClipboardTextHook( TGetClipboardTextHook pHook ) { g_pGetClipboardTextHook = pHook; }
+
+// Win32 reports "currently down" in the high bit, which is the only bit the
+// engine tests. No hook -> nothing is pressed.
+short GetKeyState( int nVirtKey )
+{
+	return g_pGetKeyStateHook ? g_pGetKeyStateHook( nVirtKey ) : 0;
+}
+
+BOOL OpenClipboard( HWND )
+{
+	if ( g_bClipboardOpen )
+		return FALSE;
+	g_wsClipboard = g_pGetClipboardTextHook ? g_pGetClipboardTextHook() : std::wstring();
+	g_bClipboardOpen = true;
+	return TRUE;
+}
+
+BOOL CloseClipboard()
+{
+	g_bClipboardOpen = false;
+	g_wsClipboard.clear();
+	return TRUE;
+}
+
+// The "handle" is just the buffer itself; GlobalLock/GlobalUnlock are no-ops
+// over it. Empty clipboard returns null, like Win32 with no matching format.
+HANDLE GetClipboardData( UINT nFormat )
+{
+	if ( !g_bClipboardOpen || nFormat != CF_UNICODETEXT || g_wsClipboard.empty() )
+		return 0;
+	return (HANDLE)g_wsClipboard.c_str();
+}
+
+// ----------------------------------------------------------------------------
+//  Window geometry -- answered by the windowing layer (see the header).
+// ----------------------------------------------------------------------------
+namespace
+{
+	SWindowGeometryHooks g_windowHooks = { 0, 0, 0 };
+}
+
+void SetWindowGeometryHooks( const SWindowGeometryHooks *pHooks )
+{
+	if ( pHooks )
+		g_windowHooks = *pHooks;
+	else
+		g_windowHooks = SWindowGeometryHooks{ 0, 0, 0 };
+}
+
+// Win32 GetClientRect always reports left/top as 0 -- the client area is
+// measured from its own origin -- so right/bottom ARE the width/height. The
+// renderer relies on that (pp.BackBufferWidth = windowPos.right).
+BOOL GetClientRect( HWND hWnd, RECT *pRect )
+{
+	if ( !pRect )
+		return FALSE;
+	pRect->left = pRect->top = pRect->right = pRect->bottom = 0;
+	int nWidth = 0, nHeight = 0;
+	if ( !g_windowHooks.pGetClientSize || !g_windowHooks.pGetClientSize( hWnd, &nWidth, &nHeight ) )
+		return FALSE;
+	pRect->right = nWidth;
+	pRect->bottom = nHeight;
+	return TRUE;
+}
+
+// No hook -> report visible: the renderer treats "not visible" as "skip the
+// frame", and silently skipping every frame would be the worse failure.
+BOOL IsWindowVisible( HWND hWnd )
+{
+	if ( !g_windowHooks.pIsVisible )
+		return TRUE;
+	return g_windowHooks.pIsVisible( hWnd ) ? TRUE : FALSE;
+}
+
+// Position and z-order are ignored on purpose (see the header); only the size
+// is meaningful for an SDL window here.
+BOOL SetWindowPos( HWND hWnd, HWND, int, int, int nWidth, int nHeight, UINT )
+{
+	if ( !g_windowHooks.pResize || nWidth <= 0 || nHeight <= 0 )
+		return FALSE;
+	g_windowHooks.pResize( hWnd, nWidth, nHeight );
+	return TRUE;
+}
+
+void *GlobalLock( HANDLE hMem ) { return hMem; }
+BOOL GlobalUnlock( HANDLE ) { return TRUE; }
+
 BOOL SystemParametersInfoA( UINT uiAction, UINT, void *pvParam, UINT )
 {
 	if ( uiAction == SPI_GETMOUSE && pvParam )

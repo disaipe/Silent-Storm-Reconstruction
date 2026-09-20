@@ -441,9 +441,9 @@ void MakeShadowMatrix( CTransformStack *pRes, const CTransformStack &ts, const C
 	// fit ts to target
 	SHMatrix mRes = test.Get().forward;
 	if ( bInvertZ )
-		mRes.z = mRes.w - mRes.z;
+		mRes.RowZ() = mRes.RowW() - mRes.RowZ();
 	else
-		mRes.x = -mRes.x;
+		mRes.RowX() = -mRes.RowX();
 	CVec2 vMin( 1e30f, 1e30f ), vMax( -1e30f, -1e30f );
 	// calc bbox of all point projections
 	for ( int k = 0; k < hedron.facets.size(); ++k )
@@ -460,8 +460,8 @@ void MakeShadowMatrix( CTransformStack *pRes, const CTransformStack &ts, const C
 	}
 	float fXScale = 2 / ( vMax.x - vMin.x );
 	float fYScale = 2 / ( vMax.y - vMin.y );
-	mRes.x = mRes.x * fXScale - mRes.w * ( vMin.x + vMax.x ) * 0.5f * fXScale;
-	mRes.y = mRes.y * fYScale - mRes.w * ( vMin.y + vMax.y ) * 0.5f * fYScale;
+	mRes.RowX() = mRes.RowX() * fXScale - mRes.RowW() * ( vMin.x + vMax.x ) * 0.5f * fXScale;
+	mRes.RowY() = mRes.RowY() * fYScale - mRes.RowW() * ( vMin.y + vMax.y ) * 0.5f * fYScale;
 	// calc z range
 	float fZMax = -1e30f, fZMin = 1e30f;
 	for ( int k = 0; k < occluderHedron.facets.size(); ++k )
@@ -478,7 +478,7 @@ void MakeShadowMatrix( CTransformStack *pRes, const CTransformStack &ts, const C
 		}
 	}
 	float fZScale = 1 / ( fZMax - fZMin );
-	mRes.z = mRes.z * fZScale - mRes.w * fZMin * fZScale;
+	mRes.RowZ() = mRes.RowZ() * fZScale - mRes.RowW() * fZMin * fZScale;
 	pRes->Make( mRes );
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////

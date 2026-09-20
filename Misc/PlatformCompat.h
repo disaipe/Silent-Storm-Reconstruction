@@ -26,6 +26,7 @@
 #include <cwchar>
 #include <cwctype>
 #include <type_traits>
+#include <string>
 #include <cmath>
 #include <ctime>
 #include <cerrno>
@@ -76,6 +77,18 @@ typedef const void *LPCVOID;
 // than a conflict (repeating an identical typedef is legal).
 typedef HANDLE HWND;
 typedef HANDLE HINSTANCE;
+
+// POINT also lives in dxvk-native's windows_base.h, which arrives with
+// <d3d9.h> and defines it unconditionally. Rather than race it, renderer
+// builds (S2_DXVK_WINDOWS_TYPES, set by CMake for the whole Main target) take
+// dxvk's header as the single source for it -- the layout is identical, and
+// pulling it in HERE means every TU agrees whether or not it touches D3D9.
+#ifdef S2_DXVK_WINDOWS_TYPES
+#include <windows_base.h>
+#else
+typedef struct POINT { LONG x, y; } POINT;
+typedef struct RECT { LONG left, top, right, bottom; } RECT;
+#endif
 
 #ifndef TRUE
 #define TRUE 1
@@ -288,13 +301,76 @@ inline int sprintf_s( char ( &buf )[N], const char *pszFormat, ... )
 //  Virtual-key codes. Only the ones the engine actually names are listed; the
 //  values are the Win32 ones so saved key bindings keep their meaning.
 // ----------------------------------------------------------------------------
+#define VK_BACK    0x08
 #define VK_TAB     0x09
 #define VK_RETURN  0x0D
+#define VK_CONTROL 0x11
 #define VK_PRIOR   0x21
 #define VK_NEXT    0x22
+#define VK_END     0x23
+#define VK_HOME    0x24
+#define VK_LEFT    0x25
 #define VK_UP      0x26
+#define VK_RIGHT   0x27
 #define VK_DOWN    0x28
 #define VK_DELETE  0x2E
+
+// ----------------------------------------------------------------------------
+//  Keyboard state and clipboard.
+//
+//  Both are answered by the windowing layer (Game/WinFrameSDL2.cpp installs the
+//  hooks), for the same reason as the cursor above: Misc must not depend on
+//  SDL2. With no hook installed -- tools, tests -- GetKeyState reports "not
+//  pressed" and the clipboard reads empty, which the callers already handle.
+//
+//  The clipboard is modelled on the Win32 shape the engine uses
+//  (OpenClipboard/GetClipboardData/GlobalLock/...) rather than reshaping the
+//  call sites: GetClipboardData hands back a pointer to an internally owned
+//  wide string, valid until the matching CloseClipboard.
+// ----------------------------------------------------------------------------
+#define CF_UNICODETEXT 13
+
+typedef short ( *TGetKeyStateHook )( int nVirtKey );
+void SetGetKeyStateHook( TGetKeyStateHook pHook );
+short GetKeyState( int nVirtKey );
+
+// Returns clipboard text as UTF-16, or an empty string when there is none.
+typedef std::wstring ( *TGetClipboardTextHook )();
+void SetGetClipboardTextHook( TGetClipboardTextHook pHook );
+
+// ----------------------------------------------------------------------------
+//  Window geometry.
+//
+//  HWND here is the SDL_Window* the windowing layer handed out (see
+//  Game/WinFrameSDL2.cpp, NWinFrame::GetWnd), so these are answered by the same
+//  hook mechanism. Only what Main/Gfx.cpp needs is provided: the renderer
+//  resizes the backbuffer to the client area and skips work while hidden.
+//
+//  SetWindowPos ignores the Win32 z-order/flags arguments -- the engine passes
+//  HWND_NOTOPMOST|SWP_SHOWWINDOW, i.e. "normal, visible", which is what an SDL
+//  window already is; only the size is acted on.
+// ----------------------------------------------------------------------------
+#define HWND_NOTOPMOST ( (HWND)-2 )
+#define SWP_SHOWWINDOW 0x0040
+
+struct SWindowGeometryHooks
+{
+	// Client size in pixels; false when there is no such window.
+	bool ( *pGetClientSize )( HWND hWnd, int *pnWidth, int *pnHeight );
+	bool ( *pIsVisible )( HWND hWnd );
+	void ( *pResize )( HWND hWnd, int nWidth, int nHeight );
+};
+void SetWindowGeometryHooks( const SWindowGeometryHooks *pHooks );
+
+BOOL GetClientRect( HWND hWnd, RECT *pRect );
+BOOL IsWindowVisible( HWND hWnd );
+BOOL SetWindowPos( HWND hWnd, HWND hWndInsertAfter, int nX, int nY, int nWidth, int nHeight, UINT uiFlags );
+
+BOOL OpenClipboard( HWND hWnd );
+BOOL CloseClipboard();
+HANDLE GetClipboardData( UINT nFormat );
+void *GlobalLock( HANDLE hMem );
+BOOL GlobalUnlock( HANDLE hMem );
 
 // ----------------------------------------------------------------------------
 //  Local time and memory status.
@@ -367,16 +443,6 @@ BOOL ReadFile( HANDLE hFile, LPVOID pBuffer, DWORD nToRead, LPDWORD pnRead, void
 //  no window up yet they report the origin rather than failing.
 // ----------------------------------------------------------------------------
 #define SPI_GETMOUSE 0x0003
-// POINT also lives in dxvk-native's windows_base.h, which arrives with
-// <d3d9.h> and defines it unconditionally. Rather than race it, renderer
-// builds (S2_DXVK_WINDOWS_TYPES, set by CMake for the whole Main target) take
-// dxvk's header as the single source for it -- the layout is identical, and
-// pulling it in HERE means every TU agrees whether or not it touches D3D9.
-#ifdef S2_DXVK_WINDOWS_TYPES
-#include <windows_base.h>
-#else
-typedef struct POINT { LONG x, y; } POINT;
-#endif
 
 BOOL SystemParametersInfoA( UINT uiAction, UINT uiParam, void *pvParam, UINT fWinIni );
 inline BOOL SystemParametersInfo( UINT uiAction, UINT uiParam, void *pvParam, UINT fWinIni )

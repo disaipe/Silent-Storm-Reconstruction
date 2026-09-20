@@ -426,7 +426,7 @@ static void ExecOps( NGfx::CRenderContext *pRC, const vector<CRenderCmdList::SOp
 			pRC->SetVertexShader( vsDirectionalTestP );
 			pRC->SetVSConst( 16, op.p1.pPDirDepth->vDepth );
 			pRC->SetVSConst( 19, CVec4(1,1,1,1) - op.p1.pPDirDepth->vChannelSelect );
-			pRC->SetVSConst( 25, &op.p1.pPDirDepth->m.x, 4 );
+			pRC->SetVSConst( 25, &op.p1.pPDirDepth->m.RowX(), 4 );
 			SetDepthCmpVal( pRC, op.p1.pPDirDepth->vChannelSelect, 0 );
 			pRC->SetTexture( 0, op.p2.pTex );
 			triListType = TLT_POSITION;
@@ -436,7 +436,7 @@ static void ExecOps( NGfx::CRenderContext *pRC, const vector<CRenderCmdList::SOp
 			pRC->SetVertexShader( vsDirectionalTestSmoothed );
 			pRC->SetVSConst( 16, op.p1.pPDirDepth->vDepth );
 			pRC->SetVSConst( 19, CVec4(1,1,1,-op.p3.f) - op.p1.pPDirDepth->vChannelSelect );
-			pRC->SetVSConst( 25, &op.p1.pPDirDepth->m.x, 4 );
+			pRC->SetVSConst( 25, &op.p1.pPDirDepth->m.RowX(), 4 );
 			pRC->SetPSConst( 0, op.p1.pDirDepth->vChannelSelect );
 			pRC->SetPSConst( 1, CVec4( ( 1 - op.p3.f ) * lightInfo.vShadowColor, 124/256.0f ) );
 			pRC->SetTexture( 0, op.p2.pTex );
@@ -447,7 +447,7 @@ static void ExecOps( NGfx::CRenderContext *pRC, const vector<CRenderCmdList::SOp
 			pRC->SetVertexShader( vsParticleLMDirectionalTest );
 			pRC->SetVSConst( 16, op.p1.pPDirDepth->vDepth );
 			pRC->SetVSConst( 19, CVec4(1,1,1,1) - op.p1.pPDirDepth->vChannelSelect );
-			pRC->SetVSConst( 25, &op.p1.pPDirDepth->m.x, 4 );
+			pRC->SetVSConst( 25, &op.p1.pPDirDepth->m.RowX(), 4 );
 			SetDepthCmpVal( pRC, op.p1.pPDirDepth->vChannelSelect, 0 );
 			pRC->SetTexture( 0, op.p2.pTex );
 			triListType = TLT_POSITION;
@@ -457,7 +457,7 @@ static void ExecOps( NGfx::CRenderContext *pRC, const vector<CRenderCmdList::SOp
 			pRC->SetVertexShader( vsParticleLMDirectionalTest );
 			pRC->SetVSConst( 16, op.p1.pPDirDepth->vDepth );
 			pRC->SetVSConst( 19, CVec4(1,1,1,1) - op.p1.pDirDepth->vChannelSelect );
-			pRC->SetVSConst( 25, &op.p1.pPDirDepth->m.x, 4 );
+			pRC->SetVSConst( 25, &op.p1.pPDirDepth->m.RowX(), 4 );
 			SetDepthCmpVal( pRC, op.p1.pPDirDepth->vChannelSelect, 0 );
 			pRC->SetPSConst( 1, CVec4( *op.p3.pVec3, 0 ) );
 			pRC->SetTexture( 0, op.p2.pTex );

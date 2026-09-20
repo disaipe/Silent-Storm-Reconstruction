@@ -220,6 +220,20 @@ static struct SNormalizeInit
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // disable no emms warning, emms is placed after all mmx calcs
 #pragma warning( disable : 4799 )
+// ----------------------------------------------------------------------------
+//  Skinning vector transforms.
+//
+//  The MSVC path below is the original 32-bit MMX fixed-point code. It cannot be
+//  assembled by GCC/Clang (Intel syntax, esi/edi/mm registers) or on x86-64, so
+//  non-Windows builds use the float equivalents further down.
+//
+//  Those are not guesswork: the author left the reference implementation next to
+//  every call site, commented out behind an ASSERT that checked the MMX result
+//  against it to within 0.02 (see TransformVertexT below and the block after
+//  SingleSkinTransform). The float version IS that reference -- rotate by the
+//  stored matrix, weight, sum, normalise, repack.
+// ----------------------------------------------------------------------------
+#if defined( _WIN32 )
 static void MMXTransformVector( NGfx::SCompactVector *pRes, const NGfx::SCompactVector *pSrc, const SMMXFixups *pFixups,
 	const NGfx::SCompactTransformer *pTrans )
 {
@@ -433,6 +447,81 @@ static void MMXTransformVector3( NGfx::SCompactVector *pRes, const NGfx::SCompac
 	}
 }
 #pragma warning( default : 4799 )
+#else   // portable float equivalents -- see the note above
+
+namespace
+{
+	// SCompactTransformer holds the rotation as three 4.12 fixed-point rows, in
+	// the z,y,x order SMMXWord declares (see Assign/AssignTransposed above, which
+	// build them with Float2Int( m._xx * 0x800 )).
+	inline CVec3 MMXRow( const NGfx::SMMXWord &row )
+	{
+		return CVec3( row.nX * ( 1.0f / 0x800 ), row.nY * ( 1.0f / 0x800 ), row.nZ * ( 1.0f / 0x800 ) );
+	}
+
+	// The asm rotates the source by the three stored rows and sums -- the same
+	// shape as SHMatrix::RotateVector over the matrix these rows were built from.
+	inline CVec3 MMXRotate( const NGfx::SCompactTransformer *pTrans, const CVec3 &v )
+	{
+		const CVec3 a = MMXRow( pTrans->a ), b = MMXRow( pTrans->b ), c = MMXRow( pTrans->c );
+		return CVec3( a.x * v.x + b.x * v.y + c.x * v.z,
+		              a.y * v.x + b.y * v.y + c.y * v.z,
+		              a.z * v.x + b.z * v.y + c.z * v.z );
+	}
+
+	// Normalise and repack to the 0..255 byte encoding. A degenerate result is
+	// left at the encoding's origin rather than producing NaNs.
+	inline void MMXStore( NGfx::SCompactVector *pRes, CVec3 v )
+	{
+		const float fLen2 = v.x * v.x + v.y * v.y + v.z * v.z;
+		if ( fLen2 > 1e-12f )
+		{
+			const float fScale = 1.0f / sqrt( fLen2 );
+			v.x *= fScale; v.y *= fScale; v.z *= fScale;
+		}
+		else
+			v = VNULL3;
+		NGfx::CalcCompactVector( pRes, v );
+		pRes->w = 0;
+	}
+
+	inline CVec3 MMXWeighted( const NGfx::SCompactTransformer *pTrans, char w, const CVec3 &v )
+	{
+		// Bone weights are 0..255; only their ratio matters, the result is normalised.
+		const float fW = (float)(unsigned char)w;
+		const CVec3 r = MMXRotate( pTrans, v );
+		return CVec3( r.x * fW, r.y * fW, r.z * fW );
+	}
+}
+
+static void MMXTransformVector( NGfx::SCompactVector *pRes, const NGfx::SCompactVector *pSrc, const SMMXFixups *,
+	const NGfx::SCompactTransformer *pTrans )
+{
+	ASSERT( pSrc->w == 0 );
+	MMXStore( pRes, MMXRotate( pTrans, NGfx::GetVector( *pSrc ) ) );
+}
+
+static void MMXTransformVector2( NGfx::SCompactVector *pRes, const NGfx::SCompactVector *pSrc, const SMMXFixups *,
+	const NGfx::SCompactTransformer *pTrans, char w1,
+	const NGfx::SCompactTransformer *pTrans2, char w2 )
+{
+	ASSERT( pSrc->w == 0 );
+	const CVec3 v = NGfx::GetVector( *pSrc );
+	const CVec3 a = MMXWeighted( pTrans, w1, v ), b = MMXWeighted( pTrans2, w2, v );
+	MMXStore( pRes, CVec3( a.x + b.x, a.y + b.y, a.z + b.z ) );
+}
+
+static void MMXTransformVector3( NGfx::SCompactVector *pRes, const NGfx::SCompactVector *pSrc, const SMMXFixups *,
+	const NGfx::SCompactTransformer *pTrans, char w1,
+	const NGfx::SCompactTransformer *pTrans2, char w2,
+	const NGfx::SCompactTransformer *pTrans3, char w3 )
+{
+	ASSERT( pSrc->w == 0 );
+	const CVec3 v = NGfx::GetVector( *pSrc );
+	const CVec3 a = MMXWeighted( pTrans, w1, v ), b = MMXWeighted( pTrans2, w2, v ), c = MMXWeighted( pTrans3, w3, v );
+	MMXStore( pRes, CVec3( a.x + b.x + c.x, a.y + b.y + c.y, a.z + b.z + c.z ) );
+}
+#endif
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 static void TransformVertexT( CVec3 *pRes, const SHMatrix &m, const NGfx::SCompactVector &src )
 {
@@ -530,7 +619,9 @@ struct SGenericTransformer
 			res.texLM.dw = 0;
 			MMXTransformVector( &res.texU, &pSrc->texU, &fixups, &transformer );
 			MMXTransformVector( &res.texV, &pSrc->texV, &fixups, &transformer );
-			_asm emms;
+#if defined( _WIN32 )
+			_asm emms;   // leave MMX state; nothing to clear without the MMX path
+#endif
 			//TransformVertexT( &res.texU, vertexTransform, pSrc->texU );
 			//TransformVertexT( &res.texV, vertexTransform, pSrc->texV );
 		}
@@ -587,7 +678,9 @@ struct SGenericTransformer
 				MMXTransformVector3( &texU, &pSrc->texU, &fixups, &blend1, nW1, &blend2, nW2, &blend3, nW3 );
 				MMXTransformVector3( &texV, &pSrc->texV, &fixups, &blend1, nW1, &blend2, nW2, &blend3, nW3 );
 			}	
-			_asm emms;
+#if defined( _WIN32 )
+			_asm emms;   // leave MMX state; nothing to clear without the MMX path
+#endif
 
 /*			CVec3 tnormal, ttexU, ttexV;
 			if ( pWeight->fWeights[1] == 0 )
@@ -847,11 +940,11 @@ struct SPartTransformer : public T
 		switch ( p->GetTransformType() )
 		{
 		case TT_NONE:
-			CopyTransform( pObjInfo->GetPositions(), &srcVerts[0], pObjInfo->GetPositionIndices(), 
+			this->CopyTransform( pObjInfo->GetPositions(), &srcVerts[0], pObjInfo->GetPositionIndices(), 
 				pRes );
 			break;
 		case TT_SIMPLE:
-			SimpleTransform( pObjInfo->GetPositions(), transformed, &srcVerts[0], pObjInfo->GetPositionIndices(), 
+			this->SimpleTransform( pObjInfo->GetPositions(), transformed, &srcVerts[0], pObjInfo->GetPositionIndices(), 
 				p->GetSimplePos(), pRes );
 			break;
 		case TT_SIMPLE_DISCRETE:
@@ -859,16 +952,16 @@ struct SPartTransformer : public T
 				const SDiscretePos& dPos = p->GetDiscretePos();
 				SFBTransform transform;
 				dPos.MakeMatrix( &transform );
-				SimpleDiscreteTransform( pObjInfo->GetPositions(), transformed, &srcVerts[0], pObjInfo->GetPositionIndices(), 
+				this->SimpleDiscreteTransform( pObjInfo->GetPositions(), transformed, &srcVerts[0], pObjInfo->GetPositionIndices(), 
 					dPos.GetTransform()->pos.forward, transform.backward, dPos, pRes );
 			}
 			break;
 		case TT_SINGLE_SKIN:
 			if ( T::PASS_MMX_BLENDS )
-				SingleSkinTransform( pObjInfo->GetPositions(), transformed, &srcVerts[0], pObjInfo->GetPositionIndices(), 
+				this->SingleSkinTransform( pObjInfo->GetPositions(), transformed, &srcVerts[0], pObjInfo->GetPositionIndices(), 
 					&(pObjInfo->GetWeights()[0]), p->GetAnimation(), p->GetMMXAnimation(), pRes );
 			else
-				SingleSkinTransform( pObjInfo->GetPositions(), transformed, &srcVerts[0], pObjInfo->GetPositionIndices(), 
+				this->SingleSkinTransform( pObjInfo->GetPositions(), transformed, &srcVerts[0], pObjInfo->GetPositionIndices(), 
 					&(pObjInfo->GetWeights()[0]), p->GetAnimation(), *(vector<NGfx::SCompactTransformer>*)0, pRes );
 			break;
 		default:
@@ -949,7 +1042,7 @@ struct SGfxTnLTransformer : public SPartTransformer<TTrans>
 	}
 	void Transform( IPart *p, const vector<CVec3> &transformed )
 	{
-		nVert += DoTransform( p, &geom[nVert], transformed );
+		nVert += this->DoTransform( p, &geom[nVert], transformed );
 		ASSERT( nVert <= geom.GetSize() );
 	}
 };

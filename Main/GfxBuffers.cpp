@@ -131,7 +131,7 @@ public:
 		//NCache::MRU_TYPE nBestMRU = NCache::MRU_LAST;
 		NCache::CFibElement el;
 		el.nSize = NCache::GetMajorFib( nSize );
-		CCache::SCachePlace best;
+		typename CCache::SCachePlace best;
 		if ( !pCache->GetPlace( el, &best ) )
 		{
 			ASSERT( 0 );
@@ -190,14 +190,14 @@ public:
 	void DrawRU( CTexture *pTarget )
 	{
 		CTextureLock<SPixel8888> tl( pTarget, 0, INPLACE );
-		vector<CCache::SStatePlace> places;
+		vector<typename CCache::SStatePlace> places;
 		pCache->GetState( &places );
 		for ( int y = 0; y < tl.GetYSize(); ++y )
 			for ( int x = 0; x < tl.GetXSize(); ++x )
 				tl[y][x] = SPixel8888( 255,255,255 );
 		for ( int k = 0; k < places.size(); ++k )
 		{
-			const CCache::SStatePlace &p = places[k];
+			const typename CCache::SStatePlace &p = places[k];
 			SPixel8888 color;
 			if ( p.pUser )
 			{
@@ -802,7 +802,7 @@ public:
 	void Clear() { textures.clear(); }
 	void Walk()
 	{
-		for ( list<STex>::iterator i = textures.begin(); i != textures.end(); ++i )
+		for ( typename list<STex>::iterator i = textures.begin(); i != textures.end(); ++i )
 		{
 			ASSERT( IsValid( i->pTB ) );
 			if ( !IsValid( i->pTexture ) )
@@ -814,7 +814,7 @@ public:
 		// pick best
 		NCache::MRU_TYPE nBest = nCurrentFrame - 1; //MRU_LAST;
 		STex *pBest = 0;
-		for ( list<STex>::iterator i = textures.begin(); i != textures.end(); ++i )
+		for ( typename list<STex>::iterator i = textures.begin(); i != textures.end(); ++i )
 		{
 			if ( !IsValid( i->pTexture ) )
 			{
@@ -859,6 +859,16 @@ public:
 	virtual CCubeTexture* CreateHandle( CCubeTB *pTB ) { return new CCubeTexture( pTB ); }
 };
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Widens nSize 16-bit indices to 32-bit, adding nShift to each -- the MMX version
+// below does four at a time, and its scalar tail (`xor eax,eax / mov ax,[esi] /
+// add eax,ebx / mov [edi],eax`) spells out the same thing one at a time.
+//
+// The asm is 32-bit MSVC inline (esi/edi/mm registers) and cannot be built by
+// GCC/Clang or on x86-64 at all, so non-Windows gets the plain C equivalent.
+// It is not a downgrade: this is a textbook auto-vectorisable loop, and both
+// compilers emit an SSE2/AVX2 widening sequence for it -- wider than the MMX
+// original, which also had to pay an `emms` on every call.
+#if defined( _WIN32 )
 static __forceinline void ReallyFastShiftingTransfer( const unsigned short *pSrc, int *pDst, int nSize, int nShift )
 {
 	_asm
@@ -911,6 +921,13 @@ last_lp:
 fff:
 	}
 }
+#else
+static __forceinline void ReallyFastShiftingTransfer( const unsigned short *pSrc, int *pDst, int nSize, int nShift )
+{
+	for ( int i = 0; i < nSize; ++i )
+		pDst[i] = (int)pSrc[i] + nShift;
+}
+#endif
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 struct S32Triangle
 {

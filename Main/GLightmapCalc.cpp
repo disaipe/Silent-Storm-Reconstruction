@@ -365,7 +365,7 @@ static void MakeLMTS( CTransformStack *pTS, CVec4 &vZ )
 	SHMatrix m;
 	int nRes = 1024;//shadowMapsShare.GetLMTexResolution();
 	NGfx::MakeLMToScreenMatrix( &m, nRes, nRes );
-	m.z = vZ;
+	m.RowZ() = vZ;
 	ts.Init( m );
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -432,12 +432,12 @@ void CLightmapTracker::RenderCubeMapDepth(
 		CVec4 vZ( 0, 0, 1, -_vCenter.z );
 		switch ( nDir )
 		{
-			case 0: face = NGfx::POSITIVE_X; camera.x = -vZ; camera.y = -vY; camera.z =  vX; break;
-			case 1: face = NGfx::POSITIVE_Y; camera.x =  vX; camera.y =  vZ; camera.z =  vY; break;
-			case 2: face = NGfx::POSITIVE_Z; camera.x =  vX; camera.y = -vY; camera.z =  vZ; break;
-			case 3: face = NGfx::NEGATIVE_X; camera.x =  vZ; camera.y = -vY; camera.z = -vX; break;
-			case 4: face = NGfx::NEGATIVE_Y; camera.x =  vX; camera.y = -vZ; camera.z = -vY; break;
-			case 5: face = NGfx::NEGATIVE_Z; camera.x = -vX; camera.y = -vY; camera.z = -vZ; break;
+			case 0: face = NGfx::POSITIVE_X; camera.RowX() = -vZ; camera.RowY() = -vY; camera.RowZ() =  vX; break;
+			case 1: face = NGfx::POSITIVE_Y; camera.RowX() =  vX; camera.RowY() =  vZ; camera.RowZ() =  vY; break;
+			case 2: face = NGfx::POSITIVE_Z; camera.RowX() =  vX; camera.RowY() = -vY; camera.RowZ() =  vZ; break;
+			case 3: face = NGfx::NEGATIVE_X; camera.RowX() =  vZ; camera.RowY() = -vY; camera.RowZ() = -vX; break;
+			case 4: face = NGfx::NEGATIVE_Y; camera.RowX() =  vX; camera.RowY() = -vZ; camera.RowZ() = -vY; break;
+			case 5: face = NGfx::NEGATIVE_Z; camera.RowX() = -vX; camera.RowY() = -vY; camera.RowZ() = -vZ; break;
 			default: ASSERT(0);
 		}
 		// gather occluders
@@ -451,12 +451,12 @@ void CLightmapTracker::RenderCubeMapDepth(
 		pRender->FormDirOccludersList( &tsFrustrum, vDir, &geom, MakeSelectAll(), false );
 		
 		// form transform stack for render
-		camera.y = -camera.y;
-		camera.w = CVec4(0,0,0,1);
+		camera.RowY() = -camera.RowY();
+		camera.RowW() = CVec4(0,0,0,1);
 		ts.Push43( camera );
 		camera = ts.Get().forward;
-		camera.x = camera.x - (1.0f / shadowMapsShare.GetCubeDepthResolution() ) * camera.w;
-		camera.y = camera.y + (1.0f / shadowMapsShare.GetCubeDepthResolution() ) * camera.w;
+		camera.RowX() = camera.RowX() - (1.0f / shadowMapsShare.GetCubeDepthResolution() ) * camera.RowW();
+		camera.RowY() = camera.RowY() + (1.0f / shadowMapsShare.GetCubeDepthResolution() ) * camera.RowW();
 		ts.Init( camera );
 		rc.SetCubeTextureRT( pDepth, face, 0 );
 		rc.ClearBuffers( 0xffffffff );
@@ -621,8 +621,8 @@ static void RenderParallelDepth( IRender *pRender, NGfx::CRenderContext *pRC,
 	SHMatrix mTrans = ts.Get().forward;
 	SDirectionalDepthInfo &depthInfo = *pDepthInfo;
 	NGfx::GetTexMapFromProjection( &mTrans, N_DEFAULT_RT_RESOLUTION );
-	depthInfo.vVecU = mTrans.x;
-	depthInfo.vVecV = mTrans.y;
+	depthInfo.vVecU = mTrans.RowX();
+	depthInfo.vVecV = mTrans.RowY();
 	float fRange1 = 1.0f / fRange;
 	//depthInfo.vDepth = CVec4( -vDir * fRange1, 0.5f + fRange1 * ( vDir * vEnter ) );//0, 0, 1 / 20.0f, 0 ); //_fMaxHeight
 	depthInfo.vDepth = CVec4( 0, 0, 1 / F_MAX_SCENE_HEIGHT, 0 );

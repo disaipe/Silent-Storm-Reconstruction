@@ -264,7 +264,7 @@ static void SetVertexShader( CGeometry *pVB, const SVShader &shader )
 // render modes application
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 template<>
-static void Apply( const SFBTransform &trans )
+void Apply( const SFBTransform &trans )
 {
 	if ( bTnLDevice )
 	{
@@ -294,7 +294,7 @@ static void Apply( const SFBTransform &trans )
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 template<>
-static void Apply( const EWireframe &wireFrame )
+void Apply( const EWireframe &wireFrame )
 {
 	if ( wireFrame )
 		ApplyRenderState( D3DRS_FILLMODE, D3DFILL_WIREFRAME );
@@ -303,7 +303,7 @@ static void Apply( const EWireframe &wireFrame )
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 template<>
-static void Apply( const EAlphaCombineMode &alphaMode )
+void Apply( const EAlphaCombineMode &alphaMode )
 {
 	switch ( alphaMode )
 	{
@@ -354,7 +354,7 @@ static void Apply( const EAlphaCombineMode &alphaMode )
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 template<>
-static void Apply( const SStencilMode &m )
+void Apply( const SStencilMode &m )
 {
 	switch ( m.mode )
 	{
@@ -489,7 +489,7 @@ static void Apply( const SStencilMode &m )
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 template<>
-static void Apply( const EDepthMode &depth )
+void Apply( const EDepthMode &depth )
 {
 	switch ( depth )
 	{
@@ -532,7 +532,7 @@ static void Apply( const EDepthMode &depth )
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 template<>
-static void Apply( const ECullMode &cull )
+void Apply( const ECullMode &cull )
 {
   switch ( cull )
   {
@@ -549,7 +549,7 @@ static void Apply( const ECullMode &cull )
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 template<>
-static void Apply( const EColorWriteMask &colorMode )
+void Apply( const EColorWriteMask &colorMode )
 {
 	DWORD dwFlags = 
 		(( colorMode & COLORWRITE_RED ) ? D3DCOLORWRITEENABLE_RED : 0) |

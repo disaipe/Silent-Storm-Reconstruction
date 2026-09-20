@@ -7,6 +7,7 @@
 #include "GRenderCore.h"
 #include "Transform.h"
 #include "GShadowVolume.h"
+#include "GRenderExecute.h"   // NGScene::Execute, called from Render() below
 namespace NGfx
 {
 	class CTexture;

@@ -279,8 +279,8 @@ static void RenderStuff( CPartsRender &pr, IRender *pRender, CTransformStack *pT
 {
 	SHMatrix sRes;
 	sRes = pTS->Get().forward;
-	sRes.x = ( sRes.x * 0.5f + sRes.w * 0.5f ) * pr.GetWidth();
-	sRes.y = ( sRes.y * 0.5f + sRes.w * 0.5f ) * pr.GetHeight();
+	sRes.RowX() = ( sRes.RowX() * 0.5f + sRes.RowW() * 0.5f ) * pr.GetWidth();
+	sRes.RowY() = ( sRes.RowY() * 0.5f + sRes.RowW() * 0.5f ) * pr.GetHeight();
 
 	pr.SetRefsNumber( CountParts( listParts ) + 1 );
 	int nIDCounter = 0;

@@ -152,6 +152,39 @@ void CBilinearTexture::Recalc()
 	int nNextY = pic.GetXSize() * 4;
 	int64 shift = 0x10001000100010;
 	nVPos = 0;
+#if !defined( _WIN32 )
+	// Portable bilinear resample. The MMX path below does exactly this in 15-bit
+	// fixed point, four channels at a time -- lerp the two horizontal neighbour
+	// pairs by the sub-texel U fraction, then lerp those by the V fraction (the
+	// asm spells both steps out in its own comments). Done per channel here; the
+	// weights are the same nXMul/nYMul values, just used as plain integers.
+	(void)shift; (void)nNextY;
+	for ( int y = 0; y < nYSize; ++y )
+	{
+		const int nYMul = ( nVPos & 0x7fff );
+		const NGfx::SPixel8888 *pRow0 = &pic[ nVPos >> 15 ][0];
+		const NGfx::SPixel8888 *pRow1 = &pic[ ( nVPos >> 15 ) + 1 ][0];
+		NGfx::SPixel8888 *pDst = &pValue->mips[0][y][0];
+		nUPos = 0;
+		for ( int x = 0; x < nXSize; ++x, ++pDst )
+		{
+			const int nXMul = ( nUPos & 0x7fff );
+			const int nU = nUPos >> 15;
+			const NGfx::SPixel8888 &a00 = pRow0[nU], &a01 = pRow0[nU + 1];
+			const NGfx::SPixel8888 &a10 = pRow1[nU], &a11 = pRow1[nU + 1];
+			for ( int c = 0; c < 4; ++c )
+			{
+				const int nTop = ( (const BYTE *)&a00 )[c] +
+					( ( ( ( (const BYTE *)&a01 )[c] - ( (const BYTE *)&a00 )[c] ) * nXMul ) >> 15 );
+				const int nBottom = ( (const BYTE *)&a10 )[c] +
+					( ( ( ( (const BYTE *)&a11 )[c] - ( (const BYTE *)&a10 )[c] ) * nXMul ) >> 15 );
+				( (BYTE *)pDst )[c] = (BYTE)Clamp( nTop + ( ( ( nBottom - nTop ) * nYMul ) >> 15 ), 0, 255 );
+			}
+			nUPos += nDU;
+		}
+		nVPos += nDV;
+	}
+#else
 	for ( int y = 0; y < nYSize; ++y )
 	{
 		int nYMul = ( nVPos & 0x7fff ), nYMul1 = 0x7fff - nYMul;
@@ -216,6 +249,7 @@ void CBilinearTexture::Recalc()
 		nVPos += nDV;
 	}
 	_asm emms
+#endif
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 } // namespace
